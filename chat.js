@@ -1,17 +1,6 @@
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import {
-  collection,
-  addDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  serverTimestamp,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
+import { validarAcessoAoChat, escutarMensagens, enviarMensagem } from "./chatService.js";
+import { clearElement, createElement, setButtonLoading, showToast } from "./utils.js";
 
 const params = new URLSearchParams(window.location.search);
 const chatId = params.get("chatId");
@@ -19,63 +8,78 @@ const chatId = params.get("chatId");
 const mensagensDiv = document.getElementById("mensagens");
 const texto = document.getElementById("texto");
 const btnEnviar = document.getElementById("btnEnviar");
+const btnVoltar = document.getElementById("btnVoltar");
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user || !chatId) {
-    alert("Acesso inválido");
-    window.location.href = "index.html";
-    return;
-  }
-
-  // 🔒 validar acesso ao chat
-  const chatRef = doc(db, "chats", chatId);
-  const chatSnap = await getDoc(chatRef);
-
-  if (!chatSnap.exists()) {
-    alert("Chat não encontrado");
-    return;
-  }
-
-  const chat = chatSnap.data();
-
-  if (user.uid !== chat.empresaId && user.uid !== chat.freelancerId) {
-    alert("Você não faz parte deste chat");
-    window.location.href = "index.html";
-    return;
-  }
-
-  const mensagensRef = collection(db, "chats", chatId, "mensagens");
-  const q = query(mensagensRef, orderBy("criadoEm"));
-
-  onSnapshot(q, async (snapshot) => {
-    mensagensDiv.innerHTML = "";
-
-    for (const docMsg of snapshot.docs) {
-      const m = docMsg.data();
-
-      // buscar nome do autor
-      const userRef = doc(db, "usuarios", m.autorId);
-      const userSnap = await getDoc(userRef);
-
-      const nome = userSnap.exists()
-        ? userSnap.data().nome
-        : "Usuário";
-
-      const p = document.createElement("p");
-      p.innerHTML = `<strong>${nome}:</strong> ${m.texto}`;
-      mensagensDiv.appendChild(p);
-    }
+if (btnVoltar) {
+  btnVoltar.addEventListener("click", () => {
+    window.history.back();
   });
+}
 
-  btnEnviar.addEventListener("click", async () => {
-    if (!texto.value.trim()) return;
+async function renderMensagens(mensagens, currentUserId) {
+  clearElement(mensagensDiv);
 
-    await addDoc(mensagensRef, {
-      texto: texto.value,
-      autorId: user.uid,
-      criadoEm: serverTimestamp()
+  for (const mensagem of mensagens) {
+    const autor = await getUserProfile(mensagem.autorId);
+    const nomeAutor = autor?.nome || "Usuário";
+    const item = createElement("div", {
+      className:
+        mensagem.autorId === currentUserId ? "mensagem mensagem-propria" : "mensagem mensagem-outro"
     });
 
-    texto.value = "";
-  });
+    const header = createElement("strong", { text: nomeAutor });
+    const conteudo = createElement("p", { text: mensagem.texto || "" });
+
+    item.appendChild(header);
+    item.appendChild(conteudo);
+    mensagensDiv.appendChild(item);
+  }
+
+  mensagensDiv.scrollTop = mensagensDiv.scrollHeight;
+}
+
+async function iniciarChat(user) {
+  if (!chatId) {
+    showToast("Acesso inválido ao chat", "error");
+    window.location.href = "index.html";
+    return;
+  }
+
+  try {
+    const acesso = await validarAcessoAoChat(chatId, user.uid);
+
+    if (!acesso.autorizado) {
+      showToast(acesso.motivo, "error");
+      window.location.href = "index.html";
+      return;
+    }
+
+    escutarMensagens(chatId, (mensagens) => {
+      renderMensagens(mensagens, user.uid);
+    });
+
+    btnEnviar.addEventListener("click", async () => {
+      const mensagem = texto.value.trim();
+      if (!mensagem) return;
+
+      try {
+        setButtonLoading(btnEnviar, true, "Enviando...");
+        await enviarMensagem(chatId, user.uid, mensagem);
+        texto.value = "";
+      } catch (error) {
+        console.error(error);
+        showToast("Falha ao enviar mensagem", "error");
+      } finally {
+        setButtonLoading(btnEnviar, false);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    showToast("Erro ao iniciar chat", "error");
+  }
+}
+
+observeAuthenticatedUser(iniciarChat, () => {
+  showToast("Faça login para acessar o chat", "error");
+  window.location.href = "index.html";
 });
