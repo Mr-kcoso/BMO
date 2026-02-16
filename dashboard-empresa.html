@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Empresa - BMO</title>
+  <link rel="stylesheet" href="design.css">
+</head>
+<body>
+  <header class="page-header">
+    <h1>Dashboard Empresa</h1>
+    <button onclick="window.location.href='meus-chats.html'">Meus chats</button>
+  </header>
 
-<h1>Dashboard Empresa</h1>
+  <section class="card">
+    <h2>Publicar problema</h2>
 
-<button onclick="window.location.href='meus-chats.html'"> Meus chats </button>
-  
-<input id="titulo" placeholder="Título do problema">
-<br><br>
-<textarea id="descricao" placeholder="Descreva o problema"></textarea>
-<br><br>
+    <input id="titulo" placeholder="Título do problema">
+    <textarea id="descricao" placeholder="Descreva o problema"></textarea>
 
-<select id="tipoProblema">
-  <option value="software">Software</option>
-  <option value="hardware">Hardware</option>
-</select>
-<br><br>
+    <select id="tipoProblema">
+      <option value="software">Software</option>
+      <option value="hardware">Hardware</option>
+    </select>
 
-<button id="btnPublicar">Publicar problema</button>
+    <button id="btnPublicar">Publicar problema</button>
+    <p id="msg"></p>
+  </section>
 
-<p id="msg"></p>
+  <section class="card">
+    <h2>Candidaturas recebidas</h2>
+    <p id="loadingCandidaturas">Carregando candidaturas...</p>
+    <ul id="candidaturas"></ul>
+  </section>
 
-<script type="module" src="empresa.js"></script>
-
-<h2>Candidaturas recebidas</h2>
-<ul id="candidaturas"></ul>
-
-<script type="module" src="empresa.js"></script>
-
+  <script type="module" src="empresa.js"></script>
+</body>
 </html>
-

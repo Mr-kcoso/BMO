@@ -7,7 +7,53 @@ body {
 #larva {
   width: 150px;
   height: 150px;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
+  align-self: center;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+.card-list-item {
+  list-style: none;
+}
+
+.auth-card {
+  max-width: 360px;
+  margin: 24px auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .mensagens-container {

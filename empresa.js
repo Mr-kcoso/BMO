@@ -1,17 +1,16 @@
 import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
+import { STATUS } from "./candidaturaService.js";
+import { clearElement, createElement, formatStatus, setButtonLoading, showToast } from "./utils.js";
 import {
   addDoc,
   collection,
   getDocs,
-  getDoc,
-  doc,
   query,
   where,
   updateDoc,
-  serverTimestamp
+  serverTimestamp,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const titulo = document.getElementById("titulo");
@@ -19,112 +18,162 @@ const descricao = document.getElementById("descricao");
 const tipoProblema = document.getElementById("tipoProblema");
 const msg = document.getElementById("msg");
 const lista = document.getElementById("candidaturas");
+const loading = document.getElementById("loadingCandidaturas");
+const btnPublicar = document.getElementById("btnPublicar");
 
-/* PUBLICAR PROBLEMA */
-document.getElementById("btnPublicar").addEventListener("click", async () => {
+async function publicarProblema() {
   const user = auth.currentUser;
+
   if (!user) {
-    msg.innerText = "Usuário não autenticado";
+    showToast("Usuário não autenticado", "error");
     return;
   }
 
-  await addDoc(collection(db, "problemas"), {
-    titulo: titulo.value,
-    descricao: descricao.value,
-    tipo: tipoProblema.value,
-    empresaId: user.uid,
+  if (!titulo.value.trim() || !descricao.value.trim()) {
+    showToast("Preencha título e descrição", "error");
+    return;
+  }
+
+  try {
+    setButtonLoading(btnPublicar, true, "Publicando...");
+
+    await addDoc(collection(db, "problemas"), {
+      titulo: titulo.value.trim(),
+      descricao: descricao.value.trim(),
+      tipo: tipoProblema.value,
+      empresaId: user.uid,
+      criadoEm: serverTimestamp()
+    });
+
+    msg.textContent = "Problema publicado com sucesso.";
+    titulo.value = "";
+    descricao.value = "";
+    showToast("Problema publicado", "success");
+  } catch (error) {
+    console.error(error);
+    showToast("Falha ao publicar problema", "error");
+  } finally {
+    setButtonLoading(btnPublicar, false);
+  }
+}
+
+async function atualizarStatusCandidatura(candidaturaId, status) {
+  await updateDoc(doc(db, "candidaturas", candidaturaId), { status });
+}
+
+async function aceitarCandidatura(candidatura, problemaId, empresaId) {
+  const chatRef = await addDoc(collection(db, "chats"), {
+    problemaId,
+    empresaId,
+    freelancerId: candidatura.freelancerId,
     criadoEm: serverTimestamp()
   });
 
-  msg.innerText = "Problema publicado";
-  titulo.value = "";
-  descricao.value = "";
-});
+  await updateDoc(doc(db, "candidaturas", candidatura.id), {
+    status: STATUS.ACEITO,
+    chatId: chatRef.id
+  });
 
-/* LISTAR CANDIDATURAS */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return;
+  window.location.href = `chat.html?chatId=${chatRef.id}`;
+}
 
-  lista.innerHTML = "";
+async function carregarCandidaturasEmpresa(user) {
+  if (loading) loading.hidden = false;
+  clearElement(lista);
 
-  const q = query(
-    collection(db, "problemas"),
-    where("empresaId", "==", user.uid)
-  );
+  try {
+    const problemasQuery = query(collection(db, "problemas"), where("empresaId", "==", user.uid));
+    const problemasSnap = await getDocs(problemasQuery);
 
-  const problemasSnap = await getDocs(q);
+    for (const problemaDoc of problemasSnap.docs) {
+      const problema = { id: problemaDoc.id, ...problemaDoc.data() };
 
-  for (const prob of problemasSnap.docs) {
-    const q2 = query(
-      collection(db, "candidaturas"),
-      where("problemaId", "==", prob.id)
-    );
+      const candidaturasQuery = query(
+        collection(db, "candidaturas"),
+        where("problemaId", "==", problema.id)
+      );
 
-    const candsSnap = await getDocs(q2);
+      const candidaturasSnap = await getDocs(candidaturasQuery);
 
-    for (const c of candsSnap.docs) {
-      const dados = c.data();
+      for (const candidaturaDoc of candidaturasSnap.docs) {
+        const candidatura = { id: candidaturaDoc.id, ...candidaturaDoc.data() };
+        const perfilFreelancer = await getUserProfile(candidatura.freelancerId);
+        const nomeFreelancer = perfilFreelancer?.nome || "Usuário desconhecido";
 
-      // buscar nome do freelancer
-      const userRef = doc(db, "usuarios", dados.freelancerId);
-      const userSnap = await getDoc(userRef);
+        const item = createElement("li");
+        item.className = "card card-list-item";
 
-      const nomeFreelancer = userSnap.exists()
-        ? userSnap.data().nome
-        : "Usuário desconhecido";
+        item.appendChild(createElement("strong", { text: problema.titulo }));
+        item.appendChild(createElement("p", { text: `Freelancer: ${nomeFreelancer}` }));
+        item.appendChild(
+          createElement("p", { text: `Status: ${formatStatus(candidatura.status || STATUS.PENDENTE)}` })
+        );
 
-      const li = document.createElement("li");
+        if (candidatura.status === STATUS.ACEITO && candidatura.chatId) {
+          const btnChat = createElement("button", { text: "Abrir Chat" });
+          btnChat.addEventListener("click", () => {
+            window.location.href = `chat.html?chatId=${candidatura.chatId}`;
+          });
+          item.appendChild(btnChat);
+        } else {
+          const actions = createElement("div", { className: "button-row" });
+          const btnAceitar = createElement("button", { text: "Aceitar" });
+          const btnRecusar = createElement("button", { text: "Recusar" });
 
-      li.innerHTML = `
-        <strong>${prob.data().titulo}</strong><br>
-        Freelancer: ${nomeFreelancer}<br>
-        Status: ${dados.status || "pendente"}<br>
-        ${
-          dados.status === "aceito"
-            ? `<button class="chat">Abrir Chat</button>`
-            : `
-              <button class="aceitar">Aceitar</button>
-              <button class="recusar">Recusar</button>
-            `
+          btnAceitar.addEventListener("click", async () => {
+            try {
+              setButtonLoading(btnAceitar, true, "Aceitando...");
+              btnRecusar.disabled = true;
+              await aceitarCandidatura(candidatura, problema.id, user.uid);
+            } catch (error) {
+              console.error(error);
+              showToast("Falha ao aceitar candidatura", "error");
+              setButtonLoading(btnAceitar, false);
+              btnRecusar.disabled = false;
+            }
+          });
+
+          btnRecusar.addEventListener("click", async () => {
+            try {
+              setButtonLoading(btnRecusar, true, "Recusando...");
+              btnAceitar.disabled = true;
+              await atualizarStatusCandidatura(candidatura.id, STATUS.RECUSADO);
+              showToast("Candidatura recusada", "info");
+              await carregarCandidaturasEmpresa(user);
+            } catch (error) {
+              console.error(error);
+              showToast("Falha ao recusar candidatura", "error");
+              setButtonLoading(btnRecusar, false);
+              btnAceitar.disabled = false;
+            }
+          });
+
+          actions.appendChild(btnAceitar);
+          actions.appendChild(btnRecusar);
+          item.appendChild(actions);
         }
-        <hr>
-      `;
 
-      /* ACEITAR */
-      if (dados.status !== "aceito") {
-        li.querySelector(".aceitar").addEventListener("click", async () => {
-          // criar chat
-          const chatRef = await addDoc(collection(db, "chats"), {
-            problemaId: prob.id,
-            empresaId: user.uid,
-            freelancerId: dados.freelancerId,
-            criadoEm: serverTimestamp()
-          });
-
-          // atualizar candidatura
-          await updateDoc(doc(db, "candidaturas", c.id), {
-            status: "aceito",
-            chatId: chatRef.id
-          });
-
-          window.location.href = `chat.html?chatId=${chatRef.id}`;
-        });
-
-        /* RECUSAR */
-        li.querySelector(".recusar").addEventListener("click", async () => {
-          await updateDoc(doc(db, "candidaturas", c.id), {
-            status: "recusado"
-          });
-
-          alert("Candidatura recusada");
-        });
-      } else {
-        li.querySelector(".chat").addEventListener("click", () => {
-          window.location.href = `chat.html?chatId=${dados.chatId}`;
-        });
+        lista.appendChild(item);
       }
-
-      lista.appendChild(li);
     }
+
+    if (!lista.children.length) {
+      lista.appendChild(createElement("p", { text: "Nenhuma candidatura encontrada." }));
+    }
+  } catch (error) {
+    console.error(error);
+    showToast("Erro ao carregar candidaturas", "error");
+  } finally {
+    if (loading) loading.hidden = true;
   }
-});
+}
+
+btnPublicar?.addEventListener("click", publicarProblema);
+
+observeAuthenticatedUser(
+  (user) => carregarCandidaturasEmpresa(user),
+  () => {
+    showToast("Faça login para acessar o dashboard", "error");
+    window.location.href = "index.html";
+  }
+);

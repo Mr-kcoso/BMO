@@ -6,25 +6,27 @@
   <link rel="stylesheet" href="design.css">
 </head>
 <body>
+  <section class="card auth-card">
+    <img id="larva" src="larva.jpeg" alt="Logo BMO">
 
-  <img id="larva" src="larva.jpeg">
+    <input type="text" id="nome" placeholder="Seu nome">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Senha">
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Senha">
-  <input type="text" id="nome" placeholder="Seu nome" />
+    <select id="tipo">
+      <option value="">Selecione o tipo</option>
+      <option value="freelancer">Freelancer</option>
+      <option value="empresa">Empresa</option>
+    </select>
 
-  <br><br>
+    <div class="button-row">
+      <button id="btnCadastrar">Cadastrar</button>
+      <button id="btnLogin">Login</button>
+    </div>
 
-  <button id="btnCadastrar">Cadastrar</button>
-  <button id="btnLogin">Login</button>
-
-  <p id="msg"></p>
+    <p id="msg"></p>
+  </section>
 
   <script type="module" src="./auth.js"></script>
 </body>
-<select id="tipo">
-  <option value="">Selecione o tipo</option>
-  <option value="freelancer">Freelancer</option>
-  <option value="empresa">Empresa</option>
-</select>
 </html>
