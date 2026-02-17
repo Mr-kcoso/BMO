@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Meu Perfil - BMO</title>
+  <link rel="stylesheet" href="design.css">
+</head>
+<body>
+  <header class="page-header">
+    <h1>Meu Perfil</h1>
+    <button onclick="window.history.back()">Voltar</button>
+  </header>
+
+  <section class="card perfil-card">
+    <div class="perfil-avatar-wrapper">
+      <img id="previewFoto" class="perfil-avatar" alt="Foto de perfil">
+    </div>
+
+    <label for="fotoPerfil">Foto de perfil</label>
+    <input id="fotoPerfil" type="file" accept="image/*">
+
+    <label for="nomePerfil">Nome</label>
+    <input id="nomePerfil" type="text" placeholder="Seu nome">
+
+    <label for="emailPerfil">Email</label>
+    <input id="emailPerfil" type="email" placeholder="Seu email" disabled>
+
+    <label for="bioPerfil">Bio profissional</label>
+    <textarea id="bioPerfil" maxlength="280" placeholder="Fale sobre sua experiência (até 280 caracteres)"></textarea>
+    <small id="bioCount">0/280</small>
+
+    <label for="habilidadesPerfil">Habilidades (separadas por vírgula)</label>
+    <input id="habilidadesPerfil" type="text" placeholder="JavaScript, UX, Marketing Digital">
+
+    <label for="areaAtuacaoPerfil">Área de atuação</label>
+    <input id="areaAtuacaoPerfil" type="text" placeholder="Ex: Desenvolvimento Web">
+
+    <label for="disponibilidadePerfil">Disponibilidade</label>
+    <select id="disponibilidadePerfil">
+      <option value="disponivel">Disponível</option>
+      <option value="ocupado">Ocupado</option>
+    </select>
+
+    <div id="freelancerCampos">
+      <label for="curriculoPerfil">Currículo (PDF)</label>
+      <input id="curriculoPerfil" type="file" accept="application/pdf">
+      <a id="linkCurriculo" target="_blank" rel="noopener" hidden>Ver currículo atual</a>
+    </div>
+
+    <div id="empresaCampos">
+      <label for="logoEmpresa">Logo institucional</label>
+      <input id="logoEmpresa" type="file" accept="image/*">
+
+      <label for="descricaoInstitucional">Descrição institucional</label>
+      <textarea id="descricaoInstitucional" maxlength="400" placeholder="Descreva a empresa"></textarea>
+
+      <label for="localizacaoEmpresa">Localização</label>
+      <input id="localizacaoEmpresa" type="text" placeholder="Cidade/Estado">
+
+      <label for="siteEmpresa">Site</label>
+      <input id="siteEmpresa" type="url" placeholder="https://suaempresa.com">
+    </div>
+
+    <button id="btnSalvarPerfil" class="btn-primary">Salvar perfil</button>
+  </section>
+
+  <script type="module" src="perfil.js"></script>
+</body>
+</html>

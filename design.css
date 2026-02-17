@@ -1,5 +1,11 @@
+:root {
+  --bmo-preto: #111111;
+  --bmo-laranja: #ff6b00;
+}
+
 body {
-  background-color: rgb(255, 255, 255);
+  background-color: #fff;
+  color: var(--bmo-preto);
   font-family: Arial, sans-serif;
   margin: 16px;
 }
@@ -20,8 +26,28 @@ button {
   margin-bottom: 8px;
 }
 
+input,
+textarea,
+select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
 button {
   cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: var(--bmo-preto);
+  color: #fff;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+.btn-primary {
+  background: var(--bmo-laranja);
+  color: #fff;
 }
 
 .page-header {
@@ -54,6 +80,27 @@ button {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.perfil-card {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.perfil-avatar-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.perfil-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--bmo-laranja);
 }
 
 .mensagens-container {
