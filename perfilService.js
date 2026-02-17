@@ -65,7 +65,7 @@ export async function uploadPerfilArquivo(userId, file, folder) {
     customMetadata: { ownerId: userId }
   };
 
-  let ultimoErro = null;
+  const erros = [];
 
   for (const bucketUrl of STORAGE_BUCKET_CANDIDATES) {
     try {
@@ -73,18 +73,22 @@ export async function uploadPerfilArquivo(userId, file, folder) {
       const url = await executarUpload(storageInstance, caminho, file, metadata);
       return url;
     } catch (error) {
-      ultimoErro = error;
-
-      const bucketNaoEncontrado = error?.code === "storage/bucket-not-found";
-      const endpointInvalido = error?.code === "storage/invalid-default-bucket";
-
-      if (bucketNaoEncontrado || endpointInvalido) {
-        continue;
-      }
-
-      throw error;
+      erros.push({
+        bucketUrl,
+        code: error?.code || "sem-codigo",
+        message: error?.message || "Falha no upload"
+      });
     }
   }
 
-  throw ultimoErro || new Error("Falha ao enviar arquivo para o Firebase Storage.");
+  const erro = new Error(
+    `Falha no upload em todos os buckets. Detalhes: ${erros
+      .map((e) => `[${e.bucketUrl}] ${e.code}`)
+      .join(" | ")}`
+  );
+
+  erro.code = erros[0]?.code;
+  erro.details = erros;
+
+  throw erro;
 }

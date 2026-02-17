@@ -173,6 +173,10 @@ async function salvar() {
           : error?.code === "storage/canceled"
             ? "Upload cancelado."
             : `${error?.message || "Falha ao salvar perfil"}${error?.code ? ` (código: ${error.code})` : ""}`;
+
+    if (error?.details?.length) {
+      console.table(error.details);
+    }
     showToast(mensagem, "error");
   } finally {
     setButtonLoading(btnSalvar, false);
