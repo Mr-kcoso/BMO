@@ -4,7 +4,8 @@ import {
   getDownloadURL,
   getStorage,
   ref,
-  uploadBytesResumable
+  uploadBytesResumable,
+  uploadBytes
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 export async function getPerfil(userId) {
@@ -37,25 +38,26 @@ function inferirContentType(file) {
   return "application/octet-stream";
 }
 
-function executarUpload(storageInstance, caminho, file, metadata) {
+async function executarUploadResumable(storageInstance, caminho, file, metadata) {
   const storageRef = ref(storageInstance, caminho);
   const task = uploadBytesResumable(storageRef, file, metadata);
 
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     task.on(
       "state_changed",
       null,
       (error) => reject(error),
-      async () => {
-        try {
-          const url = await getDownloadURL(task.snapshot.ref);
-          resolve(url);
-        } catch (error) {
-          reject(error);
-        }
-      }
+      () => resolve()
     );
   });
+
+  return getDownloadURL(task.snapshot.ref);
+}
+
+async function executarUploadDireto(storageInstance, caminho, file, metadata) {
+  const storageRef = ref(storageInstance, caminho);
+  await uploadBytes(storageRef, file, metadata);
+  return getDownloadURL(storageRef);
 }
 
 export async function uploadPerfilArquivo(userId, file, folder) {
@@ -68,16 +70,30 @@ export async function uploadPerfilArquivo(userId, file, folder) {
   const erros = [];
 
   for (const bucketUrl of STORAGE_BUCKET_CANDIDATES) {
+    const storageInstance = getStorage(app, bucketUrl);
+
     try {
-      const storageInstance = getStorage(app, bucketUrl);
-      const url = await executarUpload(storageInstance, caminho, file, metadata);
+      const url = await executarUploadResumable(storageInstance, caminho, file, metadata);
       return url;
-    } catch (error) {
+    } catch (errorResumable) {
       erros.push({
         bucketUrl,
-        code: error?.code || "sem-codigo",
-        message: error?.message || "Falha no upload"
+        strategy: "resumable",
+        code: errorResumable?.code || "sem-codigo",
+        message: errorResumable?.message || "Falha no upload resumable"
       });
+
+      try {
+        const url = await executarUploadDireto(storageInstance, caminho, file, metadata);
+        return url;
+      } catch (errorDireto) {
+        erros.push({
+          bucketUrl,
+          strategy: "direct",
+          code: errorDireto?.code || "sem-codigo",
+          message: errorDireto?.message || "Falha no upload direto"
+        });
+      }
     }
   }
 
