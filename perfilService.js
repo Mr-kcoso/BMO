@@ -1,7 +1,8 @@
-import { db, storage } from "./firebase.js";
+import { app, db, STORAGE_BUCKET_CANDIDATES } from "./firebase.js";
 import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
   getDownloadURL,
+  getStorage,
   ref,
   uploadBytesResumable
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
@@ -36,27 +37,54 @@ function inferirContentType(file) {
   return "application/octet-stream";
 }
 
-export async function uploadPerfilArquivo(userId, file, folder) {
-  const caminho = `${folder}/${userId}/${Date.now()}-${file.name}`;
-  const storageRef = ref(storage, caminho);
-
-  const metadata = {
-    contentType: inferirContentType(file),
-    customMetadata: {
-      ownerId: userId
-    }
-  };
-
+function executarUpload(storageInstance, caminho, file, metadata) {
+  const storageRef = ref(storageInstance, caminho);
   const task = uploadBytesResumable(storageRef, file, metadata);
 
-  await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     task.on(
       "state_changed",
       null,
       (error) => reject(error),
-      () => resolve()
+      async () => {
+        try {
+          const url = await getDownloadURL(task.snapshot.ref);
+          resolve(url);
+        } catch (error) {
+          reject(error);
+        }
+      }
     );
   });
+}
 
-  return getDownloadURL(task.snapshot.ref);
+export async function uploadPerfilArquivo(userId, file, folder) {
+  const caminho = `${folder}/${userId}/${Date.now()}-${file.name}`;
+  const metadata = {
+    contentType: inferirContentType(file),
+    customMetadata: { ownerId: userId }
+  };
+
+  let ultimoErro = null;
+
+  for (const bucketUrl of STORAGE_BUCKET_CANDIDATES) {
+    try {
+      const storageInstance = getStorage(app, bucketUrl);
+      const url = await executarUpload(storageInstance, caminho, file, metadata);
+      return url;
+    } catch (error) {
+      ultimoErro = error;
+
+      const bucketNaoEncontrado = error?.code === "storage/bucket-not-found";
+      const endpointInvalido = error?.code === "storage/invalid-default-bucket";
+
+      if (bucketNaoEncontrado || endpointInvalido) {
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  throw ultimoErro || new Error("Falha ao enviar arquivo para o Firebase Storage.");
 }

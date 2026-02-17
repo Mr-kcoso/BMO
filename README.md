@@ -16,3 +16,5 @@ O projeto agora possui o módulo de perfil com:
 - Persistência de dados no Firestore (coleção `usuarios`).
 - Upload de foto, currículo PDF e logo via Firebase Storage.
 - Campos específicos para freelancer e empresa.
+
+- Regras sugeridas para Firebase Storage: `docs/storage.rules.md`

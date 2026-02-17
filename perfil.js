@@ -165,12 +165,14 @@ async function salvar() {
   } catch (error) {
     console.error(error);
     const mensagem = error?.code === "storage/unauthorized"
-      ? "Sem permissão para upload. Verifique as regras do Firebase Storage."
+      ? "Sem permissão para upload. Verifique as regras do Firebase Storage (allow write para usuário autenticado)."
       : error?.code === "storage/bucket-not-found"
-        ? "Bucket do Firebase Storage não encontrado. Revise a configuração do projeto."
-        : error?.code === "storage/canceled"
-          ? "Upload cancelado."
-          : error?.message || "Falha ao salvar perfil";
+        ? "Bucket do Firebase Storage não encontrado. Verifique se o Storage foi ativado no projeto Firebase."
+        : error?.code === "storage/invalid-default-bucket"
+          ? "Bucket padrão inválido. Confira storageBucket no firebase.js e o bucket real no console Firebase."
+          : error?.code === "storage/canceled"
+            ? "Upload cancelado."
+            : `${error?.message || "Falha ao salvar perfil"}${error?.code ? ` (código: ${error.code})` : ""}`;
     showToast(mensagem, "error");
   } finally {
     setButtonLoading(btnSalvar, false);
