@@ -90,6 +90,17 @@ async function salvar() {
     return;
   }
 
+  const maxMb = 8;
+  const maxBytes = maxMb * 1024 * 1024;
+  const uploads = [fotoPerfilInput.files[0], curriculoInput?.files[0], logoEmpresaInput?.files[0]].filter(Boolean);
+
+  for (const arquivo of uploads) {
+    if (arquivo.size > maxBytes) {
+      showToast(`Arquivo ${arquivo.name} excede ${maxMb}MB`, "error");
+      return;
+    }
+  }
+
   try {
     setButtonLoading(btnSalvar, true, "Salvando...");
 
@@ -101,9 +112,9 @@ async function salvar() {
     let curriculoURL = currentPerfil?.curriculoURL || "";
     if (curriculoInput?.files[0]) {
       const arquivo = curriculoInput.files[0];
-      if (arquivo.type !== "application/pdf") {
+      const ehPdf = arquivo.type === "application/pdf" || arquivo.name.toLowerCase().endswith(".pdf");
+      if (!ehPdf) {
         showToast("Currículo deve ser PDF", "error");
-        setButtonLoading(btnSalvar, false);
         return;
       }
 
@@ -153,7 +164,10 @@ async function salvar() {
     await carregarPerfil(currentUser);
   } catch (error) {
     console.error(error);
-    showToast("Falha ao salvar perfil", "error");
+    const mensagem = error?.code === "storage/unauthorized"
+      ? "Sem permissão para upload. Verifique as regras do Firebase Storage."
+      : error?.message || "Falha ao salvar perfil";
+    showToast(mensagem, "error");
   } finally {
     setButtonLoading(btnSalvar, false);
   }
