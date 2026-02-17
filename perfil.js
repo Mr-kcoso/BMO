@@ -166,7 +166,11 @@ async function salvar() {
     console.error(error);
     const mensagem = error?.code === "storage/unauthorized"
       ? "Sem permissão para upload. Verifique as regras do Firebase Storage."
-      : error?.message || "Falha ao salvar perfil";
+      : error?.code === "storage/bucket-not-found"
+        ? "Bucket do Firebase Storage não encontrado. Revise a configuração do projeto."
+        : error?.code === "storage/canceled"
+          ? "Upload cancelado."
+          : error?.message || "Falha ao salvar perfil";
     showToast(mensagem, "error");
   } finally {
     setButtonLoading(btnSalvar, false);

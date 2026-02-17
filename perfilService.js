@@ -6,8 +6,6 @@ import {
   uploadBytesResumable
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-const UPLOAD_TIMEOUT_MS = 25000;
-
 export async function getPerfil(userId) {
   const refDoc = doc(db, "usuarios", userId);
   const snap = await getDoc(refDoc);
@@ -27,28 +25,36 @@ export async function salvarPerfil(userId, dados) {
   );
 }
 
+function inferirContentType(file) {
+  if (file.type) return file.type;
+
+  const name = file.name.toLowerCase();
+  if (name.endsWith(".pdf")) return "application/pdf";
+  if (name.endsWith(".png")) return "image/png";
+  if (name.endsWith(".jpg") || name.endsWith(".jpeg")) return "image/jpeg";
+  if (name.endsWith(".webp")) return "image/webp";
+  return "application/octet-stream";
+}
+
 export async function uploadPerfilArquivo(userId, file, folder) {
   const caminho = `${folder}/${userId}/${Date.now()}-${file.name}`;
   const storageRef = ref(storage, caminho);
-  const task = uploadBytesResumable(storageRef, file);
+
+  const metadata = {
+    contentType: inferirContentType(file),
+    customMetadata: {
+      ownerId: userId
+    }
+  };
+
+  const task = uploadBytesResumable(storageRef, file, metadata);
 
   await new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      task.cancel();
-      reject(new Error("Upload excedeu o tempo limite. Verifique sua conexão e tente novamente."));
-    }, UPLOAD_TIMEOUT_MS);
-
     task.on(
       "state_changed",
       null,
-      (error) => {
-        clearTimeout(timeoutId);
-        reject(error);
-      },
-      () => {
-        clearTimeout(timeoutId);
-        resolve();
-      }
+      (error) => reject(error),
+      () => resolve()
     );
   });
 
