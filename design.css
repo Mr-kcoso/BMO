@@ -4,7 +4,7 @@
 }
 
 body {
-  background-color: #323232;
+  background-color: #ffffff;
   color: var(--bmo-preto);
   font-family: Arial, sans-serif;
   margin: 16px;
@@ -58,11 +58,13 @@ button:hover {
 }
 
 .card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #000000;
   border-radius: 10px;
   padding: 16px;
   margin-bottom: 16px;
-  background: #fff;
+  background: #000000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+
 }
 
 .card-list-item {
