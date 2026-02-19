@@ -11,14 +11,39 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const email = document.getElementById("email");
-const password = document.getElementById("password");
+const loginForm = document.getElementById("loginForm");
+const cadastroForm = document.getElementById("cadastroForm");
+const tabLogin = document.getElementById("tabLogin");
+const tabCadastro = document.getElementById("tabCadastro");
+const loginEmail = document.getElementById("loginEmail");
+const loginPassword = document.getElementById("loginPassword");
+const cadastroEmail = document.getElementById("cadastroEmail");
+const cadastroPassword = document.getElementById("cadastroPassword");
 const tipo = document.getElementById("tipo");
-const msg = document.getElementById("msg");
 const nome = document.getElementById("nome");
+const msg = document.getElementById("msg");
 
-/* CADASTRO */
-document.getElementById("btnCadastrar").addEventListener("click", async () => {
+function alternarAba(modo) {
+  const loginAtivo = modo === "login";
+
+  loginForm.classList.toggle("hidden", !loginAtivo);
+  cadastroForm.classList.toggle("hidden", loginAtivo);
+
+  tabLogin.classList.toggle("active", loginAtivo);
+  tabCadastro.classList.toggle("active", !loginAtivo);
+
+  tabLogin.setAttribute("aria-selected", String(loginAtivo));
+  tabCadastro.setAttribute("aria-selected", String(!loginAtivo));
+
+  msg.innerText = "";
+}
+
+tabLogin.addEventListener("click", () => alternarAba("login"));
+tabCadastro.addEventListener("click", () => alternarAba("cadastro"));
+
+cadastroForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
   if (!tipo.value) {
     msg.innerText = "Escolha o tipo de usuário";
     return;
@@ -27,30 +52,34 @@ document.getElementById("btnCadastrar").addEventListener("click", async () => {
   try {
     const cred = await createUserWithEmailAndPassword(
       auth,
-      email.value,
-      password.value
+      cadastroEmail.value,
+      cadastroPassword.value
     );
 
     await setDoc(doc(db, "usuarios", cred.user.uid), {
       nome: nome.value,
-      email: email.value,
+      email: cadastroEmail.value,
       tipo: tipo.value,
       criadoEm: new Date()
     });
 
     msg.innerText = "Cadastro completo";
+    alternarAba("login");
+    loginEmail.value = cadastroEmail.value;
+    cadastroForm.reset();
   } catch (error) {
     msg.innerText = error.message;
   }
 });
 
-/* LOGIN + REDIRECIONAMENTO */
-document.getElementById("btnLogin").addEventListener("click", async () => {
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
   try {
     const cred = await signInWithEmailAndPassword(
       auth,
-      email.value,
-      password.value
+      loginEmail.value,
+      loginPassword.value
     );
 
     const ref = doc(db, "usuarios", cred.user.uid);
@@ -65,7 +94,6 @@ document.getElementById("btnLogin").addEventListener("click", async () => {
         window.location.href = "dashboard-empresa.html";
       }
     }
-
   } catch (error) {
     msg.innerText = error.message;
   }
