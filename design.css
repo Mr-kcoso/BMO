@@ -1,10 +1,10 @@
 :root {
-  --bmo-preto: #111111;
+  --bmo-preto: #ff6b00;
   --bmo-laranja: #ff6b00;
 }
 
 body {
-  background-color: #fff;
+  background-color: #323232;
   color: var(--bmo-preto);
   font-family: Arial, sans-serif;
   margin: 16px;
