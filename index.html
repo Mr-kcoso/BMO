@@ -2,29 +2,57 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>BMO – Login</title>
+  <title>BMO – Acesso</title>
   <link rel="stylesheet" href="design.css">
 </head>
-<body>
+<body class="auth-page">
+  <main class="auth-wrapper">
+    <div class="auth-brand">
+      <div class="brand-icon">B</div>
+      <h1>BMO</h1>
+      <p>Conectando empresas e freelancers</p>
+    </div>
 
-  <img id="larva" src="larva.jpeg">
+    <section class="card auth-modern-card">
+      <div class="auth-tabs" role="tablist" aria-label="Acesso">
+        <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
+        <button id="tabCadastro" class="auth-tab" type="button">Cadastrar</button>
+      </div>
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Senha">
-  <input type="text" id="nome" placeholder="Seu nome" />
+      <form id="formLogin" class="auth-form" novalidate>
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" placeholder="seu@email.com" required>
 
-  <br><br>
+        <label for="loginSenha">Senha</label>
+        <input type="password" id="loginSenha" placeholder="••••••••" required>
 
-  <button id="btnCadastrar">Cadastrar</button>
-  <button id="btnLogin">Login</button>
+        <button id="btnLogin" class="auth-submit" type="submit">Entrar</button>
+      </form>
 
-  <p id="msg"></p>
+      <form id="formCadastro" class="auth-form" hidden novalidate>
+        <label for="tipo">Tipo de conta</label>
+        <select id="tipo" required>
+          <option value="">Selecione...</option>
+          <option value="freelancer">Freelancer</option>
+          <option value="empresa">Empresa</option>
+        </select>
+
+        <label for="cadastroNome">Nome</label>
+        <input type="text" id="cadastroNome" placeholder="Seu nome" required>
+
+        <label for="cadastroEmail">Email</label>
+        <input type="email" id="cadastroEmail" placeholder="seu@email.com" required>
+
+        <label for="cadastroSenha">Senha</label>
+        <input type="password" id="cadastroSenha" placeholder="••••••••" required>
+
+        <button id="btnCadastrar" class="auth-submit" type="submit">Cadastrar</button>
+      </form>
+
+      <p id="msg" class="auth-message"></p>
+    </section>
+  </main>
 
   <script type="module" src="./auth.js"></script>
 </body>
-<select id="tipo">
-  <option value="">Selecione o tipo</option>
-  <option value="freelancer">Freelancer</option>
-  <option value="empresa">Empresa</option>
-</select>
 </html>

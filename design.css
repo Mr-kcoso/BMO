@@ -1,8 +1,272 @@
-body{
-    background-color: rgb(255, 255, 255);
+:root {
+  --bmo-preto: #111111;
+  --bmo-laranja: #ff6b00;
 }
-#larva{
-    width: 150px;
-    height: 150px;
-    margin-bottom: 40px;
+
+body {
+  background-color: #fff;
+  color: var(--bmo-preto);
+  font-family: Arial, sans-serif;
+  margin: 16px;
+}
+
+#larva {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 24px;
+  align-self: center;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+input,
+textarea,
+select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: var(--bmo-preto);
+  color: #fff;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+.btn-primary {
+  background: var(--bmo-laranja);
+  color: #fff;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+.card-list-item {
+  list-style: none;
+}
+
+.auth-card {
+  max-width: 360px;
+  margin: 24px auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.perfil-card {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.perfil-avatar-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.perfil-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--bmo-laranja);
+}
+
+.mensagens-container {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-height: 300px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mensagem {
+  max-width: 70%;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.mensagem-propria {
+  align-self: flex-end;
+  background: #dbeafe;
+  text-align: right;
+}
+
+.mensagem-outro {
+  align-self: flex-start;
+  background: #f3f4f6;
+}
+
+.toast-container {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.toast {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-info {
+  background: #2563eb;
+}
+
+.toast-success {
+  background: #059669;
+}
+
+.toast-error {
+  background: #dc2626;
+}
+
+.auth-page {
+  background: #eef1f5;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.auth-wrapper {
+  width: min(560px, 92vw);
+  margin: 26px auto;
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.brand-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 12px;
+  border-radius: 20px;
+  background: #3f72dc;
+  color: #fff;
+  font-size: 42px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.auth-brand h1 {
+  margin: 0;
+  font-size: 48px;
+}
+
+.auth-brand p {
+  margin-top: 8px;
+  color: #55657f;
+  font-size: 20px;
+}
+
+.auth-modern-card {
+  background: #f4f5f7;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.auth-tabs {
+  background: #e6e8eb;
+  padding: 4px;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.auth-tab {
+  background: transparent;
+  color: #5e6d84;
+  margin: 0;
+}
+
+.auth-tab.active {
+  background: #f4f5f7;
+  color: #0f1a2e;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form label {
+  font-size: 20px;
+  margin: 8px 0 6px;
+}
+
+.auth-form input,
+.auth-form select {
+  height: 44px;
+  border: 1px solid #d4d9e2;
+  border-radius: 12px;
+  background: #f8f9fb;
+  font-size: 18px;
+}
+
+.auth-submit {
+  margin-top: 12px;
+  background: #3f72dc;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 18px;
+}
+
+.auth-message {
+  min-height: 20px;
+  margin-top: 10px;
+  color: #dc2626;
 }

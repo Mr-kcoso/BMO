@@ -2,12 +2,19 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Meus Chats</title>
+  <title>Meus Chats - BMO</title>
+  <link rel="stylesheet" href="design.css">
 </head>
 <body>
+  <header class="page-header">
+    <h2>Meus chats</h2>
+    <div class="button-row">
+      <button onclick="window.location.href='perfil.html'">Meu perfil</button>
+      <button onclick="window.history.back()">Voltar</button>
+    </div>
+  </header>
 
-  <h2>Meus chats</h2>
-
+  <p id="loadingChats">Carregando chats...</p>
   <ul id="listaChats"></ul>
 
   <script type="module" src="meus-chats.js"></script>

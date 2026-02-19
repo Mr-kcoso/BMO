@@ -1,104 +1,86 @@
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
 import {
-  collection,
-  getDocs,
-  addDoc,
-  doc,
-  getDoc,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  criarCandidatura,
+  getCandidaturasByFreelancer,
+  getProblemas
+} from "./candidaturaService.js";
+import { renderProblema } from "./uiFreelancer.js";
+import { clearElement, setButtonLoading, showToast } from "./utils.js";
 
 const lista = document.getElementById("lista");
+const loading = document.getElementById("loadingProblemas");
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    alert("Faça login");
-    window.location.href = "index.html";
-    return;
-  }
+function abrirChat(chatId) {
+  window.location.href = `chat.html?chatId=${chatId}`;
+}
 
-  // Dados do freelancer
-  const userRef = doc(db, "usuarios", user.uid);
-  const userSnap = await getDoc(userRef);
+function renderLista(problemas, candidaturasMap, user, profile) {
+  clearElement(lista);
 
-  if (!userSnap.exists()) {
-    alert("Dados do usuário não encontrados");
-    return;
-  }
+  problemas.forEach((problema) => {
+    const candidatura = candidaturasMap.get(problema.id);
 
-  const freelancerNome = userSnap.data().nome;
+    renderProblema({
+      container: lista,
+      problema,
+      candidatura,
+      onAbrirChat: abrirChat,
+      onCandidatar: async (button) => {
+        try {
+          setButtonLoading(button, true, "Enviando...");
+          await criarCandidatura({
+            problemaId: problema.id,
+            empresaId: problema.empresaId,
+            freelancerId: user.uid,
+            freelancerNome: profile.nome
+          });
 
-  // Listar problemas
-  const problemasSnap = await getDocs(collection(db, "problemas"));
+          candidaturasMap.set(problema.id, {
+            problemaId: problema.id,
+            status: "pendente"
+          });
 
-  lista.innerHTML = "";
+          renderLista(problemas, candidaturasMap, user, profile);
+          showToast("Candidatura enviada com sucesso", "success");
+        } catch (error) {
+          showToast("Não foi possível enviar candidatura", "error");
+          console.error(error);
+          setButtonLoading(button, false);
+        }
+      }
+    });
+  });
+}
 
-  for (const prob of problemasSnap.docs) {
-    const dados = prob.data();
+async function carregarDashboardFreelancer(user) {
+  if (loading) loading.hidden = false;
 
-    // Verifica se já existe candidatura
-    const qCand = query(
-      collection(db, "candidaturas"),
-      where("problemaId", "==", prob.id),
-      where("freelancerId", "==", user.uid)
+  try {
+    const [profile, problemas, candidaturas] = await Promise.all([
+      getUserProfile(user.uid),
+      getProblemas(),
+      getCandidaturasByFreelancer(user.uid)
+    ]);
+
+    if (!profile) {
+      showToast("Dados do usuário não encontrados", "error");
+      return;
+    }
+
+    const candidaturasMap = new Map(
+      candidaturas.map((candidatura) => [candidatura.problemaId, candidatura])
     );
 
-    const candSnap = await getDocs(qCand);
-    const li = document.createElement("li");
-
-    // JÁ CANDIDATOU
-    if (!candSnap.empty) {
-      const candidatura = candSnap.docs[0].data();
-
-      li.innerHTML = `
-        <strong>${dados.titulo}</strong><br>
-        ${dados.descricao}<br>
-        Status: <strong>${candidatura.status}</strong><br>
-        ${
-          candidatura.status === "aceito"
-            ? `<button class="chat">Abrir Chat</button>`
-            : candidatura.status === "recusado"
-              ? `<em>Candidatura recusada</em>`
-              : `<em>Aguardando resposta</em>`
-        }
-        <hr>
-      `;
-
-      if (candidatura.status === "aceito") {
-        li.querySelector(".chat").addEventListener("click", () => {
-          window.location.href = `chat.html?chatId=${candidatura.chatId}`;
-        });
-      }
-
-    }
-    // AINDA NÃO CANDIDATOU
-    else {
-      li.innerHTML = `
-        <strong>${dados.titulo}</strong><br>
-        ${dados.descricao}<br>
-        <button class="candidatar">Candidatar-se</button>
-        <hr>
-      `;
-
-      li.querySelector(".candidatar").addEventListener("click", async () => {
-        await addDoc(collection(db, "candidaturas"), {
-          problemaId: prob.id,
-          empresaId: dados.empresaId,
-          freelancerId: user.uid,
-          freelancerNome: freelancerNome,
-          status: "pendente",
-          criadoEm: new Date()
-        });
-
-        alert("Candidatura enviada");
-        window.location.reload();
-      });
-    }
-
-    lista.appendChild(li);
+    renderLista(problemas, candidaturasMap, user, profile);
+  } catch (error) {
+    console.error(error);
+    showToast("Erro ao carregar problemas", "error");
+  } finally {
+    if (loading) loading.hidden = true;
   }
+}
+
+observeAuthenticatedUser(carregarDashboardFreelancer, () => {
+  showToast("Faça login para continuar", "error");
+  window.location.href = "index.html";
 });

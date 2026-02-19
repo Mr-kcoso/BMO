@@ -11,62 +11,102 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const email = document.getElementById("email");
-const password = document.getElementById("password");
-const tipo = document.getElementById("tipo");
+const tabLogin = document.getElementById("tabLogin");
+const tabCadastro = document.getElementById("tabCadastro");
+const formLogin = document.getElementById("formLogin");
+const formCadastro = document.getElementById("formCadastro");
 const msg = document.getElementById("msg");
-const nome = document.getElementById("nome");
 
-/* CADASTRO */
-document.getElementById("btnCadastrar").addEventListener("click", async () => {
+const loginEmail = document.getElementById("loginEmail");
+const loginSenha = document.getElementById("loginSenha");
+
+const cadastroNome = document.getElementById("cadastroNome");
+const cadastroEmail = document.getElementById("cadastroEmail");
+const cadastroSenha = document.getElementById("cadastroSenha");
+const tipo = document.getElementById("tipo");
+
+function trocarAba(aba) {
+  const loginAtivo = aba === "login";
+
+  tabLogin.classList.toggle("active", loginAtivo);
+  tabCadastro.classList.toggle("active", !loginAtivo);
+
+  formLogin.hidden = !loginAtivo;
+  formCadastro.hidden = loginAtivo;
+
+  msg.textContent = "";
+}
+
+function mostrarErro(error) {
+  msg.textContent = error?.message || "Ocorreu um erro inesperado.";
+}
+
+async function redirecionarPorTipo(uid) {
+  const ref = doc(db, "usuarios", uid);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    msg.textContent = "Perfil de usuário não encontrado.";
+    return;
+  }
+
+  const tipoUsuario = snap.data().tipo;
+
+  if (tipoUsuario === "freelancer") {
+    window.location.href = "dashboard-freelancer.html";
+  } else if (tipoUsuario === "empresa") {
+    window.location.href = "dashboard-empresa.html";
+  } else {
+    msg.textContent = "Tipo de usuário inválido.";
+  }
+}
+
+formCadastro.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
   if (!tipo.value) {
-    msg.innerText = "Escolha o tipo de usuário";
+    msg.textContent = "Escolha o tipo de conta.";
     return;
   }
 
   try {
     const cred = await createUserWithEmailAndPassword(
       auth,
-      email.value,
-      password.value
+      cadastroEmail.value.trim(),
+      cadastroSenha.value
     );
 
     await setDoc(doc(db, "usuarios", cred.user.uid), {
-      nome: nome.value,
-      email: email.value,
+      nome: cadastroNome.value.trim(),
+      email: cadastroEmail.value.trim(),
       tipo: tipo.value,
       criadoEm: new Date()
     });
 
-    msg.innerText = "Cadastro completo";
+    msg.textContent = "Cadastro realizado com sucesso!";
+    trocarAba("login");
+    loginEmail.value = cadastroEmail.value.trim();
+    loginSenha.value = "";
   } catch (error) {
-    msg.innerText = error.message;
+    mostrarErro(error);
   }
 });
 
-/* LOGIN + REDIRECIONAMENTO */
-document.getElementById("btnLogin").addEventListener("click", async () => {
+formLogin.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
   try {
     const cred = await signInWithEmailAndPassword(
       auth,
-      email.value,
-      password.value
+      loginEmail.value.trim(),
+      loginSenha.value
     );
 
-    const ref = doc(db, "usuarios", cred.user.uid);
-    const snap = await getDoc(ref);
-
-    if (snap.exists()) {
-      const tipoUsuario = snap.data().tipo;
-
-      if (tipoUsuario === "freelancer") {
-        window.location.href = "dashboard-freelancer.html";
-      } else if (tipoUsuario === "empresa") {
-        window.location.href = "dashboard-empresa.html";
-      }
-    }
-
+    await redirecionarPorTipo(cred.user.uid);
   } catch (error) {
-    msg.innerText = error.message;
+    mostrarErro(error);
   }
 });
+
+tabLogin.addEventListener("click", () => trocarAba("login"));
+tabCadastro.addEventListener("click", () => trocarAba("cadastro"));
