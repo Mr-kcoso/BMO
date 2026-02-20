@@ -5,7 +5,26 @@
   --bmo-cinza-bg: #f3f4f6;
   --bmo-cinza-borda: #d1d5db;
 }
+#section1{
+  margin-top: 200px;
+  position: fixed;
+top: 0;
+left: 450px;
+width: 100%;
+z-index: 1000;
+}
+#div1{
+  background-color: black;
+}
 
+#head1{
+background-color:background-color: black;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+z-index: 1000;}
+  
 body {
   background-color: var(--bmo-cinza-bg);
   color: var(--bmo-preto);
@@ -14,10 +33,9 @@ body {
 }
 
 #larva {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: 89px;
+  height: 58px;
+  background-color: #2c323c;
 }
 
 input,
