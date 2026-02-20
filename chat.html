@@ -5,14 +5,27 @@
   <title>Chat - BMO</title>
   <link rel="stylesheet" href="design.css">
 </head>
-<body>
-  <button id="btnVoltar">Voltar</button>
-  <h2>Chat</h2>
+<body class="chat-page">
+  <main class="chat-layout">
+    <header class="page-header chat-topbar">
+      <div>
+        <h1 id="chatTitulo">Chat</h1>
+        <p id="chatSubtitulo" class="chat-subtitle">Conversa em tempo real</p>
+      </div>
+      <div class="button-row">
+        <button class="chat-nav-btn" id="btnVoltar">Voltar</button>
+      </div>
+    </header>
 
-  <div id="mensagens" class="mensagens-container"></div>
+    <section class="chat-card" aria-label="Conversa">
+      <div id="mensagens" class="mensagens-container chat-mensagens"></div>
 
-  <input type="text" id="texto" placeholder="Digite sua mensagem">
-  <button id="btnEnviar">Enviar</button>
+      <div class="chat-input-row">
+        <input type="text" id="texto" placeholder="Digite sua mensagem" />
+        <button id="btnEnviar" class="btn-primary">Enviar</button>
+      </div>
+    </section>
+  </main>
 
   <script type="module" src="chat.js"></script>
 </body>

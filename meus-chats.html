@@ -5,17 +5,34 @@
   <title>Meus Chats - BMO</title>
   <link rel="stylesheet" href="design.css">
 </head>
-<body>
-  <header class="page-header">
-    <h2>Meus chats</h2>
-    <div class="button-row">
-      <button onclick="window.location.href='perfil.html'">Meu perfil</button>
-      <button onclick="window.history.back()">Voltar</button>
-    </div>
-  </header>
+<body class="chats-page">
+  <main class="chats-dashboard">
+    <header class="page-header chats-topbar">
+      <div>
+        <h1>Meus chats</h1>
+        <p id="resumoChats" class="chats-subtitle">Carregando conversas...</p>
+      </div>
+      <div class="button-row">
+        <button class="chats-nav-btn" onclick="window.location.href='perfil.html'">Meu perfil</button>
+        <button class="chats-nav-btn" onclick="window.history.back()">Voltar</button>
+      </div>
+    </header>
 
-  <p id="loadingChats">Carregando chats...</p>
-  <ul id="listaChats"></ul>
+    <section class="chats-list-card" aria-label="Lista de chats">
+      <div class="chats-filtros">
+        <input id="buscaChats" type="search" placeholder="Buscar por título ou contato" />
+        <select id="ordenacaoChats">
+          <option value="recentes">Mais recentes</option>
+          <option value="antigos">Mais antigos</option>
+          <option value="titulo">Título A-Z</option>
+        </select>
+      </div>
+
+      <p id="loadingChats" class="chats-loading">Carregando chats...</p>
+      <ul id="listaChats" class="chats-grid"></ul>
+      <div id="estadoVazioChats" class="chats-empty hidden">Você ainda não possui chats.</div>
+    </section>
+  </main>
 
   <script type="module" src="meus-chats.js"></script>
 </body>

@@ -9,6 +9,26 @@ const mensagensDiv = document.getElementById("mensagens");
 const texto = document.getElementById("texto");
 const btnEnviar = document.getElementById("btnEnviar");
 const btnVoltar = document.getElementById("btnVoltar");
+const chatTitulo = document.getElementById("chatTitulo");
+const chatSubtitulo = document.getElementById("chatSubtitulo");
+
+const profileCache = new Map();
+
+function formatDate(value) {
+  const date = typeof value?.toDate === "function" ? value.toDate() : new Date(value || 0);
+  if (Number.isNaN(date.getTime()) || date.getTime() === 0) return "Agora";
+  return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+async function getProfileName(userId) {
+  if (!userId) return "Usuário";
+  if (profileCache.has(userId)) return profileCache.get(userId);
+
+  const profile = await getUserProfile(userId);
+  const nome = profile?.nome || "Usuário";
+  profileCache.set(userId, nome);
+  return nome;
+}
 
 if (btnVoltar) {
   btnVoltar.addEventListener("click", () => {
@@ -20,15 +40,19 @@ async function renderMensagens(mensagens, currentUserId) {
   clearElement(mensagensDiv);
 
   for (const mensagem of mensagens) {
-    const autor = await getUserProfile(mensagem.autorId);
-    const nomeAutor = autor?.nome || "Usuário";
+    const nomeAutor = await getProfileName(mensagem.autorId);
     const item = createElement("div", {
       className:
-        mensagem.autorId === currentUserId ? "mensagem mensagem-propria" : "mensagem mensagem-outro"
+        mensagem.autorId === currentUserId
+          ? "mensagem mensagem-propria chat-bubble"
+          : "mensagem mensagem-outro chat-bubble"
     });
 
-    const header = createElement("strong", { text: nomeAutor });
-    const conteudo = createElement("p", { text: mensagem.texto || "" });
+    const header = createElement("div", { className: "chat-bubble-header" });
+    header.appendChild(createElement("strong", { text: nomeAutor }));
+    header.appendChild(createElement("span", { className: "chat-time", text: formatDate(mensagem.criadoEm) }));
+
+    const conteudo = createElement("p", { className: "chat-text", text: mensagem.texto || "" });
 
     item.appendChild(header);
     item.appendChild(conteudo);
@@ -54,11 +78,17 @@ async function iniciarChat(user) {
       return;
     }
 
+    const outroId = acesso.chat.empresaId === user.uid ? acesso.chat.freelancerId : acesso.chat.empresaId;
+    const outroNome = await getProfileName(outroId);
+
+    if (chatTitulo) chatTitulo.textContent = outroNome;
+    if (chatSubtitulo) chatSubtitulo.textContent = "Conversa em tempo real";
+
     escutarMensagens(chatId, (mensagens) => {
       renderMensagens(mensagens, user.uid);
     });
 
-    btnEnviar.addEventListener("click", async () => {
+    const enviar = async () => {
       const mensagem = texto.value.trim();
       if (!mensagem) return;
 
@@ -71,6 +101,14 @@ async function iniciarChat(user) {
         showToast("Falha ao enviar mensagem", "error");
       } finally {
         setButtonLoading(btnEnviar, false);
+      }
+    };
+
+    btnEnviar.addEventListener("click", enviar);
+    texto.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        enviar();
       }
     });
   } catch (error) {
