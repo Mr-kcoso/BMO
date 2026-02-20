@@ -1,7 +1,7 @@
 :root {
   --bmo-preto: #111827;
   --bmo-laranja: #ff6b00;
-  --bmo-azul: #3b82f6;
+  --bmo-azul: #ff6b00;
   --bmo-cinza-bg: #f3f4f6;
   --bmo-cinza-borda: #d1d5db;
 }
@@ -9,7 +9,7 @@
   margin-top: 200px;
   position: fixed;
 top: 0;
-left: 450px;
+left: 435px;
 width: 100%;
 z-index: 1000;
 }
@@ -18,7 +18,7 @@ z-index: 1000;
 }
 
 #head1{
-background-color:background-color: black;
+background-color: black;
 position: fixed;
 top: 0;
 left: 0;
@@ -26,14 +26,14 @@ width: 100%;
 z-index: 1000;}
   
 body {
-  background-color: var(--bmo-cinza-bg);
+  background-color: #2c323c;
   color: var(--bmo-preto);
   font-family: Arial, sans-serif;
   margin: 0;
 }
 
 #larva {
-  width: 89px;
+  width: 102px;
   height: 58px;
   background-color: #2c323c;
 }
@@ -50,9 +50,9 @@ button {
 input,
 textarea,
 select {
-  border: 1px solid var(--bmo-cinza-borda);
+  border: 1px solid var(--bmo-laranja);
   border-radius: 12px;
-  background: #fff;
+  background: #ffffff;
 }
 
 button {
@@ -79,7 +79,7 @@ button:hover {
 
 .site-header {
   background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #2c323c;
   padding: 10px 20px;
 }
 
@@ -150,7 +150,7 @@ button:hover {
 }
 
 .btn-submit {
-  background: var(--bmo-azul);
+  background: var(--bmo-laranja);
   color: #fff;
   margin-top: 12px;
   width: 100%;
