@@ -416,3 +416,217 @@ button:hover {
     background-position: -100% 0;
   }
 }
+
+.empresa-dashboard-page {
+  background: #111;
+  color: #f9fafb;
+}
+
+.empresa-dashboard {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 36px;
+}
+
+.empresa-topbar {
+  margin-bottom: 20px;
+}
+
+.empresa-topbar h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 44px);
+  text-transform: capitalize;
+}
+
+.empresa-subtitle {
+  margin: 8px 0 0;
+  color: #9ca3af;
+}
+
+.empresa-nav-btn {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+.empresa-form-card,
+.empresa-list-card {
+  background: #181818;
+  border: 1px solid #262626;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.empresa-form-card {
+  margin-bottom: 16px;
+}
+
+.empresa-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.empresa-form-grid input,
+.empresa-form-grid select,
+.empresa-form-grid textarea,
+.empresa-filtros input,
+.empresa-filtros select {
+  background: #202020;
+  border: 1px solid #303030;
+  color: #f3f4f6;
+  margin: 0;
+}
+
+.empresa-form-grid textarea {
+  min-height: 88px;
+}
+
+.empresa-switch-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  color: #d1d5db;
+}
+
+.empresa-switch-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.empresa-msg {
+  color: #9ca3af;
+}
+
+.empresa-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.empresa-filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  width: min(100%, 720px);
+}
+
+.empresa-loading {
+  color: #9ca3af;
+}
+
+.empresa-candidaturas-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.empresa-candidatura-card {
+  background: #202020;
+  border: 1px solid #2f2f2f;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empresa-card-title {
+  margin: 0;
+  color: #fff;
+  font-size: 20px;
+}
+
+.empresa-card-line {
+  margin: 0;
+  color: #d1d5db;
+}
+
+.empresa-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.empresa-tag {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 107, 0, 0.15);
+  color: #ff9f5a;
+  border: 1px solid rgba(255, 107, 0, 0.3);
+}
+
+.empresa-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.empresa-secondary-btn {
+  background: #2c2c2c;
+  color: #e5e7eb;
+}
+
+.empresa-status-btn {
+  background: #374151;
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.empresa-empty {
+  margin-top: 14px;
+  border: 1px dashed #3f3f46;
+  border-radius: 14px;
+  padding: 20px;
+  color: #d1d5db;
+  text-align: center;
+  background: #202020;
+}
+
+.empresa-skeleton {
+  pointer-events: none;
+}
+
+.empresa-skeleton-line {
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2a2a2a 0%, #343434 50%, #2a2a2a 100%);
+  background-size: 220% 100%;
+  animation: empresaSkeleton 1.2s infinite ease-in-out;
+}
+
+.empresa-skeleton-title {
+  height: 24px;
+  width: 70%;
+}
+
+.empresa-skeleton-short {
+  width: 55%;
+}
+
+.empresa-skeleton-btn {
+  margin-top: 10px;
+  height: 38px;
+  width: 46%;
+}
+
+@keyframes empresaSkeleton {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}

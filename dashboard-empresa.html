@@ -5,35 +5,73 @@
   <title>Dashboard Empresa - BMO</title>
   <link rel="stylesheet" href="design.css">
 </head>
-<body>
-  <header class="page-header">
-    <h1>Dashboard Empresa</h1>
-    <div class="button-row">
-      <button onclick="window.location.href='perfil.html'">Meu perfil</button>
-      <button onclick="window.location.href='meus-chats.html'">Meus chats</button>
-    </div>
-  </header>
+<body class="empresa-dashboard-page">
+  <main class="empresa-dashboard">
+    <header class="page-header empresa-topbar">
+      <div>
+        <h1>Dashboard empresa</h1>
+        <p id="resumoCandidaturas" class="empresa-subtitle">Carregando candidaturas...</p>
+      </div>
+      <div class="button-row">
+        <button class="empresa-nav-btn" onclick="window.location.href='perfil.html'">Meu perfil</button>
+        <button class="empresa-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
+      </div>
+    </header>
 
-  <section class="card">
-    <h2>Publicar problema</h2>
+    <section class="empresa-form-card" aria-label="Publicar problema">
+      <h2>Publicar problema</h2>
+      <div class="empresa-form-grid">
+        <input id="titulo" placeholder="Título do problema" />
+        <textarea id="descricao" placeholder="Descreva o problema"></textarea>
+        <select id="tipoProblema">
+          <option value="software">Software</option>
+          <option value="hardware">Hardware</option>
+          <option value="banco de dados">Banco de dados</option>
+          <option value="front-end">Front-end</option>
+          <option value="back-end">Back-end</option>
+        </select>
+        <select id="nivelProblema">
+          <option value="iniciante">Iniciante</option>
+          <option value="intermediario" selected>Intermediário</option>
+        </select>
+        <input id="prazoProblema" type="date" />
+        <div class="empresa-switch-row">
+          <label><input id="remotoProblema" type="checkbox" checked /> Remoto</label>
+          <label><input id="urgenteProblema" type="checkbox" /> Urgente</label>
+        </div>
+      </div>
+      <div class="button-row">
+        <button id="btnPublicar" class="btn-primary">Publicar problema</button>
+      </div>
+      <p id="msg" class="empresa-msg"></p>
+    </section>
 
-    <input id="titulo" placeholder="Título do problema">
-    <textarea id="descricao" placeholder="Descreva o problema"></textarea>
+    <section class="empresa-list-card" aria-label="Candidaturas recebidas">
+      <div class="empresa-list-head">
+        <h2>Candidaturas recebidas</h2>
+        <div class="empresa-filtros">
+          <input id="buscaCandidaturas" type="search" placeholder="Buscar problema/freelancer" />
+          <select id="filtroStatus">
+            <option value="todos">Todos os status</option>
+            <option value="pendente">Pendente</option>
+            <option value="aceito">Aceito</option>
+            <option value="recusado">Recusado</option>
+          </select>
+          <select id="ordenacaoCandidaturas">
+            <option value="recentes">Mais recentes</option>
+            <option value="antigos">Mais antigas</option>
+            <option value="titulo">Título A-Z</option>
+          </select>
+        </div>
+      </div>
 
-    <select id="tipoProblema">
-      <option value="software">Software</option>
-      <option value="hardware">Hardware</option>
-    </select>
-
-    <button id="btnPublicar">Publicar problema</button>
-    <p id="msg"></p>
-  </section>
-
-  <section class="card">
-    <h2>Candidaturas recebidas</h2>
-    <p id="loadingCandidaturas">Carregando candidaturas...</p>
-    <ul id="candidaturas"></ul>
-  </section>
+      <p id="loadingCandidaturas" class="empresa-loading">Carregando candidaturas...</p>
+      <ul id="candidaturas" class="empresa-candidaturas-grid"></ul>
+      <div id="estadoVazioCandidaturas" class="empresa-empty hidden">
+        Nenhuma candidatura encontrada no momento.
+      </div>
+    </section>
+  </main>
 
   <script type="module" src="empresa.js"></script>
 </body>
