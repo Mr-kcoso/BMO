@@ -23,6 +23,20 @@ const tipo = document.getElementById("tipo");
 const nome = document.getElementById("nome");
 const msg = document.getElementById("msg");
 
+const authSection = document.getElementById("authSection");
+const abrirLoginTopo = document.getElementById("abrirLoginTopo");
+const abrirCadastroHero = document.getElementById("abrirCadastroHero");
+const abrirCadastroFinal = document.getElementById("abrirCadastroFinal");
+
+function mostrarAutenticacao(modo = "login") {
+  if (authSection) {
+    authSection.hidden = false;
+    authSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  alternarAba(modo);
+}
+
 function alternarAba(modo) {
   const loginAtivo = modo === "login";
 
@@ -40,6 +54,9 @@ function alternarAba(modo) {
 
 tabLogin.addEventListener("click", () => alternarAba("login"));
 tabCadastro.addEventListener("click", () => alternarAba("cadastro"));
+abrirLoginTopo?.addEventListener("click", () => mostrarAutenticacao("login"));
+abrirCadastroHero?.addEventListener("click", () => mostrarAutenticacao("cadastro"));
+abrirCadastroFinal?.addEventListener("click", () => mostrarAutenticacao("cadastro"));
 
 cadastroForm.addEventListener("submit", async (event) => {
   event.preventDefault();
