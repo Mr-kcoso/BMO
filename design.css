@@ -231,3 +231,188 @@ button:hover {
 .toast-error {
   background: #dc2626;
 }
+
+.freelancer-dashboard-page {
+  background: #111;
+  color: #f9fafb;
+}
+
+.freelancer-dashboard {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 36px;
+}
+
+.freelancer-topbar {
+  margin-bottom: 20px;
+}
+
+.freelancer-topbar h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 44px);
+}
+
+.freelancer-subtitle {
+  margin: 8px 0 0;
+  color: #9ca3af;
+}
+
+.freelancer-nav-btn {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+.freelancer-filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.freelancer-filtros input,
+.freelancer-filtros select {
+  background: #181818;
+  border: 1px solid #2f2f2f;
+  color: #f9fafb;
+  margin: 0;
+}
+
+.freelancer-filtros input::placeholder {
+  color: #9ca3af;
+}
+
+.freelancer-loading {
+  color: #9ca3af;
+}
+
+.freelancer-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.freelancer-card {
+  background: #181818;
+  border: 1px solid #262626;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.freelancer-card-title {
+  margin: 0;
+  color: #f9fafb;
+  font-size: 22px;
+}
+
+.freelancer-card-description {
+  margin: 0;
+  color: #c7c9d1;
+  line-height: 1.45;
+  min-height: 3.9em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.freelancer-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.freelancer-tag {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 107, 0, 0.15);
+  color: #ff9f5a;
+  border: 1px solid rgba(255, 107, 0, 0.3);
+}
+
+.freelancer-meta {
+  color: #9ca3af;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.freelancer-card-actions {
+  margin-top: auto;
+}
+
+.freelancer-secondary-btn {
+  background: #2a2a2a;
+  color: #e5e7eb;
+}
+
+.freelancer-status {
+  margin: 0;
+  color: #d1d5db;
+  font-size: 14px;
+}
+
+.freelancer-applied-btn {
+  background: #374151;
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.freelancer-card .btn-primary {
+  background: var(--bmo-laranja);
+}
+
+.freelancer-empty {
+  margin-top: 18px;
+  border: 1px dashed #3f3f46;
+  border-radius: 14px;
+  padding: 20px;
+  color: #d1d5db;
+  text-align: center;
+  background: #181818;
+}
+
+.freelancer-skeleton {
+  pointer-events: none;
+}
+
+.freelancer-skeleton-line {
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #232323 0%, #2d2d2d 50%, #232323 100%);
+  background-size: 220% 100%;
+  animation: freelancerSkeleton 1.2s infinite ease-in-out;
+}
+
+.freelancer-skeleton-title {
+  height: 24px;
+  width: 70%;
+}
+
+.freelancer-skeleton-short {
+  width: 55%;
+}
+
+.freelancer-skeleton-btn {
+  margin-top: 10px;
+  height: 38px;
+  width: 46%;
+}
+
+@keyframes freelancerSkeleton {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}

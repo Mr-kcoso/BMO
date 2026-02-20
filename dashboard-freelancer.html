@@ -5,17 +5,41 @@
   <title>Dashboard Freelancer - BMO</title>
   <link rel="stylesheet" href="design.css">
 </head>
-<body>
-  <header class="page-header">
-    <h1>Problemas disponíveis</h1>
-    <div class="button-row">
-      <button onclick="window.location.href='perfil.html'">Meu perfil</button>
-      <button onclick="window.location.href='meus-chats.html'">Meus chats</button>
-    </div>
-  </header>
+<body class="freelancer-dashboard-page">
+  <main class="freelancer-dashboard">
+    <header class="page-header freelancer-topbar">
+      <div>
+        <h1>Problemas disponíveis</h1>
+        <p id="resumoProblemas" class="freelancer-subtitle">Carregando oportunidades...</p>
+      </div>
+      <div class="button-row">
+        <button class="freelancer-nav-btn" onclick="window.location.href='perfil.html'">Meu perfil</button>
+        <button class="freelancer-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
+      </div>
+    </header>
 
-  <p id="loadingProblemas">Carregando problemas...</p>
-  <ul id="lista"></ul>
+    <section class="freelancer-filtros" aria-label="Filtros de problemas">
+      <input id="buscaProblemas" type="search" placeholder="Buscar por palavra-chave" />
+      <select id="filtroCategoria">
+        <option value="todos">Todas as categorias</option>
+      </select>
+      <select id="filtroNivel">
+        <option value="todos">Todos os níveis</option>
+        <option value="iniciante">Iniciante</option>
+        <option value="intermediario">Intermediário</option>
+      </select>
+      <select id="ordenacaoProblemas">
+        <option value="recentes">Mais recentes</option>
+        <option value="antigos">Mais antigos</option>
+        <option value="candidaturas">Mais candidaturas</option>
+        <option value="prazo">Prazo</option>
+      </select>
+    </section>
+
+    <p id="loadingProblemas" class="freelancer-loading">Carregando problemas...</p>
+    <ul id="lista" class="freelancer-grid" aria-live="polite"></ul>
+    <div id="estadoVazio" class="freelancer-empty hidden">Não há problemas disponíveis no momento. Volte em breve.</div>
+  </main>
 
   <script type="module" src="freelancer.js"></script>
 </body>
