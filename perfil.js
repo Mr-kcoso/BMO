@@ -2,6 +2,8 @@ import { observeAuthenticatedUser } from "./authService.js";
 import { salvarPerfil, getPerfil, uploadPerfilArquivo } from "./perfilService.js";
 import { setButtonLoading, showToast } from "./utils.js";
 
+const tipoPagina = document.body?.dataset?.perfilTipo || null;
+
 const fotoPerfilInput = document.getElementById("fotoPerfil");
 const previewFoto = document.getElementById("previewFoto");
 const nomeInput = document.getElementById("nomePerfil");
@@ -25,38 +27,48 @@ let currentUser = null;
 let currentPerfil = null;
 
 function atualizarContadorBio() {
+  if (!bioInput || !bioCount) return;
   bioCount.textContent = `${bioInput.value.length}/280`;
 }
 
 function setTipoFields(tipo) {
   const freelancer = tipo === "freelancer";
-  freelancerCampos.hidden = !freelancer;
-  empresaCampos.hidden = freelancer;
+
+  if (freelancerCampos) {
+    freelancerCampos.hidden = !freelancer;
+  }
+
+  if (empresaCampos) {
+    empresaCampos.hidden = freelancer;
+  }
 }
 
 function preencherFormulario(perfil, authUser) {
-  nomeInput.value = perfil?.nome || "";
-  emailInput.value = perfil?.email || authUser.email || "";
-  bioInput.value = perfil?.bio || "";
-  habilidadesInput.value = Array.isArray(perfil?.habilidades) ? perfil.habilidades.join(", ") : "";
-  areaInput.value = perfil?.areaAtuacao || "";
-  disponibilidadeInput.value = perfil?.disponibilidade || "disponivel";
+  if (nomeInput) nomeInput.value = perfil?.nome || "";
+  if (emailInput) emailInput.value = perfil?.email || authUser.email || "";
 
-  descricaoInstitucionalInput.value = perfil?.descricaoInstitucional || "";
-  localizacaoInput.value = perfil?.localizacao || "";
-  siteInput.value = perfil?.site || "";
+  if (bioInput) bioInput.value = perfil?.bio || "";
+  if (habilidadesInput) {
+    habilidadesInput.value = Array.isArray(perfil?.habilidades) ? perfil.habilidades.join(", ") : "";
+  }
+  if (areaInput) areaInput.value = perfil?.areaAtuacao || "";
+  if (disponibilidadeInput) disponibilidadeInput.value = perfil?.disponibilidade || "disponivel";
 
-  if (perfil?.fotoURL) {
-    previewFoto.src = perfil.fotoURL;
-  } else {
-    previewFoto.src = "larva.jpeg";
+  if (descricaoInstitucionalInput) descricaoInstitucionalInput.value = perfil?.descricaoInstitucional || "";
+  if (localizacaoInput) localizacaoInput.value = perfil?.localizacao || "";
+  if (siteInput) siteInput.value = perfil?.site || "";
+
+  if (previewFoto) {
+    previewFoto.src = perfil?.fotoURL || "larva.jpeg";
   }
 
-  if (perfil?.curriculoURL) {
-    linkCurriculo.href = perfil.curriculoURL;
-    linkCurriculo.hidden = false;
-  } else {
-    linkCurriculo.hidden = true;
+  if (linkCurriculo) {
+    if (perfil?.curriculoURL) {
+      linkCurriculo.href = perfil.curriculoURL;
+      linkCurriculo.hidden = false;
+    } else {
+      linkCurriculo.hidden = true;
+    }
   }
 
   atualizarContadorBio();
@@ -67,8 +79,10 @@ async function carregarPerfil(user) {
 
   try {
     const perfil = await getPerfil(user.uid);
-    currentPerfil = perfil || { tipo: "freelancer" };
-    setTipoFields(currentPerfil.tipo);
+    const tipoPerfil = tipoPagina || perfil?.tipo || "freelancer";
+    currentPerfil = { ...(perfil || {}), tipo: tipoPerfil };
+
+    setTipoFields(tipoPerfil);
     preencherFormulario(currentPerfil, user);
   } catch (error) {
     console.error(error);
@@ -77,7 +91,7 @@ async function carregarPerfil(user) {
 }
 
 async function salvar() {
-  if (!currentUser) return;
+  if (!currentUser || !nomeInput) return;
 
   const nome = nomeInput.value.trim();
   if (!nome) {
@@ -85,14 +99,14 @@ async function salvar() {
     return;
   }
 
-  if (bioInput.value.length > 280) {
+  if (bioInput && bioInput.value.length > 280) {
     showToast("Bio excede 280 caracteres", "error");
     return;
   }
 
   const maxMb = 8;
   const maxBytes = maxMb * 1024 * 1024;
-  const uploads = [fotoPerfilInput.files[0], curriculoInput?.files[0], logoEmpresaInput?.files[0]].filter(Boolean);
+  const uploads = [fotoPerfilInput?.files?.[0], curriculoInput?.files?.[0], logoEmpresaInput?.files?.[0]].filter(Boolean);
 
   for (const arquivo of uploads) {
     if (arquivo.size > maxBytes) {
@@ -105,14 +119,14 @@ async function salvar() {
     setButtonLoading(btnSalvar, true, "Salvando...");
 
     let fotoURL = currentPerfil?.fotoURL || "";
-    if (fotoPerfilInput.files[0]) {
+    if (fotoPerfilInput?.files?.[0]) {
       fotoURL = await uploadPerfilArquivo(currentUser.uid, fotoPerfilInput.files[0], "perfil/fotos");
     }
 
     let curriculoURL = currentPerfil?.curriculoURL || "";
-    if (curriculoInput?.files[0]) {
+    if (curriculoInput?.files?.[0]) {
       const arquivo = curriculoInput.files[0];
-      const ehPdf = arquivo.type === "application/pdf" || arquivo.name.toLowerCase().endswith(".pdf");
+      const ehPdf = arquivo.type === "application/pdf" || arquivo.name.toLowerCase().endsWith(".pdf");
       if (!ehPdf) {
         showToast("Currículo deve ser PDF", "error");
         return;
@@ -122,43 +136,40 @@ async function salvar() {
     }
 
     let logoURL = currentPerfil?.logoURL || "";
-    if (logoEmpresaInput?.files[0]) {
+    if (logoEmpresaInput?.files?.[0]) {
       logoURL = await uploadPerfilArquivo(currentUser.uid, logoEmpresaInput.files[0], "perfil/logos");
     }
 
-    const habilidades = habilidadesInput.value
+    const habilidades = (habilidadesInput?.value || "")
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
 
-    const tipo = currentPerfil?.tipo || "freelancer";
+    const tipo = tipoPagina || currentPerfil?.tipo || "freelancer";
 
-    const dadosBase = {
+    const dadosPerfil = {
       nome,
-      email: emailInput.value,
+      email: emailInput?.value || currentUser.email || "",
       tipo,
-      fotoURL,
-      bio: bioInput.value.trim(),
-      habilidades,
-      areaAtuacao: areaInput.value.trim(),
-      disponibilidade: disponibilidadeInput.value
+      fotoURL
     };
 
-    const dadosFreelancer = {
-      curriculoURL
-    };
+    if (tipo === "freelancer") {
+      dadosPerfil.bio = bioInput?.value?.trim() || "";
+      dadosPerfil.habilidades = habilidades;
+      dadosPerfil.areaAtuacao = areaInput?.value?.trim() || "";
+      dadosPerfil.disponibilidade = disponibilidadeInput?.value || "disponivel";
+      dadosPerfil.curriculoURL = curriculoURL;
+    }
 
-    const dadosEmpresa = {
-      logoURL,
-      descricaoInstitucional: descricaoInstitucionalInput.value.trim(),
-      localizacao: localizacaoInput.value.trim(),
-      site: siteInput.value.trim()
-    };
+    if (tipo === "empresa") {
+      dadosPerfil.logoURL = logoURL;
+      dadosPerfil.descricaoInstitucional = descricaoInstitucionalInput?.value?.trim() || "";
+      dadosPerfil.localizacao = localizacaoInput?.value?.trim() || "";
+      dadosPerfil.site = siteInput?.value?.trim() || "";
+    }
 
-    await salvarPerfil(currentUser.uid, {
-      ...dadosBase,
-      ...(tipo === "freelancer" ? dadosFreelancer : dadosEmpresa)
-    });
+    await salvarPerfil(currentUser.uid, dadosPerfil);
 
     showToast("Perfil salvo com sucesso", "success");
     await carregarPerfil(currentUser);
@@ -186,8 +197,8 @@ async function salvar() {
 bioInput?.addEventListener("input", atualizarContadorBio);
 
 fotoPerfilInput?.addEventListener("change", () => {
-  const arquivo = fotoPerfilInput.files[0];
-  if (!arquivo) return;
+  const arquivo = fotoPerfilInput.files?.[0];
+  if (!arquivo || !previewFoto) return;
 
   const url = URL.createObjectURL(arquivo);
   previewFoto.src = url;

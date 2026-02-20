@@ -2,56 +2,83 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>BMO – Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMO - Conecte talento a desafios reais</title>
   <link rel="stylesheet" href="design.css">
 </head>
-<body>
-  <header id="head1" class="site-header">
-    <div id="div1" class="site-brand">
-      <img id="larva" src="larva.jpg" alt="Logo BMO">
-      <span>BMO</span>
+<body class="landing-page">
+  <header class="landing-header" id="topo">
+    <div class="landing-container landing-header-inner">
+      <div class="landing-logo">BMO</div>
+      <nav class="landing-nav" aria-label="Menu principal">
+        <a href="#sobre">Sobre</a>
+        <a href="#como-funciona">Como funciona</a>
+      </nav>
     </div>
   </header>
 
-  <section id="section1" class="card auth-card">
-    <div class="tabs" role="tablist" aria-label="Autenticação">
-      <button id="tabLogin" class="tab-button active" role="tab" aria-selected="true">Entrar</button>
-      <button id="tabCadastro" class="tab-button" role="tab" aria-selected="false">Cadastrar</button>
+  <main>
+    <section class="landing-hero" id="sobre">
+      <div class="landing-container landing-hero-grid">
+        <div>
+          <h1>Construa sua oportunidade. Conecte-se com empresas e desafios reais.</h1>
+          <p>Participe de projetos, mostre suas habilidades e cresça na sua carreira.</p>
+          <a class="landing-cta" href="register.html">Entrar ou cadastrar</a>
+        </div>
+        <div class="landing-hero-visual" aria-hidden="true">
+          <div class="landing-hero-card">Colaboração</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-beneficios" id="como-funciona">
+      <div class="landing-container">
+        <h2>Como funciona</h2>
+        <div class="landing-beneficios-grid">
+          <article class="landing-beneficio-item">
+            <span class="landing-icon">●</span>
+            <h3>Encontre desafios</h3>
+            <p>Explore problemas publicados por empresas parceiras.</p>
+          </article>
+          <article class="landing-beneficio-item">
+            <span class="landing-icon">●</span>
+            <h3>Mostre seu talento</h3>
+            <p>Candidate-se e destaque suas habilidades.</p>
+          </article>
+          <article class="landing-beneficio-item">
+            <span class="landing-icon">●</span>
+            <h3>Cresça profissionalmente</h3>
+            <p>Construa sua reputação e conquiste novas oportunidades.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-parceiros" id="parceiros">
+      <div class="landing-container">
+        <h2>Depoimentos e parceiros</h2>
+        <div class="landing-parceiros-grid">
+          <p>"A BMO aproximou nosso time de freelancers com ótima aderência técnica."</p>
+          <p>"Encontrei projetos reais e melhorei meu portfólio em poucas semanas."</p>
+          <p>Espaço para logos de empresas parceiras.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-final-cta" id="pre-cadastro">
+      <div class="landing-container">
+        <h2>Sua carreira começa aqui. Junte-se à comunidade agora.</h2>
+        <a class="landing-cta landing-cta-light" href="register.html">Entrar ou cadastrar</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="landing-footer">
+    <div class="landing-container landing-footer-inner">
+      <a href="#">Termos de uso</a>
+      <a href="#">Política de privacidade</a>
+      <a href="#">Contato</a>
     </div>
-
-    <form id="loginForm" class="auth-form" autocomplete="on">
-      <label for="loginEmail">Email</label>
-      <input type="email" id="loginEmail" placeholder="seu@email.com" required>
-
-      <label for="loginPassword">Senha</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" required>
-
-      <button type="submit" class="btn-submit">Entrar</button>
-    </form>
-
-    <form id="cadastroForm" class="auth-form hidden" autocomplete="on">
-      <label for="tipo">Tipo de conta</label>
-      <select id="tipo" required>
-        <option value="">Selecione...</option>
-        <option value="freelancer">Freelancer</option>
-        <option value="empresa">Empresa</option>
-      </select>
-
-      <label for="nome">Nome</label>
-      <input type="text" id="nome" placeholder="Seu nome" required>
-
-      <label for="cadastroEmail">Email</label>
-      <input type="email" id="cadastroEmail" placeholder="seu@email.com" required>
-
-      <label for="cadastroPassword">Senha</label>
-      <input type="password" id="cadastroPassword" placeholder="••••••••" required>
-
-      <button type="submit" class="btn-submit">Cadastrar</button>
-    </form>
-
-    <p id="msg"></p>
-  </section>
-
-  <script type="module" src="./auth.js"></script>
+  </footer>
 </body>
 </html>
