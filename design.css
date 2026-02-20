@@ -1191,3 +1191,37 @@ button:hover {
 .auth-card-standalone {
   margin-top: 16px;
 }
+
+.about-page {
+  background: #f2f2f2;
+  color: #333333;
+}
+
+.about-layout {
+  width: min(860px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 34px 0 48px;
+}
+
+.about-header h1 {
+  margin: 0;
+  color: #333333;
+}
+
+.about-back-link {
+  background: #333333;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.about-card {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  line-height: 1.65;
+}
+
+.about-card p {
+  margin: 0;
+}
