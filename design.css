@@ -1026,8 +1026,10 @@ button:hover {
 }
 
 .landing-cta {
+  display: inline-block;
   background: #ff6600;
   color: #ffffff;
+  text-decoration: none;
   border: 1px solid #ffffff;
   font-weight: 700;
   padding: 12px 20px;
@@ -1162,4 +1164,30 @@ button:hover {
   .landing-parceiros-grid {
     grid-template-columns: 1fr;
   }
+}
+
+
+.auth-page {
+  background: #f2f2f2;
+  color: #333333;
+}
+
+.auth-page-layout {
+  width: min(640px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 34px 0 48px;
+}
+
+.auth-page-header h1 {
+  margin: 0;
+}
+
+.auth-back-link {
+  background: #333333;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.auth-card-standalone {
+  margin-top: 16px;
 }

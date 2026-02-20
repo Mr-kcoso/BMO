@@ -13,7 +13,6 @@
       <nav class="landing-nav" aria-label="Menu principal">
         <a href="#sobre">Sobre</a>
         <a href="#como-funciona">Como funciona</a>
-        <button id="abrirLoginTopo" class="landing-nav-btn" type="button">Entrar</button>
       </nav>
     </div>
   </header>
@@ -24,7 +23,7 @@
         <div>
           <h1>Construa sua oportunidade. Conecte-se com empresas e desafios reais.</h1>
           <p>Participe de projetos, mostre suas habilidades e cresça na sua carreira.</p>
-          <button id="abrirCadastroHero" class="landing-cta" type="button">Cadastre-se agora</button>
+          <a class="landing-cta" href="register.html">Entrar ou cadastrar</a>
         </div>
         <div class="landing-hero-visual" aria-hidden="true">
           <div class="landing-hero-card">Colaboração</div>
@@ -69,50 +68,7 @@
     <section class="landing-final-cta" id="pre-cadastro">
       <div class="landing-container">
         <h2>Sua carreira começa aqui. Junte-se à comunidade agora.</h2>
-        <button id="abrirCadastroFinal" class="landing-cta landing-cta-light" type="button">Criar conta gratuita</button>
-      </div>
-    </section>
-
-    <section id="authSection" class="landing-auth-section" hidden>
-      <div class="landing-container">
-        <div class="card auth-card landing-auth-card">
-          <div class="tabs" role="tablist" aria-label="Autenticação">
-            <button id="tabLogin" class="tab-button active" role="tab" aria-selected="true">Entrar</button>
-            <button id="tabCadastro" class="tab-button" role="tab" aria-selected="false">Cadastrar</button>
-          </div>
-
-          <form id="loginForm" class="auth-form" autocomplete="on">
-            <label for="loginEmail">Email</label>
-            <input type="email" id="loginEmail" placeholder="seu@email.com" required>
-
-            <label for="loginPassword">Senha</label>
-            <input type="password" id="loginPassword" placeholder="••••••••" required>
-
-            <button type="submit" class="btn-submit">Entrar</button>
-          </form>
-
-          <form id="cadastroForm" class="auth-form hidden" autocomplete="on">
-            <label for="tipo">Tipo de conta</label>
-            <select id="tipo" required>
-              <option value="">Selecione...</option>
-              <option value="freelancer">Freelancer</option>
-              <option value="empresa">Empresa</option>
-            </select>
-
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" placeholder="Seu nome" required>
-
-            <label for="cadastroEmail">Email</label>
-            <input type="email" id="cadastroEmail" placeholder="seu@email.com" required>
-
-            <label for="cadastroPassword">Senha</label>
-            <input type="password" id="cadastroPassword" placeholder="••••••••" required>
-
-            <button type="submit" class="btn-submit">Cadastrar</button>
-          </form>
-
-          <p id="msg"></p>
-        </div>
+        <a class="landing-cta landing-cta-light" href="register.html">Entrar ou cadastrar</a>
       </div>
     </section>
   </main>
@@ -124,7 +80,5 @@
       <a href="#">Contato</a>
     </div>
   </footer>
-
-  <script type="module" src="./auth.js"></script>
 </body>
 </html>
