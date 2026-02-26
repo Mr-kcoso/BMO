@@ -26,6 +26,18 @@ const btnSalvar = document.getElementById("btnSalvarPerfil");
 let currentUser = null;
 let currentPerfil = null;
 
+function ajustarAlturaTextarea(textarea) {
+  if (!textarea) return;
+  textarea.style.height = "auto";
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
+function habilitarAutoExpansaoTextarea(textarea) {
+  if (!textarea) return;
+  ajustarAlturaTextarea(textarea);
+  textarea.addEventListener("input", () => ajustarAlturaTextarea(textarea));
+}
+
 function atualizarContadorBio() {
   if (!bioInput || !bioCount) return;
   bioCount.textContent = `${bioInput.value.length}/280`;
@@ -72,6 +84,8 @@ function preencherFormulario(perfil, authUser) {
   }
 
   atualizarContadorBio();
+  ajustarAlturaTextarea(bioInput);
+  ajustarAlturaTextarea(descricaoInstitucionalInput);
 }
 
 async function carregarPerfil(user) {
@@ -195,6 +209,8 @@ async function salvar() {
 }
 
 bioInput?.addEventListener("input", atualizarContadorBio);
+habilitarAutoExpansaoTextarea(bioInput);
+habilitarAutoExpansaoTextarea(descricaoInstitucionalInput);
 
 fotoPerfilInput?.addEventListener("change", () => {
   const arquivo = fotoPerfilInput.files?.[0];
