@@ -42,8 +42,21 @@
       </div>
       <div class="button-row">
         <button id="btnPublicar" class="btn-primary">Publicar problema</button>
+        <button id="btnCancelarEdicao" class="empresa-secondary-btn" hidden>Cancelar edição</button>
       </div>
       <p id="msg" class="empresa-msg"></p>
+    </section>
+
+    <section class="empresa-list-card" aria-label="Problemas publicados">
+      <div class="empresa-list-head">
+        <h2>Problemas publicados</h2>
+      </div>
+
+      <p id="loadingProblemas" class="empresa-loading">Carregando problemas publicados...</p>
+      <ul id="problemasPublicados" class="empresa-candidaturas-grid"></ul>
+      <div id="estadoVazioProblemas" class="empresa-empty hidden">
+        Você ainda não publicou problemas.
+      </div>
     </section>
 
     <section class="empresa-list-card" aria-label="Candidaturas recebidas">

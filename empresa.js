@@ -26,8 +26,13 @@ const msg = document.getElementById("msg");
 const lista = document.getElementById("candidaturas");
 const loading = document.getElementById("loadingCandidaturas");
 const btnPublicar = document.getElementById("btnPublicar");
+const btnCancelarEdicao = document.getElementById("btnCancelarEdicao");
 const estadoVazio = document.getElementById("estadoVazioCandidaturas");
 const resumoCandidaturas = document.getElementById("resumoCandidaturas");
+
+const listaProblemas = document.getElementById("problemasPublicados");
+const loadingProblemas = document.getElementById("loadingProblemas");
+const estadoVazioProblemas = document.getElementById("estadoVazioProblemas");
 
 const buscaCandidaturas = document.getElementById("buscaCandidaturas");
 const filtroStatus = document.getElementById("filtroStatus");
@@ -36,7 +41,9 @@ const ordenacaoCandidaturas = document.getElementById("ordenacaoCandidaturas");
 const state = {
   user: null,
   profile: null,
-  candidaturas: []
+  candidaturas: [],
+  problemas: [],
+  problemaEditandoId: null
 };
 
 function getDateValue(value) {
@@ -106,6 +113,94 @@ function ordenarCandidaturas(candidaturas) {
 
     return getDateValue(b.candidatura.criadoEm) - getDateValue(a.candidatura.criadoEm);
   });
+}
+
+
+function limparFormularioProblema() {
+  titulo.value = "";
+  descricao.value = "";
+  prazoProblema.value = "";
+  urgenteProblema.checked = false;
+  remotoProblema.checked = true;
+  tipoProblema.value = "software";
+  nivelProblema.value = "intermediario";
+}
+
+function atualizarEstadoEdicao() {
+  const emEdicao = Boolean(state.problemaEditandoId);
+  btnPublicar.textContent = emEdicao ? "Salvar alterações" : "Publicar problema";
+  btnCancelarEdicao.hidden = !emEdicao;
+}
+
+function iniciarEdicaoProblema(problema) {
+  state.problemaEditandoId = problema.id;
+  titulo.value = problema.titulo || "";
+  descricao.value = problema.descricao || "";
+  tipoProblema.value = problema.tipo || "software";
+  nivelProblema.value = problema.nivel || "intermediario";
+  prazoProblema.value = problema.prazo?.toDate
+    ? problema.prazo.toDate().toISOString().slice(0, 10)
+    : "";
+  remotoProblema.checked = Boolean(problema.remoto);
+  urgenteProblema.checked = Boolean(problema.urgente);
+  atualizarEstadoEdicao();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function cancelarEdicaoProblema() {
+  state.problemaEditandoId = null;
+  limparFormularioProblema();
+  atualizarEstadoEdicao();
+}
+
+function renderProblemasPublicados() {
+  clearElement(listaProblemas);
+
+  state.problemas.forEach((problema) => {
+    const card = createElement("li", { className: "empresa-candidatura-card" });
+    card.appendChild(createElement("h3", { className: "empresa-card-title", text: problema.titulo || "Sem título" }));
+    card.appendChild(createElement("p", { className: "empresa-card-line", text: problema.descricao || "Sem descrição" }));
+
+    const tags = createElement("div", { className: "empresa-tags" });
+    tags.appendChild(createElement("span", { className: "empresa-tag", text: problema.tipo || "Geral" }));
+    tags.appendChild(
+      createElement("span", {
+        className: "empresa-tag",
+        text: problema.nivel === "iniciante" ? "Iniciante" : "Intermediário"
+      })
+    );
+    if (problema.urgente) {
+      tags.appendChild(createElement("span", { className: "empresa-tag", text: "Urgente" }));
+    }
+    card.appendChild(tags);
+
+    const meta = createElement("div", { className: "empresa-meta" });
+    meta.appendChild(createElement("span", { text: `Publicado em: ${formatDate(problema.criadoEm)}` }));
+    meta.appendChild(createElement("span", { text: `Prazo: ${formatDate(problema.prazo)}` }));
+    card.appendChild(meta);
+
+    const actions = createElement("div", { className: "button-row" });
+    const btnEditar = createElement("button", { className: "empresa-secondary-btn", text: "Editar problema" });
+
+    if (problema.possuiServicoAceito) {
+      card.appendChild(
+        createElement("p", {
+          className: "empresa-card-line",
+          text: "Edição bloqueada: serviço já aceito para este problema."
+        })
+      );
+      btnEditar.disabled = true;
+      btnEditar.title = "Edição bloqueada após aceitar um serviço para este problema";
+    } else {
+      btnEditar.addEventListener("click", () => iniciarEdicaoProblema(problema));
+    }
+
+    actions.appendChild(btnEditar);
+    card.appendChild(actions);
+    listaProblemas.appendChild(card);
+  });
+
+  estadoVazioProblemas?.classList.toggle("hidden", state.problemas.length > 0);
 }
 
 function renderCandidaturas() {
@@ -223,36 +318,65 @@ async function publicarProblema() {
   }
 
   try {
-    setButtonLoading(btnPublicar, true, "Publicando...");
+    setButtonLoading(btnPublicar, true, state.problemaEditandoId ? "Salvando..." : "Publicando...");
 
     const prazo = prazoProblema.value
       ? Timestamp.fromDate(new Date(`${prazoProblema.value}T23:59:59`))
       : null;
 
-    await addDoc(collection(db, "problemas"), {
+    const dadosProblema = {
       titulo: titulo.value.trim(),
       descricao: descricao.value.trim(),
       tipo: tipoProblema.value,
       nivel: nivelProblema.value,
       remoto: remotoProblema.checked,
       urgente: urgenteProblema.checked,
-      prazo,
+      prazo
+    };
+
+    if (state.problemaEditandoId) {
+      await updateDoc(doc(db, "problemas", state.problemaEditandoId), dadosProblema);
+      const indexProblema = state.problemas.findIndex((item) => item.id === state.problemaEditandoId);
+      if (indexProblema >= 0) {
+        state.problemas[indexProblema] = { ...state.problemas[indexProblema], ...dadosProblema };
+      }
+      state.candidaturas = state.candidaturas.map((item) =>
+        item.problema.id === state.problemaEditandoId
+          ? { ...item, problema: { ...item.problema, ...dadosProblema } }
+          : item
+      );
+      msg.textContent = "Problema atualizado com sucesso.";
+      showToast("Problema atualizado", "success");
+      cancelarEdicaoProblema();
+      renderProblemasPublicados();
+      renderCandidaturas();
+      return;
+    }
+
+    const problemaRef = await addDoc(collection(db, "problemas"), {
+      ...dadosProblema,
       empresaId: user.uid,
       empresaNome: state.profile?.nome || "Empresa parceira",
       criadoEm: serverTimestamp()
     });
 
-    msg.textContent = "Problema publicado com sucesso.";
-    titulo.value = "";
-    descricao.value = "";
-    prazoProblema.value = "";
-    urgenteProblema.checked = false;
-    remotoProblema.checked = true;
+    state.problemas.unshift({
+      id: problemaRef.id,
+      ...dadosProblema,
+      empresaId: user.uid,
+      empresaNome: state.profile?.nome || "Empresa parceira",
+      criadoEm: new Date(),
+      possuiServicoAceito: false
+    });
 
+    msg.textContent = "Problema publicado com sucesso.";
+    limparFormularioProblema();
+
+    renderProblemasPublicados();
     showToast("Problema publicado", "success");
   } catch (error) {
     console.error(error);
-    showToast("Falha ao publicar problema", "error");
+    showToast(state.problemaEditandoId ? "Falha ao atualizar problema" : "Falha ao publicar problema", "error");
   } finally {
     setButtonLoading(btnPublicar, false);
   }
@@ -277,12 +401,20 @@ async function aceitarCandidatura(candidatura, problemaId, empresaId) {
 
   candidatura.status = STATUS.ACEITO;
   candidatura.chatId = chatRef.id;
+
+  const problemaIndex = state.problemas.findIndex((item) => item.id === problemaId);
+  if (problemaIndex >= 0) {
+    state.problemas[problemaIndex].possuiServicoAceito = true;
+  }
+
+  renderProblemasPublicados();
   renderCandidaturas();
   showToast("Candidatura aceita", "success");
 }
 
 async function carregarCandidaturasEmpresa(user) {
   if (loading) loading.hidden = false;
+  if (loadingProblemas) loadingProblemas.hidden = false;
   renderSkeletonCandidaturas();
 
   try {
@@ -295,6 +427,7 @@ async function carregarCandidaturasEmpresa(user) {
     state.profile = profile;
 
     const candidaturasList = [];
+    const problemasList = [];
 
     for (const problemaDoc of problemasSnap.docs) {
       const problema = { id: problemaDoc.id, ...problemaDoc.data() };
@@ -303,8 +436,13 @@ async function carregarCandidaturasEmpresa(user) {
         query(collection(db, "candidaturas"), where("problemaId", "==", problema.id))
       );
 
+      let possuiServicoAceito = false;
+
       for (const candidaturaDoc of candidaturasSnap.docs) {
         const candidatura = { id: candidaturaDoc.id, ...candidaturaDoc.data() };
+        if (candidatura.status === STATUS.ACEITO) {
+          possuiServicoAceito = true;
+        }
         const perfilFreelancer = await getUserProfile(candidatura.freelancerId);
         candidaturasList.push({
           problema,
@@ -312,15 +450,20 @@ async function carregarCandidaturasEmpresa(user) {
           nomeFreelancer: perfilFreelancer?.nome || "Usuário desconhecido"
         });
       }
+
+      problemasList.push({ ...problema, possuiServicoAceito });
     }
 
     state.candidaturas = candidaturasList;
+    state.problemas = problemasList.sort((a, b) => getDateValue(b.criadoEm) - getDateValue(a.criadoEm));
+    renderProblemasPublicados();
     renderCandidaturas();
   } catch (error) {
     console.error(error);
     showToast("Erro ao carregar candidaturas", "error");
   } finally {
     if (loading) loading.hidden = true;
+    if (loadingProblemas) loadingProblemas.hidden = true;
   }
 }
 
@@ -332,7 +475,9 @@ function bindFiltros() {
 }
 
 btnPublicar?.addEventListener("click", publicarProblema);
+btnCancelarEdicao?.addEventListener("click", cancelarEdicaoProblema);
 bindFiltros();
+atualizarEstadoEdicao();
 
 observeAuthenticatedUser(
   (user) => carregarCandidaturasEmpresa(user),
