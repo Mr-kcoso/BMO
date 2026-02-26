@@ -16,14 +16,18 @@ z-index: 1000;
 #div1{
   background-color: black;
 }
-
+#larvabw{
+  border:solid 2px white;
+  border-radius: 12px;
+}
 #head1{
-background-color:background-color: black;
+background-color: var(--bmo-preto);
 position: fixed;
 top: 0;
 left: 0;
 width: 100%;
-z-index: 1000;}
+z-index: 1000;
+}
   
 body {
   background-color: var(--bmo-cinza-bg);
@@ -59,7 +63,7 @@ button {
   cursor: pointer;
   border: none;
   border-radius: 12px;
-}
+}chat
 
 button:hover {
   filter: brightness(1.03);
@@ -150,7 +154,7 @@ button:hover {
 }
 
 .btn-submit {
-  background: var(--bmo-azul);
+  background: var(--bmo-laranja);
   color: #fff;
   margin-top: 12px;
   width: 100%;
@@ -652,7 +656,7 @@ button:hover {
 .chats-page,
 .chat-page {
   background: #111;
-  color: #f9fafb;
+  color: white;
 }
 
 .chats-dashboard,
@@ -682,7 +686,7 @@ button:hover {
 .chats-nav-btn,
 .chat-nav-btn {
   background: #1f2937;
-  color: #e5e7eb;
+  color: #ffffff;
 }
 
 .chats-list-card,
@@ -808,7 +812,7 @@ button:hover {
 
 .chat-text {
   margin: 0;
-  color: inherit;
+  color: rgb(0, 0, 0);
   white-space: pre-wrap;
 }
 
