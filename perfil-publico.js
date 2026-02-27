@@ -1,0 +1,106 @@
+import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
+import { createElement, showToast } from "./utils.js";
+
+const params = new URLSearchParams(window.location.search);
+const userId = params.get("userId");
+
+const titulo = document.getElementById("perfilPublicoTitulo");
+const subtitulo = document.getElementById("perfilPublicoSubtitulo");
+const foto = document.getElementById("perfilPublicoFoto");
+const tipo = document.getElementById("perfilPublicoTipo");
+const nome = document.getElementById("perfilPublicoNome");
+const bio = document.getElementById("perfilPublicoBio");
+const area = document.getElementById("perfilPublicoArea");
+const disponibilidade = document.getElementById("perfilPublicoDisponibilidade");
+const localizacao = document.getElementById("perfilPublicoLocalizacao");
+const habilidades = document.getElementById("perfilPublicoHabilidades");
+const links = document.getElementById("perfilPublicoLinks");
+
+function setText(element, text) {
+  if (element) element.textContent = text;
+}
+
+function adicionarLink(label, href) {
+  if (!links || !href) return;
+
+  const link = createElement("a", {
+    className: "chats-nav-btn perfil-publico-link",
+    text: label
+  });
+  link.href = href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  links.appendChild(link);
+}
+
+async function carregarPerfilPublico() {
+  if (!userId) {
+    showToast("Perfil não informado", "error");
+    window.history.back();
+    return;
+  }
+
+  const perfil = await getUserProfile(userId);
+
+  if (!perfil) {
+    showToast("Perfil não encontrado", "error");
+    window.history.back();
+    return;
+  }
+
+  const tipoPerfil = perfil.tipo === "empresa" ? "Empresa" : "Freelancer";
+
+  setText(titulo, `Perfil de ${perfil.nome || "Usuário"}`);
+  setText(subtitulo, "Use estes dados para validar experiência, disponibilidade e fit.");
+  setText(tipo, tipoPerfil);
+  setText(nome, perfil.nome || "Usuário");
+
+  if (foto) {
+    foto.src = perfil.fotoURL || perfil.logoURL || "larva.jpeg";
+  }
+
+  if (perfil.tipo === "empresa") {
+    setText(bio, perfil.descricaoInstitucional || "Empresa sem descrição institucional.");
+    setText(area, perfil.site ? `Site: ${perfil.site}` : "Site não informado.");
+    setText(disponibilidade, "");
+    setText(localizacao, perfil.localizacao ? `Localização: ${perfil.localizacao}` : "Localização não informada.");
+    setText(habilidades, "");
+    adicionarLink("Site", perfil.site);
+    adicionarLink("LinkedIn", perfil.linkedin);
+  } else {
+    setText(bio, perfil.bio || "Freelancer sem bio.");
+    setText(area, perfil.areaAtuacao ? `Área de atuação: ${perfil.areaAtuacao}` : "Área de atuação não informada.");
+    setText(
+      disponibilidade,
+      perfil.disponibilidade ? `Disponibilidade: ${perfil.disponibilidade}` : "Disponibilidade não informada."
+    );
+    setText(localizacao, "");
+    setText(
+      habilidades,
+      Array.isArray(perfil.habilidades) && perfil.habilidades.length
+        ? `Habilidades: ${perfil.habilidades.join(", ")}`
+        : "Habilidades não informadas."
+    );
+    adicionarLink("LinkedIn", perfil.linkedin);
+    adicionarLink("GitHub", perfil.github);
+  }
+
+  if (links && !links.children.length) {
+    links.appendChild(createElement("p", { className: "perfil-publico-text", text: "Nenhum link informado." }));
+  }
+}
+
+observeAuthenticatedUser(
+  async () => {
+    try {
+      await carregarPerfilPublico();
+    } catch (error) {
+      console.error(error);
+      showToast("Falha ao carregar perfil público", "error");
+    }
+  },
+  () => {
+    showToast("Faça login para visualizar o perfil", "error");
+    window.location.href = "index.html";
+  }
+);

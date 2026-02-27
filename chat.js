@@ -9,6 +9,7 @@ const mensagensDiv = document.getElementById("mensagens");
 const texto = document.getElementById("texto");
 const btnEnviar = document.getElementById("btnEnviar");
 const btnVoltar = document.getElementById("btnVoltar");
+const btnVerPerfil = document.getElementById("btnVerPerfil");
 const chatTitulo = document.getElementById("chatTitulo");
 const chatSubtitulo = document.getElementById("chatSubtitulo");
 
@@ -83,6 +84,12 @@ async function iniciarChat(user) {
 
     if (chatTitulo) chatTitulo.textContent = outroNome;
     if (chatSubtitulo) chatSubtitulo.textContent = "Conversa em tempo real";
+    if (btnVerPerfil) {
+      btnVerPerfil.hidden = false;
+      btnVerPerfil.addEventListener("click", () => {
+        window.location.href = `perfil-publico.html?userId=${outroId}`;
+      });
+    }
 
     escutarMensagens(chatId, (mensagens) => {
       renderMensagens(mensagens, user.uid);

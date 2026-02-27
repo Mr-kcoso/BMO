@@ -1292,3 +1292,15 @@ button:hover {
 .about-card p {
   margin: 0;
 }
+
+
+.perfil-publico-text {
+  margin: 0;
+  color: #d1d5db;
+}
+
+.perfil-publico-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
