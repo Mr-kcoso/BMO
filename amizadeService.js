@@ -4,7 +4,6 @@ import {
   doc,
   getDoc,
   getDocs,
-  or,
   query,
   serverTimestamp,
   setDoc,
@@ -71,17 +70,39 @@ export async function aceitarPedidoAmizade(amizadeId) {
 
 export async function listarAmigos(userId) {
   const amizadeRef = collection(db, "amizades");
-  const amizadeQuery = query(
+  const amizadeQueryUserA = query(
     amizadeRef,
     where("status", "==", "aceita"),
-    or(where("userA", "==", userId), where("userB", "==", userId))
+    where("userA", "==", userId)
   );
-  const amizadeSnap = await getDocs(amizadeQuery);
+  const amizadeQueryUserB = query(
+    amizadeRef,
+    where("status", "==", "aceita"),
+    where("userB", "==", userId)
+  );
 
-  return amizadeSnap.docs.map((docSnap) => ({
-    id: docSnap.id,
-    ...docSnap.data()
-  }));
+  const [amizadeSnapUserA, amizadeSnapUserB] = await Promise.all([
+    getDocs(amizadeQueryUserA),
+    getDocs(amizadeQueryUserB)
+  ]);
+
+  const mapAmizades = new Map();
+
+  amizadeSnapUserA.docs.forEach((docSnap) => {
+    mapAmizades.set(docSnap.id, {
+      id: docSnap.id,
+      ...docSnap.data()
+    });
+  });
+
+  amizadeSnapUserB.docs.forEach((docSnap) => {
+    mapAmizades.set(docSnap.id, {
+      id: docSnap.id,
+      ...docSnap.data()
+    });
+  });
+
+  return Array.from(mapAmizades.values());
 }
 
 export async function listarSolicitacoesPendentes(userId) {

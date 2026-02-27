@@ -28,9 +28,27 @@ function criarItemUsuario(perfil, extraTexto = "") {
   return { li, conteudo };
 }
 
+async function getUserProfileSafe(userId) {
+  try {
+    return await getUserProfile(userId);
+  } catch (error) {
+    console.error("Erro ao carregar perfil", userId, error);
+    return null;
+  }
+}
+
 async function carregarSolicitacoes(user) {
-  const solicitacoes = await listarSolicitacoesPendentes(user.uid);
   listaSolicitacoes.innerHTML = "";
+
+  let solicitacoes = [];
+
+  try {
+    solicitacoes = await listarSolicitacoesPendentes(user.uid);
+  } catch (error) {
+    console.error(error);
+    listaSolicitacoes.appendChild(createElement("li", { className: "empresa-empty", text: "Erro ao carregar solicitações." }));
+    return;
+  }
 
   if (!solicitacoes.length) {
     const vazio = createElement("li", { className: "empresa-empty", text: "Nenhuma solicitação pendente." });
@@ -39,7 +57,7 @@ async function carregarSolicitacoes(user) {
   }
 
   for (const solicitacao of solicitacoes) {
-    const perfilRemetente = await getUserProfile(solicitacao.userA);
+    const perfilRemetente = await getUserProfileSafe(solicitacao.userA);
     const { li, conteudo } = criarItemUsuario(perfilRemetente, "Quer ser seu amigo");
 
     const botaoAceitar = createElement("button", { className: "btn-primary", text: "Aceitar" });
@@ -60,8 +78,17 @@ async function carregarSolicitacoes(user) {
 }
 
 async function carregarAmigos(user) {
-  const amizades = await listarAmigos(user.uid);
   listaAmigos.innerHTML = "";
+
+  let amizades = [];
+
+  try {
+    amizades = await listarAmigos(user.uid);
+  } catch (error) {
+    console.error(error);
+    listaAmigos.appendChild(createElement("li", { className: "empresa-empty", text: "Erro ao carregar amigos." }));
+    return;
+  }
 
   if (!amizades.length) {
     const vazio = createElement("li", { className: "empresa-empty", text: "Você ainda não possui amigos." });
@@ -71,7 +98,7 @@ async function carregarAmigos(user) {
 
   for (const amizade of amizades) {
     const amigoId = amizade.userA === user.uid ? amizade.userB : amizade.userA;
-    const perfilAmigo = await getUserProfile(amigoId);
+    const perfilAmigo = await getUserProfileSafe(amigoId);
     const { li, conteudo } = criarItemUsuario(perfilAmigo);
 
     const verPerfil = createElement("a", { className: "empresa-secondary-btn", text: "Ver perfil" });
@@ -83,7 +110,8 @@ async function carregarAmigos(user) {
 }
 
 async function carregarListas(user) {
-  await Promise.all([carregarSolicitacoes(user), carregarAmigos(user)]);
+  await carregarSolicitacoes(user);
+  await carregarAmigos(user);
 }
 
 observeAuthenticatedUser(
