@@ -65,7 +65,13 @@ async function handleCriarEquipe() {
     inputFoto.value = "";
 
     showToast("Equipe criada com sucesso", "success");
-    await renderEquipes();
+
+    try {
+      await renderEquipes();
+    } catch (error) {
+      console.error(error);
+      showToast("Equipe criada, mas não foi possível atualizar a lista agora", "error");
+    }
   } catch (error) {
     console.error(error);
     showToast("Não foi possível criar a equipe", "error");

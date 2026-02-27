@@ -40,7 +40,14 @@ service cloud.firestore {
 
       match /membros/{userId} {
         allow read: if isTeamMember(equipeId);
-        allow create, update, delete: if isTeamAdmin(equipeId);
+
+        allow create: if isTeamAdmin(equipeId)
+          || (isSignedIn()
+            && request.auth.uid == userId
+            && get(/databases/$(database)/documents/equipes/$(equipeId)).data.criadorId == request.auth.uid
+            && request.resource.data.role == "admin");
+
+        allow update, delete: if isTeamAdmin(equipeId);
       }
     }
   }

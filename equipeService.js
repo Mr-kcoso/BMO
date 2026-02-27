@@ -9,7 +9,8 @@ import {
   query,
   serverTimestamp,
   setDoc,
-  where
+  where,
+  writeBatch
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const CLOUDINARY_CLOUD_NAME = "dom598ut1";
@@ -37,8 +38,11 @@ export async function uploadFotoEquipeCloudinary(file) {
 
 export async function criarEquipe({ nome, descricao, criadorId, fotoEquipe = "" }) {
   const equipeRef = doc(collection(db, "equipes"));
+  const membroCriadorRef = doc(db, "equipes", equipeRef.id, "membros", criadorId);
 
-  await setDoc(equipeRef, {
+  const batch = writeBatch(db);
+
+  batch.set(equipeRef, {
     nome,
     descricao,
     criadorId,
@@ -46,34 +50,46 @@ export async function criarEquipe({ nome, descricao, criadorId, fotoEquipe = "" 
     createdAt: serverTimestamp()
   });
 
-  const membroCriadorRef = doc(db, "equipes", equipeRef.id, "membros", criadorId);
-  await setDoc(membroCriadorRef, {
+  batch.set(membroCriadorRef, {
     role: "admin",
     joinedAt: serverTimestamp()
   });
+
+  await batch.commit();
 
   return equipeRef.id;
 }
 
 export async function listarEquipesDoUsuario(userId) {
-  const membrosQuery = query(collectionGroup(db, "membros"), where(documentId(), "==", userId));
-  const membrosSnap = await getDocs(membrosQuery);
+  try {
+    const membrosQuery = query(collectionGroup(db, "membros"), where(documentId(), "==", userId));
+    const membrosSnap = await getDocs(membrosQuery);
 
-  const equipes = await Promise.all(
-    membrosSnap.docs.map(async (membroDoc) => {
-      const equipeRef = membroDoc.ref.parent.parent;
-      if (!equipeRef) return null;
-      const equipeSnap = await getDoc(equipeRef);
-      if (!equipeSnap.exists()) return null;
-      return {
-        id: equipeSnap.id,
-        ...equipeSnap.data(),
-        role: membroDoc.data().role
-      };
-    })
-  );
+    const equipes = await Promise.all(
+      membrosSnap.docs.map(async (membroDoc) => {
+        const equipeRef = membroDoc.ref.parent.parent;
+        if (!equipeRef) return null;
+        const equipeSnap = await getDoc(equipeRef);
+        if (!equipeSnap.exists()) return null;
+        return {
+          id: equipeSnap.id,
+          ...equipeSnap.data(),
+          role: membroDoc.data().role
+        };
+      })
+    );
 
-  return equipes.filter(Boolean);
+    return equipes.filter(Boolean);
+  } catch (error) {
+    const equipesCriadasQuery = query(collection(db, "equipes"), where("criadorId", "==", userId));
+    const equipesCriadasSnap = await getDocs(equipesCriadasQuery);
+
+    return equipesCriadasSnap.docs.map((docSnap) => ({
+      id: docSnap.id,
+      ...docSnap.data(),
+      role: "admin"
+    }));
+  }
 }
 
 export async function getEquipe(equipeId) {
