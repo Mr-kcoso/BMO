@@ -1,5 +1,5 @@
 import { observeAuthenticatedUser } from "./authService.js";
-import { salvarPerfil, getPerfil, uploadPerfilArquivo } from "./perfilService.js";
+import { salvarPerfil, getPerfil, uploadImagemCloudinary } from "./perfilService.js";
 import { setButtonLoading, showToast } from "./utils.js";
 
 const tipoPagina = document.body?.dataset?.perfilTipo || null;
@@ -13,14 +13,14 @@ const bioCount = document.getElementById("bioCount");
 const habilidadesInput = document.getElementById("habilidadesPerfil");
 const areaInput = document.getElementById("areaAtuacaoPerfil");
 const disponibilidadeInput = document.getElementById("disponibilidadePerfil");
-const curriculoInput = document.getElementById("curriculoPerfil");
-const linkCurriculo = document.getElementById("linkCurriculo");
-const empresaCampos = document.getElementById("empresaCampos");
 const freelancerCampos = document.getElementById("freelancerCampos");
+const empresaCampos = document.getElementById("empresaCampos");
 const logoEmpresaInput = document.getElementById("logoEmpresa");
 const descricaoInstitucionalInput = document.getElementById("descricaoInstitucional");
 const localizacaoInput = document.getElementById("localizacaoEmpresa");
 const siteInput = document.getElementById("siteEmpresa");
+const linkedinInput = document.getElementById("linkedinPerfil");
+const githubInput = document.getElementById("githubPerfil");
 const btnSalvar = document.getElementById("btnSalvarPerfil");
 
 let currentUser = null;
@@ -57,18 +57,11 @@ function preencherFormulario(perfil, authUser) {
   if (descricaoInstitucionalInput) descricaoInstitucionalInput.value = perfil?.descricaoInstitucional || "";
   if (localizacaoInput) localizacaoInput.value = perfil?.localizacao || "";
   if (siteInput) siteInput.value = perfil?.site || "";
+  if (linkedinInput) linkedinInput.value = perfil?.linkedin || "";
+  if (githubInput) githubInput.value = perfil?.github || "";
 
   if (previewFoto) {
     previewFoto.src = perfil?.fotoURL || "larva.jpeg";
-  }
-
-  if (linkCurriculo) {
-    if (perfil?.curriculoURL) {
-      linkCurriculo.href = perfil.curriculoURL;
-      linkCurriculo.hidden = false;
-    } else {
-      linkCurriculo.hidden = true;
-    }
   }
 
   atualizarContadorBio();
@@ -106,7 +99,7 @@ async function salvar() {
 
   const maxMb = 8;
   const maxBytes = maxMb * 1024 * 1024;
-  const uploads = [fotoPerfilInput?.files?.[0], curriculoInput?.files?.[0], logoEmpresaInput?.files?.[0]].filter(Boolean);
+  const uploads = [fotoPerfilInput?.files?.[0], logoEmpresaInput?.files?.[0]].filter(Boolean);
 
   for (const arquivo of uploads) {
     if (arquivo.size > maxBytes) {
@@ -120,24 +113,12 @@ async function salvar() {
 
     let fotoURL = currentPerfil?.fotoURL || "";
     if (fotoPerfilInput?.files?.[0]) {
-      fotoURL = await uploadPerfilArquivo(currentUser.uid, fotoPerfilInput.files[0], "perfil/fotos");
-    }
-
-    let curriculoURL = currentPerfil?.curriculoURL || "";
-    if (curriculoInput?.files?.[0]) {
-      const arquivo = curriculoInput.files[0];
-      const ehPdf = arquivo.type === "application/pdf" || arquivo.name.toLowerCase().endsWith(".pdf");
-      if (!ehPdf) {
-        showToast("Currículo deve ser PDF", "error");
-        return;
-      }
-
-      curriculoURL = await uploadPerfilArquivo(currentUser.uid, arquivo, "perfil/curriculos");
+      fotoURL = await uploadImagemCloudinary(fotoPerfilInput.files[0]);
     }
 
     let logoURL = currentPerfil?.logoURL || "";
     if (logoEmpresaInput?.files?.[0]) {
-      logoURL = await uploadPerfilArquivo(currentUser.uid, logoEmpresaInput.files[0], "perfil/logos");
+      logoURL = await uploadImagemCloudinary(logoEmpresaInput.files[0]);
     }
 
     const habilidades = (habilidadesInput?.value || "")
@@ -151,7 +132,9 @@ async function salvar() {
       nome,
       email: emailInput?.value || currentUser.email || "",
       tipo,
-      fotoURL
+      fotoURL,
+      linkedin: linkedinInput?.value?.trim() || "",
+      github: githubInput?.value?.trim() || ""
     };
 
     if (tipo === "freelancer") {
@@ -159,7 +142,6 @@ async function salvar() {
       dadosPerfil.habilidades = habilidades;
       dadosPerfil.areaAtuacao = areaInput?.value?.trim() || "";
       dadosPerfil.disponibilidade = disponibilidadeInput?.value || "disponivel";
-      dadosPerfil.curriculoURL = curriculoURL;
     }
 
     if (tipo === "empresa") {
@@ -175,15 +157,9 @@ async function salvar() {
     await carregarPerfil(currentUser);
   } catch (error) {
     console.error(error);
-    const mensagem = error?.code === "storage/unauthorized"
-      ? "Sem permissão para upload. Verifique as regras do Firebase Storage (allow write para usuário autenticado)."
-      : error?.code === "storage/bucket-not-found"
-        ? "Bucket do Firebase Storage não encontrado. Verifique se o Storage foi ativado no projeto Firebase."
-        : error?.code === "storage/invalid-default-bucket"
-          ? "Bucket padrão inválido. Confira storageBucket no firebase.js e o bucket real no console Firebase."
-          : error?.code === "storage/canceled"
-            ? "Upload cancelado."
-            : `${error?.message || "Falha ao salvar perfil"}${error?.code ? ` (código: ${error.code})` : ""}`;
+    const mensagem = error?.code === "cloudinary/upload-error"
+      ? `Falha no upload da imagem para Cloudinary: ${error?.message || "erro desconhecido"}`
+      : `${error?.message || "Falha ao salvar perfil"}${error?.code ? ` (código: ${error.code})` : ""}`;
 
     if (error?.details?.length) {
       console.table(error.details);

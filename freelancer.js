@@ -17,6 +17,13 @@ const filtroCategoria = document.getElementById("filtroCategoria");
 const filtroNivel = document.getElementById("filtroNivel");
 const ordenacaoProblemas = document.getElementById("ordenacaoProblemas");
 
+const modalDetalhes = document.getElementById("modalDetalhes");
+const fecharModalDetalhes = document.getElementById("fecharModalDetalhes");
+const modalDetalhesTitulo = document.getElementById("modalDetalhesTitulo");
+const modalDetalhesSubtitulo = document.getElementById("modalDetalhesSubtitulo");
+const modalDetalhesDescricao = document.getElementById("modalDetalhesDescricao");
+const modalDetalhesTexto = document.getElementById("modalDetalhesTexto");
+
 const state = {
   problemas: [],
   candidaturasMap: new Map(),
@@ -126,8 +133,30 @@ function ordenarProblemas(problemas) {
   });
 }
 
+function fecharDetalhes() {
+  modalDetalhes?.classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
 function onVerDetalhes(problema) {
-  showToast(`${problema.titulo}: ${problema.descricao || "Sem descrição"}`, "info");
+  if (!modalDetalhes) {
+    showToast(`${problema.titulo}: ${problema.descricao || "Sem descrição"}`, "info");
+    return;
+  }
+
+  if (modalDetalhesTitulo) modalDetalhesTitulo.textContent = problema.titulo || "Detalhes do problema";
+  if (modalDetalhesSubtitulo) {
+    modalDetalhesSubtitulo.textContent = `Empresa: ${problema.empresaNome || "Empresa parceira"}`;
+  }
+  if (modalDetalhesDescricao) {
+    modalDetalhesDescricao.textContent = problema.descricao || "Sem descrição";
+  }
+
+  const detalhamento = problema.detalhamento || problema.descricao || "Sem detalhamento adicional.";
+  if (modalDetalhesTexto) modalDetalhesTexto.textContent = detalhamento;
+
+  modalDetalhes.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
 }
 
 function renderLista() {
@@ -217,6 +246,21 @@ async function carregarDashboardFreelancer(user) {
 }
 
 bindFiltros();
+
+fecharModalDetalhes?.addEventListener("click", fecharDetalhes);
+
+modalDetalhes?.addEventListener("click", (event) => {
+  if (event.target === modalDetalhes) {
+    fecharDetalhes();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && modalDetalhes && !modalDetalhes.classList.contains("hidden")) {
+    fecharDetalhes();
+  }
+});
+
 
 observeAuthenticatedUser(carregarDashboardFreelancer, () => {
   showToast("Faça login para continuar", "error");

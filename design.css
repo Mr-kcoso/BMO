@@ -509,6 +509,11 @@ button:hover {
   min-height: 88px;
 }
 
+.empresa-form-full {
+  grid-column: 1 / -1;
+  min-height: 130px;
+}
+
 .empresa-switch-row {
   display: flex;
   gap: 14px;
@@ -619,6 +624,57 @@ button:hover {
   text-align: center;
   background: #202020;
 }
+
+.freelancer-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 1200;
+}
+
+.freelancer-modal-content {
+  width: min(760px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #181818;
+  border: 1px solid #2f2f2f;
+  border-radius: 16px;
+  padding: 22px;
+  color: #f3f4f6;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+.freelancer-modal-close {
+  margin-left: auto;
+  display: block;
+  background: #2a2a2a;
+  color: #f3f4f6;
+  font-size: 24px;
+  line-height: 1;
+  padding: 6px 12px;
+}
+
+.freelancer-modal-subtitle {
+  color: #9ca3af;
+  margin-top: 0;
+}
+
+.freelancer-modal-description {
+  color: #d1d5db;
+  border-left: 3px solid var(--bmo-laranja);
+  padding-left: 10px;
+}
+
+.freelancer-modal-detail {
+  white-space: pre-wrap;
+  line-height: 1.5;
+  color: #f3f4f6;
+}
+
 
 .empresa-skeleton {
   pointer-events: none;

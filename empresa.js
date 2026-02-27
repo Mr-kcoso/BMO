@@ -16,6 +16,7 @@ import {
 
 const titulo = document.getElementById("titulo");
 const descricao = document.getElementById("descricao");
+const detalhamentoProblema = document.getElementById("detalhamentoProblema");
 const tipoProblema = document.getElementById("tipoProblema");
 const nivelProblema = document.getElementById("nivelProblema");
 const prazoProblema = document.getElementById("prazoProblema");
@@ -119,6 +120,7 @@ function ordenarCandidaturas(candidaturas) {
 function limparFormularioProblema() {
   titulo.value = "";
   descricao.value = "";
+  if (detalhamentoProblema) detalhamentoProblema.value = "";
   prazoProblema.value = "";
   urgenteProblema.checked = false;
   remotoProblema.checked = true;
@@ -136,6 +138,7 @@ function iniciarEdicaoProblema(problema) {
   state.problemaEditandoId = problema.id;
   titulo.value = problema.titulo || "";
   descricao.value = problema.descricao || "";
+  if (detalhamentoProblema) detalhamentoProblema.value = problema.detalhamento || "";
   tipoProblema.value = problema.tipo || "software";
   nivelProblema.value = problema.nivel || "intermediario";
   prazoProblema.value = problema.prazo?.toDate
@@ -327,6 +330,7 @@ async function publicarProblema() {
     const dadosProblema = {
       titulo: titulo.value.trim(),
       descricao: descricao.value.trim(),
+      detalhamento: detalhamentoProblema?.value?.trim() || "",
       tipo: tipoProblema.value,
       nivel: nivelProblema.value,
       remoto: remotoProblema.checked,
