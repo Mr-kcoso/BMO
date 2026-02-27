@@ -8,6 +8,9 @@ import {
   uploadBytes
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
+const CLOUDINARY_CLOUD_NAME = "dom598ut1";
+const CLOUDINARY_UPLOAD_PRESET = "bmo_unsigned_upload";
+
 export async function getPerfil(userId) {
   const refDoc = doc(db, "usuarios", userId);
   const snap = await getDoc(refDoc);
@@ -60,7 +63,7 @@ async function executarUploadDireto(storageInstance, caminho, file, metadata) {
   return getDownloadURL(storageRef);
 }
 
-export async function uploadPerfilArquivo(userId, file, folder) {
+export async function uploadArquivoPerfil(userId, file, folder) {
   const caminho = `${folder}/${userId}/${Date.now()}-${file.name}`;
   const metadata = {
     contentType: inferirContentType(file),
@@ -107,4 +110,28 @@ export async function uploadPerfilArquivo(userId, file, folder) {
   erro.details = erros;
 
   throw erro;
+}
+
+export async function uploadImagemCloudinary(file) {
+  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const erro = new Error(data.error?.message || "Erro no upload da imagem");
+    erro.code = "cloudinary/upload-error";
+    erro.details = data;
+    throw erro;
+  }
+
+  return data.secure_url;
 }

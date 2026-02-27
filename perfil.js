@@ -1,5 +1,5 @@
 import { observeAuthenticatedUser } from "./authService.js";
-import { salvarPerfil, getPerfil, uploadPerfilArquivo } from "./perfilService.js";
+import { salvarPerfil, getPerfil, uploadArquivoPerfil, uploadImagemCloudinary } from "./perfilService.js";
 import { setButtonLoading, showToast } from "./utils.js";
 
 const tipoPagina = document.body?.dataset?.perfilTipo || null;
@@ -120,7 +120,7 @@ async function salvar() {
 
     let fotoURL = currentPerfil?.fotoURL || "";
     if (fotoPerfilInput?.files?.[0]) {
-      fotoURL = await uploadPerfilArquivo(currentUser.uid, fotoPerfilInput.files[0], "perfil/fotos");
+      fotoURL = await uploadImagemCloudinary(fotoPerfilInput.files[0]);
     }
 
     let curriculoURL = currentPerfil?.curriculoURL || "";
@@ -132,12 +132,12 @@ async function salvar() {
         return;
       }
 
-      curriculoURL = await uploadPerfilArquivo(currentUser.uid, arquivo, "perfil/curriculos");
+      curriculoURL = await uploadArquivoPerfil(currentUser.uid, arquivo, "perfil/curriculos");
     }
 
     let logoURL = currentPerfil?.logoURL || "";
     if (logoEmpresaInput?.files?.[0]) {
-      logoURL = await uploadPerfilArquivo(currentUser.uid, logoEmpresaInput.files[0], "perfil/logos");
+      logoURL = await uploadImagemCloudinary(logoEmpresaInput.files[0]);
     }
 
     const habilidades = (habilidadesInput?.value || "")
@@ -175,15 +175,17 @@ async function salvar() {
     await carregarPerfil(currentUser);
   } catch (error) {
     console.error(error);
-    const mensagem = error?.code === "storage/unauthorized"
-      ? "Sem permissão para upload. Verifique as regras do Firebase Storage (allow write para usuário autenticado)."
-      : error?.code === "storage/bucket-not-found"
-        ? "Bucket do Firebase Storage não encontrado. Verifique se o Storage foi ativado no projeto Firebase."
-        : error?.code === "storage/invalid-default-bucket"
-          ? "Bucket padrão inválido. Confira storageBucket no firebase.js e o bucket real no console Firebase."
-          : error?.code === "storage/canceled"
-            ? "Upload cancelado."
-            : `${error?.message || "Falha ao salvar perfil"}${error?.code ? ` (código: ${error.code})` : ""}`;
+    const mensagem = error?.code === "cloudinary/upload-error"
+      ? `Falha no upload da imagem para Cloudinary: ${error?.message || "erro desconhecido"}`
+      : error?.code === "storage/unauthorized"
+        ? "Sem permissão para upload. Verifique as regras do Firebase Storage (allow write para usuário autenticado)."
+        : error?.code === "storage/bucket-not-found"
+          ? "Bucket do Firebase Storage não encontrado. Verifique se o Storage foi ativado no projeto Firebase."
+          : error?.code === "storage/invalid-default-bucket"
+            ? "Bucket padrão inválido. Confira storageBucket no firebase.js e o bucket real no console Firebase."
+            : error?.code === "storage/canceled"
+              ? "Upload cancelado."
+              : `${error?.message || "Falha ao salvar perfil"}${error?.code ? ` (código: ${error.code})` : ""}`;
 
     if (error?.details?.length) {
       console.table(error.details);
