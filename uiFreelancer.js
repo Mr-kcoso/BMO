@@ -35,7 +35,8 @@ export function renderProblema({
   candidatura,
   onCandidatar,
   onAbrirChat,
-  onVerDetalhes
+  onVerDetalhes,
+  onVerPerfilEmpresa
 }) {
   const li = createElement("li", { className: "freelancer-card" });
   const heading = createElement("h3", { className: "freelancer-card-title", text: problema.titulo });
@@ -63,6 +64,13 @@ export function renderProblema({
   });
   detalhesButton.addEventListener("click", () => onVerDetalhes(problema));
   actions.appendChild(detalhesButton);
+
+  const perfilEmpresaButton = createElement("button", {
+    className: "freelancer-secondary-btn",
+    text: "Ver perfil da empresa"
+  });
+  perfilEmpresaButton.addEventListener("click", () => onVerPerfilEmpresa(problema));
+  actions.appendChild(perfilEmpresaButton);
 
   if (candidatura) {
     const status = createElement("p", {

@@ -215,7 +215,7 @@ function renderCandidaturas() {
   renderResumo(ordenadas.length);
 
   ordenadas.forEach((item) => {
-    const { problema, candidatura, nomeFreelancer } = item;
+    const { problema, candidatura, nomeFreelancer, freelancerId } = item;
 
     const card = createElement("li", { className: "empresa-candidatura-card" });
     card.appendChild(createElement("h3", { className: "empresa-card-title", text: problema.titulo }));
@@ -246,6 +246,15 @@ function renderCandidaturas() {
     card.appendChild(meta);
 
     const actions = createElement("div", { className: "button-row" });
+
+    const btnPerfilFreelancer = createElement("button", {
+      className: "empresa-secondary-btn",
+      text: "Ver perfil"
+    });
+    btnPerfilFreelancer.addEventListener("click", () => {
+      window.location.href = `perfil-publico.html?userId=${freelancerId}`;
+    });
+    actions.appendChild(btnPerfilFreelancer);
 
     if (candidatura.status === STATUS.ACEITO && candidatura.chatId) {
       const btnChat = createElement("button", { className: "btn-primary", text: "Abrir chat" });
@@ -451,7 +460,8 @@ async function carregarCandidaturasEmpresa(user) {
         candidaturasList.push({
           problema,
           candidatura,
-          nomeFreelancer: perfilFreelancer?.nome || "Usuário desconhecido"
+          nomeFreelancer: perfilFreelancer?.nome || "Usuário desconhecido",
+          freelancerId: candidatura.freelancerId
         });
       }
 

@@ -159,6 +159,15 @@ function onVerDetalhes(problema) {
   document.body.style.overflow = "hidden";
 }
 
+function onVerPerfilEmpresa(problema) {
+  if (!problema?.empresaId) {
+    showToast("Perfil da empresa não disponível", "info");
+    return;
+  }
+
+  window.location.href = `perfil-publico.html?userId=${problema.empresaId}`;
+}
+
 function renderLista() {
   clearElement(lista);
 
@@ -176,6 +185,7 @@ function renderLista() {
       candidatura,
       onAbrirChat: abrirChat,
       onVerDetalhes,
+      onVerPerfilEmpresa,
       onCandidatar: async (button) => {
         try {
           setButtonLoading(button, true, "Enviando...");

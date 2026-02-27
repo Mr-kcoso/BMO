@@ -106,12 +106,21 @@ function renderChats() {
       createElement("p", { className: "chats-item-line", text: `Iniciado em: ${formatDate(chat.criadoEm)}` })
     );
 
+    const actions = createElement("div", { className: "button-row" });
+
     const btnAbrir = createElement("button", { className: "btn-primary", text: "Abrir chat" });
     btnAbrir.addEventListener("click", () => {
       window.location.href = `chat.html?chatId=${chat.id}`;
     });
 
-    item.appendChild(btnAbrir);
+    const btnPerfil = createElement("button", { className: "chats-nav-btn", text: "Ver perfil" });
+    btnPerfil.addEventListener("click", () => {
+      window.location.href = `perfil-publico.html?userId=${chat.outroId}`;
+    });
+
+    actions.appendChild(btnAbrir);
+    actions.appendChild(btnPerfil);
+    item.appendChild(actions);
     lista.appendChild(item);
   });
 
@@ -155,7 +164,8 @@ async function carregarChats(user) {
       chats.push({
         ...chat,
         titulo: problemaSnap.exists() ? problemaSnap.data().titulo : "Problema removido",
-        outroNome: outroPerfil?.nome || "Usuário"
+        outroNome: outroPerfil?.nome || "Usuário",
+        outroId: tipo === "empresa" ? chat.freelancerId : chat.empresaId
       });
     }
 
