@@ -1198,13 +1198,39 @@ button:hover {
   gap: 14px;
 }
 
-.landing-parceiros-grid p {
+.landing-parceiro-card {
   margin: 0;
   background: #111827;
   border: 1px solid #1f2937;
   border-radius: 12px;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.landing-parceiro-logo-box {
+  width: 150px;
+  height: 150px;
+  background: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.landing-parceiro-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.landing-parceiro-card p {
+  margin: 0;
   color: #d1d5db;
+  font-weight: 600;
 }
 
 .landing-final-cta {
