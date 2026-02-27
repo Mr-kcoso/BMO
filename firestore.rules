@@ -39,7 +39,7 @@ service cloud.firestore {
       allow update, delete: if isTeamAdmin(equipeId);
 
       match /membros/{userId} {
-        allow read: if isTeamMember(equipeId);
+        allow read: if isSignedIn() && (request.auth.uid == userId || isTeamMember(equipeId));
 
         allow create: if isTeamAdmin(equipeId)
           || (isSignedIn()

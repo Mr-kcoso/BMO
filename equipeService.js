@@ -81,14 +81,19 @@ export async function listarEquipesDoUsuario(userId) {
 
     return equipes.filter(Boolean);
   } catch (error) {
-    const equipesCriadasQuery = query(collection(db, "equipes"), where("criadorId", "==", userId));
-    const equipesCriadasSnap = await getDocs(equipesCriadasQuery);
+    try {
+      const equipesCriadasQuery = query(collection(db, "equipes"), where("criadorId", "==", userId));
+      const equipesCriadasSnap = await getDocs(equipesCriadasQuery);
 
-    return equipesCriadasSnap.docs.map((docSnap) => ({
-      id: docSnap.id,
-      ...docSnap.data(),
-      role: "admin"
-    }));
+      return equipesCriadasSnap.docs.map((docSnap) => ({
+        id: docSnap.id,
+        ...docSnap.data(),
+        role: "admin"
+      }));
+    } catch (fallbackError) {
+      console.error("Falha ao listar equipes no principal e fallback", error, fallbackError);
+      return [];
+    }
   }
 }
 
