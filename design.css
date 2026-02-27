@@ -20,6 +20,7 @@ z-index: 1000;
   border:solid 2px white;
   border-radius: 12px;
 }
+
 #head1{
 background-color: var(--bmo-preto);
 position: fixed;
@@ -28,7 +29,10 @@ left: 0;
 width: 100%;
 z-index: 1000;
 }
-  
+.resizeno{
+ resize:none;
+
+} 
 body {
   background-color: var(--bmo-cinza-bg);
   color: var(--bmo-preto);
@@ -656,9 +660,8 @@ button:hover {
 .chats-page,
 .chat-page {
   background: #111;
-  color: white;
+  color: var(--bmo-laranja);
 }
-
 .chats-dashboard,
 .chat-layout {
   max-width: 1180px;
