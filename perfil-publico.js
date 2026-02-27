@@ -1,4 +1,5 @@
 import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
+import { aceitarPedidoAmizade, enviarPedidoAmizade, getAmizade } from "./amizadeService.js";
 import { createElement, showToast } from "./utils.js";
 
 const params = new URLSearchParams(window.location.search);
@@ -15,6 +16,7 @@ const disponibilidade = document.getElementById("perfilPublicoDisponibilidade");
 const localizacao = document.getElementById("perfilPublicoLocalizacao");
 const habilidades = document.getElementById("perfilPublicoHabilidades");
 const links = document.getElementById("perfilPublicoLinks");
+const amizadeAcao = document.getElementById("perfilPublicoAmizadeAcao");
 
 function setText(element, text) {
   if (element) element.textContent = text;
@@ -33,7 +35,66 @@ function adicionarLink(label, href) {
   links.appendChild(link);
 }
 
-async function carregarPerfilPublico() {
+function renderTextoAmizade(texto) {
+  if (!amizadeAcao) return;
+  amizadeAcao.innerHTML = "";
+  amizadeAcao.appendChild(createElement("p", { className: "perfil-publico-text", text: texto }));
+}
+
+function renderBotaoAmizade(texto, onClick) {
+  if (!amizadeAcao) return;
+  amizadeAcao.innerHTML = "";
+
+  const botao = createElement("button", { className: "chats-nav-btn", text: texto });
+  botao.addEventListener("click", onClick);
+  amizadeAcao.appendChild(botao);
+}
+
+async function carregarEstadoAmizade(usuarioLogadoId) {
+  if (!usuarioLogadoId || !userId || usuarioLogadoId === userId) {
+    renderTextoAmizade("");
+    return;
+  }
+
+  const amizade = await getAmizade(usuarioLogadoId, userId);
+
+  if (!amizade) {
+    renderBotaoAmizade("Adicionar amigo", async () => {
+      try {
+        await enviarPedidoAmizade(usuarioLogadoId, userId);
+        showToast("Pedido de amizade enviado", "success");
+        await carregarEstadoAmizade(usuarioLogadoId);
+      } catch (error) {
+        console.error(error);
+        showToast("Não foi possível enviar o pedido", "error");
+      }
+    });
+    return;
+  }
+
+  if (amizade.status === "aceita") {
+    renderTextoAmizade("Amigos");
+    return;
+  }
+
+  if (amizade.status === "pendente" && amizade.userB === usuarioLogadoId) {
+    renderBotaoAmizade("Aceitar", async () => {
+      try {
+        await aceitarPedidoAmizade(amizade.id);
+        showToast("Amizade aceita", "success");
+        await carregarEstadoAmizade(usuarioLogadoId);
+      } catch (error) {
+        console.error(error);
+        showToast("Não foi possível aceitar o pedido", "error");
+      }
+    });
+    return;
+  }
+
+  renderTextoAmizade("Solicitação pendente");
+}
+
+async function carregarPerfilPublico(usuarioLogado) {
   if (!userId) {
     showToast("Perfil não informado", "error");
     window.history.back();
@@ -88,12 +149,14 @@ async function carregarPerfilPublico() {
   if (links && !links.children.length) {
     links.appendChild(createElement("p", { className: "perfil-publico-text", text: "Nenhum link informado." }));
   }
+
+  await carregarEstadoAmizade(usuarioLogado.uid);
 }
 
 observeAuthenticatedUser(
-  async () => {
+  async (user) => {
     try {
-      await carregarPerfilPublico();
+      await carregarPerfilPublico(user);
     } catch (error) {
       console.error(error);
       showToast("Falha ao carregar perfil público", "error");

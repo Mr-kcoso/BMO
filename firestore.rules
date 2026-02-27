@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isTeamMember(teamId) {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/equipes/$(teamId)/membros/$(request.auth.uid));
+    }
+
+    function isTeamAdmin(teamId) {
+      return isSignedIn()
+        && get(/databases/$(database)/documents/equipes/$(teamId)/membros/$(request.auth.uid)).data.role == "admin";
+    }
+
+    match /amizades/{amizadeId} {
+      allow read: if isSignedIn() && (resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid);
+
+      allow create: if isSignedIn()
+        && request.resource.data.userA == request.auth.uid
+        && request.resource.data.userA != request.resource.data.userB
+        && request.resource.data.status == "pendente";
+
+      allow update: if isSignedIn()
+        && resource.data.status == "pendente"
+        && request.resource.data.status == "aceita"
+        && request.resource.data.userA == resource.data.userA
+        && request.resource.data.userB == resource.data.userB
+        && request.auth.uid == resource.data.userB;
+
+      allow delete: if false;
+    }
+
+    match /equipes/{equipeId} {
+      allow create: if isSignedIn() && request.resource.data.criadorId == request.auth.uid;
+      allow read: if isTeamMember(equipeId);
+      allow update, delete: if isTeamAdmin(equipeId);
+
+      match /membros/{userId} {
+        allow read: if isTeamMember(equipeId);
+        allow create, update, delete: if isTeamAdmin(equipeId);
+      }
+    }
+  }
+}

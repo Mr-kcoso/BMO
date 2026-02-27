@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Meus amigos - BMO</title>
+  <link rel="stylesheet" href="design.css">
+</head>
+<body class="perfil-page">
+  <main class="perfil-layout">
+    <header class="page-header perfil-header">
+      <div>
+        <h1>Meus Amigos</h1>
+        <p class="perfil-subtitle">Solicitações pendentes e amizades aceitas.</p>
+      </div>
+      <div class="button-row">
+        <button class="chats-nav-btn" onclick="window.history.back()">Voltar</button>
+      </div>
+    </header>
+
+    <section class="card perfil-card">
+      <div class="perfil-section">
+        <h2>Solicitações pendentes</h2>
+        <ul id="listaSolicitacoes" class="empresa-candidaturas-grid"></ul>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Amigos</h2>
+        <ul id="listaAmigos" class="empresa-candidaturas-grid"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="meus-amigos.js"></script>
+</body>
+</html>
