@@ -636,6 +636,10 @@ button:hover {
   z-index: 1200;
 }
 
+.freelancer-modal.hidden {
+  display: none;
+}
+
 .freelancer-modal-content {
   width: min(760px, 100%);
   max-height: 90vh;
