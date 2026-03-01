@@ -1,5 +1,5 @@
 import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
-import { adicionarMembroEquipe, getEquipe, getRoleMembroEquipe, listarMembrosEquipe } from "./equipeService.js";
+import { convidarMembroEquipe, getEquipe, getRoleMembroEquipe, listarMembrosEquipe } from "./equipeService.js";
 import { createElement, setButtonLoading, showToast } from "./utils.js";
 
 const params = new URLSearchParams(window.location.search);
@@ -77,14 +77,13 @@ btnAdicionarMembro.addEventListener("click", async () => {
   }
 
   try {
-    setButtonLoading(btnAdicionarMembro, true, "Adicionando...");
-    await adicionarMembroEquipe(equipeId, novoMembroId, "membro");
+    setButtonLoading(btnAdicionarMembro, true, "Enviando convite...");
+    await convidarMembroEquipe(equipeId, novoMembroId, currentUser.uid);
     inputNovoMembroId.value = "";
-    showToast("Membro adicionado", "success");
-    await renderMembros();
+    showToast("Convite enviado com sucesso", "success");
   } catch (error) {
     console.error(error);
-    showToast("Não foi possível adicionar membro", "error");
+    showToast(error?.message || "Não foi possível enviar convite", "error");
   } finally {
     setButtonLoading(btnAdicionarMembro, false);
   }

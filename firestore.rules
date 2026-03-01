@@ -50,5 +50,24 @@ service cloud.firestore {
         allow update, delete: if isTeamAdmin(equipeId);
       }
     }
+
+    match /convitesEquipe/{conviteId} {
+      allow read: if isSignedIn() && resource.data.convidadoId == request.auth.uid;
+
+      allow create: if isSignedIn()
+        && request.resource.data.convidadoPorId == request.auth.uid
+        && request.resource.data.status == "pendente";
+
+      allow update: if isSignedIn()
+        && resource.data.convidadoId == request.auth.uid
+        && resource.data.status == "pendente"
+        && request.resource.data.convidadoId == resource.data.convidadoId
+        && request.resource.data.convidadoPorId == resource.data.convidadoPorId
+        && request.resource.data.equipeId == resource.data.equipeId
+        && request.resource.data.status in ["aceito", "recusado"];
+
+      allow delete: if false;
+    }
+
   }
 }

@@ -8,6 +8,7 @@ const fotoPerfilInput = document.getElementById("fotoPerfil");
 const previewFoto = document.getElementById("previewFoto");
 const nomeInput = document.getElementById("nomePerfil");
 const emailInput = document.getElementById("emailPerfil");
+const uidInput = document.getElementById("uidPerfil");
 const bioInput = document.getElementById("bioPerfil");
 const bioCount = document.getElementById("bioCount");
 const habilidadesInput = document.getElementById("habilidadesPerfil");
@@ -46,6 +47,7 @@ function setTipoFields(tipo) {
 function preencherFormulario(perfil, authUser) {
   if (nomeInput) nomeInput.value = perfil?.nome || "";
   if (emailInput) emailInput.value = perfil?.email || authUser.email || "";
+  if (uidInput) uidInput.value = authUser.uid || "";
 
   if (bioInput) bioInput.value = perfil?.bio || "";
   if (habilidadesInput) {

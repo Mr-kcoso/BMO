@@ -1,5 +1,11 @@
 import { observeAuthenticatedUser } from "./authService.js";
-import { criarEquipe, listarEquipesDoUsuario, uploadFotoEquipeCloudinary } from "./equipeService.js";
+import {
+  criarEquipe,
+  listarConvitesRecebidos,
+  listarEquipesDoUsuario,
+  responderConviteEquipe,
+  uploadFotoEquipeCloudinary
+} from "./equipeService.js";
 import { createElement, setButtonLoading, showToast } from "./utils.js";
 
 const inputNome = document.getElementById("equipeNome");
@@ -7,8 +13,19 @@ const inputDescricao = document.getElementById("equipeDescricao");
 const inputFoto = document.getElementById("equipeFoto");
 const btnCriarEquipe = document.getElementById("btnCriarEquipe");
 const listaEquipes = document.getElementById("listaEquipes");
+const listaConvites = document.getElementById("listaConvites");
 
 let currentUser = null;
+
+function getStatusConviteLabel(status) {
+  const map = {
+    pendente: "Pendente",
+    aceito: "Aceito",
+    recusado: "Recusado"
+  };
+
+  return map[status] || "Desconhecido";
+}
 
 async function renderEquipes() {
   const equipes = await listarEquipesDoUsuario(currentUser.uid);
@@ -33,6 +50,64 @@ async function renderEquipes() {
 
     item.appendChild(conteudo);
     listaEquipes.appendChild(item);
+  });
+}
+
+async function responderConvite(button, convite, resposta) {
+  try {
+    setButtonLoading(button, true, resposta === "aceito" ? "Aceitando..." : "Recusando...");
+    await responderConviteEquipe(convite.id, resposta, currentUser.uid);
+    showToast(`Convite ${resposta} com sucesso`, "success");
+    await renderConvites();
+    await renderEquipes();
+  } catch (error) {
+    console.error(error);
+    showToast(error?.message || "Não foi possível responder convite", "error");
+  } finally {
+    setButtonLoading(button, false);
+  }
+}
+
+async function renderConvites() {
+  if (!listaConvites) return;
+
+  const convites = await listarConvitesRecebidos(currentUser.uid);
+  listaConvites.innerHTML = "";
+
+  if (!convites.length) {
+    listaConvites.appendChild(
+      createElement("li", { className: "empresa-empty", text: "Você não possui solicitações de equipe." })
+    );
+    return;
+  }
+
+  convites.forEach((convite) => {
+    const item = createElement("li", { className: "empresa-candidatura-card" });
+    const conteudo = createElement("div", { className: "empresa-candidatura-content" });
+    const acoes = createElement("div", { className: "button-row" });
+
+    conteudo.appendChild(createElement("h3", { text: convite.equipeNome || "Equipe" }));
+    conteudo.appendChild(
+      createElement("p", {
+        className: "empresa-candidatura-meta",
+        text: `Status: ${getStatusConviteLabel(convite.status)}`
+      })
+    );
+
+    if (convite.status === "pendente") {
+      const btnAceitar = createElement("button", { className: "btn-primary", text: "Aceitar" });
+      const btnRecusar = createElement("button", { className: "empresa-secondary-btn", text: "Recusar" });
+
+      btnAceitar.addEventListener("click", () => responderConvite(btnAceitar, convite, "aceito"));
+      btnRecusar.addEventListener("click", () => responderConvite(btnRecusar, convite, "recusado"));
+
+      acoes.appendChild(btnAceitar);
+      acoes.appendChild(btnRecusar);
+      conteudo.appendChild(acoes);
+    }
+
+    item.appendChild(conteudo);
+    listaConvites.appendChild(item);
   });
 }
 
@@ -87,7 +162,7 @@ observeAuthenticatedUser(
     currentUser = user;
 
     try {
-      await renderEquipes();
+      await Promise.all([renderEquipes(), renderConvites()]);
     } catch (error) {
       console.error(error);
       showToast("Erro ao carregar equipes", "error");

@@ -4,8 +4,9 @@ import {
   collectionGroup,
   doc,
   documentId,
-  getDoc,
   getDocs,
+  getDoc,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -131,6 +132,103 @@ export async function adicionarMembroEquipe(equipeId, userId, role = "membro") {
     },
     { merge: true }
   );
+}
+
+export async function convidarMembroEquipe(equipeId, convidadoId, convidadoPorId) {
+  if (!equipeId || !convidadoId || !convidadoPorId) {
+    throw new Error("Dados obrigatórios do convite não informados");
+  }
+
+  if (convidadoId === convidadoPorId) {
+    throw new Error("Você já faz parte dessa equipe");
+  }
+
+  const membroRef = doc(db, "equipes", equipeId, "membros", convidadoId);
+  const membroSnap = await getDoc(membroRef);
+  if (membroSnap.exists()) {
+    throw new Error("Usuário já participa da equipe");
+  }
+
+  const usuarioRef = doc(db, "usuarios", convidadoId);
+  const usuarioSnap = await getDoc(usuarioRef);
+  if (!usuarioSnap.exists()) {
+    throw new Error("Usuário convidado não encontrado");
+  }
+
+  const equipe = await getEquipe(equipeId);
+
+  const conviteRef = doc(db, "convitesEquipe", `${equipeId}_${convidadoId}`);
+  await setDoc(
+    conviteRef,
+    {
+      equipeId,
+      equipeNome: equipe?.nome || "Equipe",
+      convidadoId,
+      convidadoPorId,
+      status: "pendente",
+      createdAt: serverTimestamp(),
+      respondedAt: null
+    },
+    { merge: true }
+  );
+}
+
+export async function listarConvitesRecebidos(userId) {
+  const convitesRef = collection(db, "convitesEquipe");
+  const convitesQuery = query(convitesRef, where("convidadoId", "==", userId), orderBy("createdAt", "desc"));
+  const convitesSnap = await getDocs(convitesQuery);
+
+  return convitesSnap.docs.map((docSnap) => ({
+    id: docSnap.id,
+    ...docSnap.data()
+  }));
+}
+
+export async function responderConviteEquipe(conviteId, resposta, userId) {
+  if (!conviteId || !resposta || !userId) {
+    throw new Error("Dados obrigatórios da resposta não informados");
+  }
+
+  if (!["aceito", "recusado"].includes(resposta)) {
+    throw new Error("Resposta de convite inválida");
+  }
+
+  const conviteRef = doc(db, "convitesEquipe", conviteId);
+  const conviteSnap = await getDoc(conviteRef);
+
+  if (!conviteSnap.exists()) {
+    throw new Error("Convite não encontrado");
+  }
+
+  const convite = conviteSnap.data();
+  if (convite.convidadoId !== userId) {
+    throw new Error("Você não pode responder este convite");
+  }
+
+  if (convite.status !== "pendente") {
+    throw new Error("Este convite já foi respondido");
+  }
+
+  const batch = writeBatch(db);
+
+  batch.update(conviteRef, {
+    status: resposta,
+    respondedAt: serverTimestamp()
+  });
+
+  if (resposta === "aceito") {
+    const membroRef = doc(db, "equipes", convite.equipeId, "membros", userId);
+    batch.set(
+      membroRef,
+      {
+        role: "membro",
+        joinedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+  }
+
+  await batch.commit();
 }
 
 export async function getRoleMembroEquipe(equipeId, userId) {
