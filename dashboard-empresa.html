@@ -12,18 +12,33 @@
         <h1>Dashboard empresa</h1>
         <p id="resumoCandidaturas" class="empresa-subtitle">Carregando candidaturas...</p>
       </div>
-      <div class="button-row empresa-nav-group">
-        <button class="empresa-nav-btn" onclick="window.location.href='perfil-empresa.html'">Meu perfil</button>
-        <button class="empresa-nav-btn" onclick="window.location.href='meus-amigos.html'">Meus amigos</button>
-        <button class="empresa-nav-btn" onclick="window.location.href='busca-perfis.html'">Buscar perfis</button>
-        <button class="empresa-nav-btn" onclick="window.location.href='minhas-equipes.html'">Minhas equipes</button>
-        <button class="empresa-nav-btn" onclick="window.location.href='meus-planos-empresa.html'">Meus planos</button>
-        <button class="empresa-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
+      <div class="dashboard-menu-wrapper">
+        <button class="menu-hamburger-btn" data-menu-trigger="menuOverlayEmpresa" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </header>
 
 
-    
+
+
+
+    <div id="menuOverlayEmpresa" class="dashboard-menu-overlay hidden" role="dialog" aria-modal="true">
+      <div class="dashboard-menu-panel">
+        <div class="dashboard-menu-head">
+          <h2>Menu empresa</h2>
+          <button class="chat-nav-btn" data-menu-close="menuOverlayEmpresa" aria-label="Fechar menu">×</button>
+        </div>
+        <div class="button-row empresa-nav-group dashboard-menu-actions">
+          <button class="empresa-nav-btn" onclick="window.location.href='perfil-empresa.html'">Meu perfil</button>
+          <button class="empresa-nav-btn" onclick="window.location.href='meus-amigos.html'">Meus amigos</button>
+          <button class="empresa-nav-btn" onclick="window.location.href='busca-perfis.html'">Buscar perfis</button>
+          <button class="empresa-nav-btn" onclick="window.location.href='minhas-equipes.html'">Minhas equipes</button>
+          <button class="empresa-nav-btn" onclick="window.location.href='meus-planos-empresa.html'">Meus planos</button>
+          <button class="empresa-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
+        </div>
+      </div>
+    </div>
 
     <section class="empresa-form-card" aria-label="Publicar problema">
       <h2>Publicar problema</h2>
@@ -94,6 +109,7 @@
     </section>
   </main>
 
+  <script type="module" src="dashboard-menu.js"></script>
   <script type="module" src="empresa.js"></script>
 </body>
 </html>

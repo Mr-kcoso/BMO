@@ -12,14 +12,29 @@
         <h1>Problemas disponíveis</h1>
         <p id="resumoProblemas" class="freelancer-subtitle">Carregando oportunidades...</p>
       </div>
-      <div class="button-row freelancer-nav-group">
-        <button class="freelancer-nav-btn" onclick="window.location.href='perfil-freelancer.html'">Meu perfil</button>
-        <button class="freelancer-nav-btn" onclick="window.location.href='meus-amigos.html'">Meus amigos</button>
-        <button class="freelancer-nav-btn" onclick="window.location.href='busca-perfis.html'">Buscar perfis</button>
-        <button class="freelancer-nav-btn" onclick="window.location.href='minhas-equipes.html'">Minhas equipes</button>
-        <button class="freelancer-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
+      <div class="dashboard-menu-wrapper">
+        <button class="menu-hamburger-btn" data-menu-trigger="menuOverlayFreelancer" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </header>
+
+
+    <div id="menuOverlayFreelancer" class="dashboard-menu-overlay hidden" role="dialog" aria-modal="true">
+      <div class="dashboard-menu-panel">
+        <div class="dashboard-menu-head">
+          <h2>Menu freelancer</h2>
+          <button class="chat-nav-btn" data-menu-close="menuOverlayFreelancer" aria-label="Fechar menu">×</button>
+        </div>
+        <div class="button-row freelancer-nav-group dashboard-menu-actions">
+          <button class="freelancer-nav-btn" onclick="window.location.href='perfil-freelancer.html'">Meu perfil</button>
+          <button class="freelancer-nav-btn" onclick="window.location.href='meus-amigos.html'">Meus amigos</button>
+          <button class="freelancer-nav-btn" onclick="window.location.href='busca-perfis.html'">Buscar perfis</button>
+          <button class="freelancer-nav-btn" onclick="window.location.href='minhas-equipes.html'">Minhas equipes</button>
+          <button class="freelancer-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
+        </div>
+      </div>
+    </div>
 
     <section class="freelancer-filtros" aria-label="Filtros de problemas">
       <input id="buscaProblemas" type="search" placeholder="Buscar por palavra-chave" />
@@ -55,6 +70,7 @@
       </div>
     </div>
 
+  <script type="module" src="dashboard-menu.js"></script>
   <script type="module" src="freelancer.js"></script>
 </body>
 </html>

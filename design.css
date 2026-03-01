@@ -72,7 +72,7 @@ select {
 
 button {
   cursor: pointer;
-  border: none;
+  border: 1px solid var(--bmo-laranja);
   border-radius: 12px;
 }chat
 
@@ -83,6 +83,7 @@ button:hover {
 .btn-primary {
   background: var(--bmo-laranja);
   color: #fff;
+  border-color: #374151;
 }
 
 .page-header {
@@ -169,12 +170,79 @@ button:hover {
   color: #fff;
   margin-top: 12px;
   width: 100%;
+  border-color: #374151;
 }
 
 .button-row {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+
+.dashboard-menu-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.menu-hamburger-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #1f2937;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.menu-hamburger-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #f3f4f6;
+  border-radius: 999px;
+}
+
+.dashboard-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.68);
+  z-index: 1250;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dashboard-menu-panel {
+  width: min(360px, 92vw);
+  height: 100%;
+  background: #0f172a;
+  border-left: 1px solid rgba(255, 107, 0, 0.35);
+  padding: 20px 16px;
+  overflow-y: auto;
+}
+
+.dashboard-menu-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.dashboard-menu-head h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 22px;
+}
+
+.dashboard-menu-actions {
+  justify-content: flex-start;
+}
+
+.dashboard-menu-actions button {
+  width: 100%;
+  text-align: left;
 }
 
 .perfil-card {
@@ -293,6 +361,7 @@ button:hover {
 .freelancer-nav-btn {
   background: #1f2937;
   color: #e5e7eb;
+  border-color: var(--bmo-laranja);
 }
 
 .freelancer-nav-group {
@@ -408,6 +477,7 @@ button:hover {
 .freelancer-secondary-btn {
   background: #2a2a2a;
   color: #e5e7eb;
+  border-color: var(--bmo-laranja);
 }
 
 .freelancer-status {
@@ -502,6 +572,7 @@ button:hover {
 .empresa-nav-btn {
   background: #1f2937;
   color: #e5e7eb;
+  border-color: var(--bmo-laranja);
 }
 
 .empresa-nav-group {
@@ -673,6 +744,7 @@ button:hover {
 .empresa-secondary-btn {
   background: #2c2c2c;
   color: #e5e7eb;
+  border-color: var(--bmo-laranja);
 }
 
 .empresa-status-btn {
@@ -816,6 +888,7 @@ button:hover {
 .chat-nav-btn {
   background: #1f2937;
   color: #ffffff;
+  border-color: var(--bmo-laranja);
 }
 
 .chats-list-card,
