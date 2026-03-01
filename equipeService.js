@@ -2,6 +2,7 @@ import { db } from "./firebase.js";
 import {
   collection,
   collectionGroup,
+  deleteDoc,
   doc,
   documentId,
   getDocs,
@@ -134,6 +135,12 @@ export async function adicionarMembroEquipe(equipeId, userId, role = "membro") {
   );
 }
 
+
+export async function removerMembroEquipe(equipeId, userId) {
+  const membroRef = doc(db, "equipes", equipeId, "membros", userId);
+  await deleteDoc(membroRef);
+}
+
 export async function convidarMembroEquipe(equipeId, convidadoId, convidadoPorId) {
   if (!equipeId || !convidadoId || !convidadoPorId) {
     throw new Error("Dados obrigatórios do convite não informados");
@@ -175,13 +182,35 @@ export async function convidarMembroEquipe(equipeId, convidadoId, convidadoPorId
 
 export async function listarConvitesRecebidos(userId) {
   const convitesRef = collection(db, "convitesEquipe");
-  const convitesQuery = query(convitesRef, where("convidadoId", "==", userId), orderBy("createdAt", "desc"));
-  const convitesSnap = await getDocs(convitesQuery);
 
-  return convitesSnap.docs.map((docSnap) => ({
-    id: docSnap.id,
-    ...docSnap.data()
-  }));
+  try {
+    const convitesQuery = query(convitesRef, where("convidadoId", "==", userId), orderBy("createdAt", "desc"));
+    const convitesSnap = await getDocs(convitesQuery);
+
+    return convitesSnap.docs.map((docSnap) => ({
+      id: docSnap.id,
+      ...docSnap.data()
+    }));
+  } catch (error) {
+    const fallbackQuery = query(convitesRef, where("convidadoId", "==", userId));
+    const convitesSnap = await getDocs(fallbackQuery);
+
+    return convitesSnap.docs
+      .map((docSnap) => ({
+        id: docSnap.id,
+        ...docSnap.data()
+      }))
+      .sort((a, b) => {
+        const getTime = (value) => {
+          if (!value) return 0;
+          if (typeof value.toDate === "function") return value.toDate().getTime();
+          const parsed = new Date(value).getTime();
+          return Number.isNaN(parsed) ? 0 : parsed;
+        };
+
+        return getTime(b.createdAt) - getTime(a.createdAt);
+      });
+  }
 }
 
 export async function responderConviteEquipe(conviteId, resposta, userId) {

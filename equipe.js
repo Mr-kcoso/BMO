@@ -1,5 +1,11 @@
 import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
-import { convidarMembroEquipe, getEquipe, getRoleMembroEquipe, listarMembrosEquipe } from "./equipeService.js";
+import {
+  convidarMembroEquipe,
+  getEquipe,
+  getRoleMembroEquipe,
+  listarMembrosEquipe,
+  removerMembroEquipe
+} from "./equipeService.js";
 import { createElement, setButtonLoading, showToast } from "./utils.js";
 
 const params = new URLSearchParams(window.location.search);
@@ -14,6 +20,26 @@ const btnAdicionarMembro = document.getElementById("btnAdicionarMembro");
 const listaMembros = document.getElementById("listaMembros");
 
 let currentUser = null;
+let currentUserRole = null;
+
+async function expulsarMembro(button, membroId) {
+  if (!membroId || membroId === currentUser.uid) {
+    showToast("Você não pode remover a si mesmo da equipe", "error");
+    return;
+  }
+
+  try {
+    setButtonLoading(button, true, "Removendo...");
+    await removerMembroEquipe(equipeId, membroId);
+    showToast("Membro removido da equipe", "success");
+    await renderMembros();
+  } catch (error) {
+    console.error(error);
+    showToast(error?.message || "Não foi possível remover membro", "error");
+  } finally {
+    setButtonLoading(button, false);
+  }
+}
 
 async function renderMembros() {
   const membros = await listarMembrosEquipe(equipeId);
@@ -35,7 +61,14 @@ async function renderMembros() {
 
     const content = createElement("div", { className: "empresa-candidatura-content" });
     content.appendChild(createElement("h3", { text: perfil?.nome || membro.userId }));
+    content.appendChild(createElement("p", { className: "empresa-candidatura-meta", text: `UID: ${membro.userId}` }));
     content.appendChild(createElement("p", { className: "empresa-candidatura-meta", text: `Role: ${membro.role}` }));
+
+    if (currentUserRole === "admin" && membro.userId !== currentUser.uid) {
+      const btnExpulsar = createElement("button", { className: "empresa-secondary-btn", text: "Expulsar membro" });
+      btnExpulsar.addEventListener("click", () => expulsarMembro(btnExpulsar, membro.userId));
+      content.appendChild(btnExpulsar);
+    }
 
     item.appendChild(avatar);
     item.appendChild(content);
@@ -62,8 +95,8 @@ async function carregarEquipe() {
   equipeDescricao.textContent = equipe.descricao || "Sem descrição";
   equipeFoto.src = equipe.fotoEquipe || "larva.jpeg";
 
-  const role = await getRoleMembroEquipe(equipeId, currentUser.uid);
-  blocoAdmin.classList.toggle("hidden", role !== "admin");
+  currentUserRole = await getRoleMembroEquipe(equipeId, currentUser.uid);
+  blocoAdmin.classList.toggle("hidden", currentUserRole !== "admin");
 
   await renderMembros();
 }

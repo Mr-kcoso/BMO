@@ -162,10 +162,17 @@ observeAuthenticatedUser(
     currentUser = user;
 
     try {
-      await Promise.all([renderEquipes(), renderConvites()]);
+      await renderEquipes();
     } catch (error) {
       console.error(error);
-      showToast("Erro ao carregar equipes", "error");
+      showToast("Erro ao carregar lista de equipes", "error");
+    }
+
+    try {
+      await renderConvites();
+    } catch (error) {
+      console.error(error);
+      showToast("Erro ao carregar convites da equipe", "error");
     }
   },
   () => {
