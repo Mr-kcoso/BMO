@@ -1,6 +1,6 @@
 import { auth, db } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { collection, doc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 export function observeAuthenticatedUser(onAuthenticated, onUnauthenticated) {
   return onAuthStateChanged(auth, async (user) => {
@@ -26,18 +26,38 @@ export async function getUserProfile(userId) {
 
 export async function buscarPerfis({ termo = "", tipo = "todos", excluirUserId = "" } = {}) {
   const usuariosRef = collection(db, "usuarios");
-  const usuariosQuery = tipo !== "todos" ? query(usuariosRef, where("tipo", "==", tipo)) : usuariosRef;
-  const usuariosSnap = await getDocs(usuariosQuery);
+  const usuariosSnap = await getDocs(usuariosRef);
 
   const termoNormalizado = termo.trim().toLowerCase();
+  const tipoNormalizado = String(tipo || "todos").toLowerCase();
+
+  const normalizarTipoPerfil = (tipoPerfil) =>
+    String(tipoPerfil || "")
+      .trim()
+      .toLowerCase() === "empresa"
+      ? "empresa"
+      : "freelancer";
 
   return usuariosSnap.docs
-    .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+    .map((docSnap) => {
+      const perfil = { id: docSnap.id, ...docSnap.data() };
+      return {
+        ...perfil,
+        tipo: normalizarTipoPerfil(perfil.tipo)
+      };
+    })
     .filter((perfil) => {
       if (perfil.id === excluirUserId) return false;
+      if (tipoNormalizado !== "todos" && perfil.tipo !== tipoNormalizado) return false;
       if (!termoNormalizado) return true;
 
-      const camposBusca = [perfil.nome, perfil.areaAtuacao, perfil.descricaoInstitucional]
+      const camposBusca = [
+        perfil.nome,
+        perfil.areaAtuacao,
+        perfil.bio,
+        perfil.descricaoInstitucional,
+        ...(Array.isArray(perfil.habilidades) ? perfil.habilidades : [])
+      ]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
