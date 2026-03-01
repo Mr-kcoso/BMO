@@ -214,6 +214,10 @@ button:hover {
   justify-content: flex-end;
 }
 
+.dashboard-menu-overlay.hidden {
+  display: none;
+}
+
 .dashboard-menu-panel {
   width: min(360px, 92vw);
   height: 100%;
