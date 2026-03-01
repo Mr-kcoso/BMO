@@ -13,6 +13,10 @@ left: 450px;
 width: 100%;
 z-index: 1000;
 }
+#xabalanga{
+  color:white;
+  text-decoration: none;
+}
 #div1{
   background-color: black;
 }
