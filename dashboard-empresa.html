@@ -13,7 +13,7 @@
         <p id="resumoCandidaturas" class="empresa-subtitle">Carregando candidaturas...</p>
       </div>
       <div class="dashboard-menu-wrapper">
-        <button class="menu-hamburger-btn" data-menu-trigger="menuOverlayEmpresa" aria-label="Abrir menu">
+        <button class="menu-hamburger-btn" type="button" data-menu-trigger="menuOverlayEmpresa" aria-label="Abrir menu" onclick="window.__bmoOpenMenu && window.__bmoOpenMenu('menuOverlayEmpresa')">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -27,7 +27,7 @@
       <div class="dashboard-menu-panel">
         <div class="dashboard-menu-head">
           <h2>Menu empresa</h2>
-          <button class="chat-nav-btn" data-menu-close="menuOverlayEmpresa" aria-label="Fechar menu">×</button>
+          <button class="chat-nav-btn" type="button" data-menu-close="menuOverlayEmpresa" aria-label="Fechar menu" onclick="window.__bmoCloseMenu && window.__bmoCloseMenu('menuOverlayEmpresa')">×</button>
         </div>
         <div class="button-row empresa-nav-group dashboard-menu-actions">
           <button class="empresa-nav-btn" onclick="window.location.href='perfil-empresa.html'">Meu perfil</button>

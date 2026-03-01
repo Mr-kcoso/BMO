@@ -12,24 +12,33 @@ function fecharMenu(menuId) {
   document.body.style.overflow = "";
 }
 
-document.querySelectorAll("[data-menu-trigger]").forEach((button) => {
-  button.addEventListener("click", () => {
-    abrirMenu(button.getAttribute("data-menu-trigger"));
-  });
-});
+window.__bmoOpenMenu = abrirMenu;
+window.__bmoCloseMenu = fecharMenu;
 
-document.querySelectorAll("[data-menu-close]").forEach((button) => {
-  button.addEventListener("click", () => {
-    fecharMenu(button.getAttribute("data-menu-close"));
-  });
-});
-
+// Estado inicial defensivo: qualquer overlay de dashboard começa fechado.
 document.querySelectorAll(".dashboard-menu-overlay").forEach((overlay) => {
-  overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) {
-      fecharMenu(overlay.id);
-    }
-  });
+  overlay.classList.add("hidden");
+});
+document.body.style.overflow = "";
+
+// Delegação para garantir funcionamento mesmo se houver alterações no DOM.
+document.addEventListener("click", (event) => {
+  const trigger = event.target.closest("[data-menu-trigger]");
+  if (trigger) {
+    abrirMenu(trigger.getAttribute("data-menu-trigger"));
+    return;
+  }
+
+  const close = event.target.closest("[data-menu-close]");
+  if (close) {
+    fecharMenu(close.getAttribute("data-menu-close"));
+    return;
+  }
+
+  const overlay = event.target.classList?.contains("dashboard-menu-overlay") ? event.target : null;
+  if (overlay) {
+    fecharMenu(overlay.id);
+  }
 });
 
 document.addEventListener("keydown", (event) => {

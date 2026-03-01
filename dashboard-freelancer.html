@@ -13,7 +13,7 @@
         <p id="resumoProblemas" class="freelancer-subtitle">Carregando oportunidades...</p>
       </div>
       <div class="dashboard-menu-wrapper">
-        <button class="menu-hamburger-btn" data-menu-trigger="menuOverlayFreelancer" aria-label="Abrir menu">
+        <button class="menu-hamburger-btn" type="button" data-menu-trigger="menuOverlayFreelancer" aria-label="Abrir menu" onclick="window.__bmoOpenMenu && window.__bmoOpenMenu('menuOverlayFreelancer')">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -24,7 +24,7 @@
       <div class="dashboard-menu-panel">
         <div class="dashboard-menu-head">
           <h2>Menu freelancer</h2>
-          <button class="chat-nav-btn" data-menu-close="menuOverlayFreelancer" aria-label="Fechar menu">×</button>
+          <button class="chat-nav-btn" type="button" data-menu-close="menuOverlayFreelancer" aria-label="Fechar menu" onclick="window.__bmoCloseMenu && window.__bmoCloseMenu('menuOverlayFreelancer')">×</button>
         </div>
         <div class="button-row freelancer-nav-group dashboard-menu-actions">
           <button class="freelancer-nav-btn" onclick="window.location.href='perfil-freelancer.html'">Meu perfil</button>
