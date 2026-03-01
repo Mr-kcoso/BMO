@@ -295,6 +295,29 @@ button:hover {
   color: #e5e7eb;
 }
 
+.freelancer-nav-group {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.14), rgba(17, 24, 39, 0.75));
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  border-radius: 14px;
+  padding: 10px;
+  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.freelancer-nav-group .freelancer-nav-btn {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: transform 0.18s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.freelancer-nav-group .freelancer-nav-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(59, 130, 246, 0.5);
+  background: #253244;
+}
+
 .freelancer-filtros {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
