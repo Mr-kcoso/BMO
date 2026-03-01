@@ -139,7 +139,15 @@ async function carregarEquipe() {
   blocoAdmin.classList.toggle("hidden", currentUserRole !== "admin");
 
   const participantes = await renderMembros();
-  await configurarChatEquipe(participantes);
+
+  try {
+    await configurarChatEquipe(participantes);
+  } catch (error) {
+    console.error(error);
+    if (alertaChatEquipe) {
+      alertaChatEquipe.textContent = "Não foi possível inicializar o chat da equipe agora.";
+    }
+  }
 }
 
 btnAbrirChatEquipe?.addEventListener("click", () => {
