@@ -15,6 +15,13 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/equipes/$(teamId)/membros/$(request.auth.uid)).data.role == "admin";
     }
 
+
+    match /usuarios/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
     match /amizades/{amizadeId} {
       allow read: if isSignedIn() && (resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid);
 
