@@ -115,3 +115,23 @@ export async function listarSolicitacoesPendentes(userId) {
     ...docSnap.data()
   }));
 }
+
+
+export async function garantirChatAmizade(userIdA, userIdB) {
+  if (!userIdA || !userIdB || userIdA === userIdB) {
+    throw new Error("Usuários inválidos para chat de amizade");
+  }
+
+  const chatId = buildAmizadeId(userIdA, userIdB);
+  const chatRef = doc(db, "chatsAmizade", chatId);
+  const chatSnap = await getDoc(chatRef);
+
+  if (!chatSnap.exists()) {
+    await setDoc(chatRef, {
+      participants: [userIdA, userIdB],
+      createdAt: serverTimestamp()
+    });
+  }
+
+  return chatId;
+}

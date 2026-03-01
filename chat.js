@@ -4,6 +4,7 @@ import { clearElement, createElement, setButtonLoading, showToast } from "./util
 
 const params = new URLSearchParams(window.location.search);
 const chatId = params.get("chatId");
+const tipoChat = params.get("tipo") === "amizade" ? "amizade" : "projeto";
 
 const mensagensDiv = document.getElementById("mensagens");
 const texto = document.getElementById("texto");
@@ -71,7 +72,7 @@ async function iniciarChat(user) {
   }
 
   try {
-    const acesso = await validarAcessoAoChat(chatId, user.uid);
+    const acesso = await validarAcessoAoChat(chatId, user.uid, tipoChat);
 
     if (!acesso.autorizado) {
       showToast(acesso.motivo, "error");
@@ -79,11 +80,18 @@ async function iniciarChat(user) {
       return;
     }
 
-    const outroId = acesso.chat.empresaId === user.uid ? acesso.chat.freelancerId : acesso.chat.empresaId;
+    const outroId =
+      tipoChat === "amizade"
+        ? (acesso.chat.participants || []).find((participantId) => participantId !== user.uid)
+        : acesso.chat.empresaId === user.uid
+          ? acesso.chat.freelancerId
+          : acesso.chat.empresaId;
     const outroNome = await getProfileName(outroId);
 
     if (chatTitulo) chatTitulo.textContent = outroNome;
-    if (chatSubtitulo) chatSubtitulo.textContent = "Conversa em tempo real";
+    if (chatSubtitulo) {
+      chatSubtitulo.textContent = tipoChat === "amizade" ? "Conversa entre amigos" : "Conversa em tempo real";
+    }
     if (btnVerPerfil) {
       btnVerPerfil.hidden = false;
       btnVerPerfil.addEventListener("click", () => {
@@ -93,7 +101,7 @@ async function iniciarChat(user) {
 
     escutarMensagens(chatId, (mensagens) => {
       renderMensagens(mensagens, user.uid);
-    });
+    }, tipoChat);
 
     const enviar = async () => {
       const mensagem = texto.value.trim();
@@ -101,7 +109,7 @@ async function iniciarChat(user) {
 
       try {
         setButtonLoading(btnEnviar, true, "Enviando...");
-        await enviarMensagem(chatId, user.uid, mensagem);
+        await enviarMensagem(chatId, user.uid, mensagem, tipoChat);
         texto.value = "";
       } catch (error) {
         console.error(error);

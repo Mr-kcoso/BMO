@@ -1,5 +1,5 @@
 import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
-import { aceitarPedidoAmizade, listarAmigos, listarSolicitacoesPendentes } from "./amizadeService.js";
+import { aceitarPedidoAmizade, garantirChatAmizade, listarAmigos, listarSolicitacoesPendentes } from "./amizadeService.js";
 import { createElement, showToast } from "./utils.js";
 
 const listaSolicitacoes = document.getElementById("listaSolicitacoes");
@@ -101,9 +101,25 @@ async function carregarAmigos(user) {
     const perfilAmigo = await getUserProfileSafe(amigoId);
     const { li, conteudo } = criarItemUsuario(perfilAmigo);
 
+    const acoes = createElement("div", { className: "button-row" });
+
     const verPerfil = createElement("a", { className: "empresa-secondary-btn", text: "Ver perfil" });
     verPerfil.href = `perfil-publico.html?userId=${amigoId}`;
-    conteudo.appendChild(verPerfil);
+
+    const abrirChat = createElement("button", { className: "btn-primary", text: "Chat" });
+    abrirChat.addEventListener("click", async () => {
+      try {
+        const chatId = await garantirChatAmizade(user.uid, amigoId);
+        window.location.href = `chat.html?chatId=${chatId}&tipo=amizade`;
+      } catch (error) {
+        console.error(error);
+        showToast("Não foi possível abrir chat", "error");
+      }
+    });
+
+    acoes.appendChild(verPerfil);
+    acoes.appendChild(abrirChat);
+    conteudo.appendChild(acoes);
 
     listaAmigos.appendChild(li);
   }

@@ -10,8 +10,13 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-export async function validarAcessoAoChat(chatId, userId) {
-  const chatRef = doc(db, "chats", chatId);
+function getChatCollection(tipoChat = "projeto") {
+  return tipoChat === "amizade" ? "chatsAmizade" : "chats";
+}
+
+export async function validarAcessoAoChat(chatId, userId, tipoChat = "projeto") {
+  const chatCollection = getChatCollection(tipoChat);
+  const chatRef = doc(db, chatCollection, chatId);
   const chatSnap = await getDoc(chatRef);
 
   if (!chatSnap.exists()) {
@@ -19,6 +24,17 @@ export async function validarAcessoAoChat(chatId, userId) {
   }
 
   const chat = chatSnap.data();
+
+  if (tipoChat === "amizade") {
+    const autorizado = Array.isArray(chat.participants) && chat.participants.includes(userId);
+
+    if (!autorizado) {
+      return { autorizado: false, motivo: "Você não faz parte deste chat" };
+    }
+
+    return { autorizado: true, chat };
+  }
+
   const autorizado = userId === chat.empresaId || userId === chat.freelancerId;
 
   if (!autorizado) {
@@ -28,8 +44,9 @@ export async function validarAcessoAoChat(chatId, userId) {
   return { autorizado: true, chat };
 }
 
-export function escutarMensagens(chatId, callback) {
-  const mensagensRef = collection(db, "chats", chatId, "mensagens");
+export function escutarMensagens(chatId, callback, tipoChat = "projeto") {
+  const chatCollection = getChatCollection(tipoChat);
+  const mensagensRef = collection(db, chatCollection, chatId, "mensagens");
   const mensagensQuery = query(mensagensRef, orderBy("criadoEm"));
 
   return onSnapshot(mensagensQuery, (snapshot) => {
@@ -38,8 +55,9 @@ export function escutarMensagens(chatId, callback) {
   });
 }
 
-export async function enviarMensagem(chatId, autorId, texto) {
-  const mensagensRef = collection(db, "chats", chatId, "mensagens");
+export async function enviarMensagem(chatId, autorId, texto, tipoChat = "projeto") {
+  const chatCollection = getChatCollection(tipoChat);
+  const mensagensRef = collection(db, chatCollection, chatId, "mensagens");
 
   return addDoc(mensagensRef, {
     texto,
