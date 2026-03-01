@@ -38,11 +38,11 @@ function formatDate(value) {
   });
 }
 
-function renderResumo(total) {
+function renderResumo(total, totalComNovas = 0) {
   if (!resumoChats) return;
   resumoChats.textContent = `${total} conversa${total === 1 ? "" : "s"} disponível${
     total === 1 ? "" : "is"
-  }`;
+  }${totalComNovas ? ` • ${totalComNovas} com novas mensagens` : ""}`;
 }
 
 function renderSkeletonChats(total = 6) {
@@ -69,7 +69,8 @@ function filtrarChats(chats) {
 
     return (
       chat.titulo?.toLowerCase().includes(termoBusca) ||
-      chat.outroNome?.toLowerCase().includes(termoBusca)
+      chat.outroNome?.toLowerCase().includes(termoBusca) ||
+      chat.tipoLabel?.toLowerCase().includes(termoBusca)
     );
   });
 }
@@ -79,14 +80,14 @@ function ordenar(chats) {
 
   return [...chats].sort((a, b) => {
     if (tipo === "antigos") {
-      return getDateValue(a.criadoEm) - getDateValue(b.criadoEm);
+      return getDateValue(a.ultimaMensagemEm || a.criadoEm) - getDateValue(b.ultimaMensagemEm || b.criadoEm);
     }
 
     if (tipo === "titulo") {
       return (a.titulo || "").localeCompare(b.titulo || "", "pt-BR");
     }
 
-    return getDateValue(b.criadoEm) - getDateValue(a.criadoEm);
+    return getDateValue(b.ultimaMensagemEm || b.criadoEm) - getDateValue(a.ultimaMensagemEm || a.criadoEm);
   });
 }
 
@@ -95,31 +96,43 @@ function renderChats() {
 
   const filtrados = filtrarChats(state.chats);
   const ordenados = ordenar(filtrados);
+  const totalComNovas = ordenados.filter((chat) => chat.temNovasMensagens).length;
 
-  renderResumo(ordenados.length);
+  renderResumo(ordenados.length, totalComNovas);
 
   ordenados.forEach((chat) => {
     const item = createElement("li", { className: "chats-item-card" });
     item.appendChild(createElement("h3", { className: "chats-item-title", text: chat.titulo }));
+    item.appendChild(createElement("p", { className: "chats-item-line", text: `Tipo: ${chat.tipoLabel}` }));
     item.appendChild(createElement("p", { className: "chats-item-line", text: `Com: ${chat.outroNome}` }));
     item.appendChild(
-      createElement("p", { className: "chats-item-line", text: `Iniciado em: ${formatDate(chat.criadoEm)}` })
+      createElement("p", {
+        className: "chats-item-line",
+        text: `Última atividade: ${formatDate(chat.ultimaMensagemEm || chat.criadoEm)}`
+      })
     );
+
+    if (chat.temNovasMensagens) {
+      item.appendChild(createElement("span", { className: "empresa-tag", text: "Novas mensagens" }));
+    }
 
     const actions = createElement("div", { className: "button-row" });
 
     const btnAbrir = createElement("button", { className: "btn-primary", text: "Abrir chat" });
     btnAbrir.addEventListener("click", () => {
-      window.location.href = `chat.html?chatId=${chat.id}`;
-    });
-
-    const btnPerfil = createElement("button", { className: "chats-nav-btn", text: "Ver perfil" });
-    btnPerfil.addEventListener("click", () => {
-      window.location.href = `perfil-publico.html?userId=${chat.outroId}`;
+      window.location.href = `chat.html?chatId=${chat.id}&tipo=${chat.tipoChat}`;
     });
 
     actions.appendChild(btnAbrir);
-    actions.appendChild(btnPerfil);
+
+    if (chat.tipoChat !== "equipe") {
+      const btnPerfil = createElement("button", { className: "chats-nav-btn", text: "Ver perfil" });
+      btnPerfil.addEventListener("click", () => {
+        window.location.href = `perfil-publico.html?userId=${chat.outroId}`;
+      });
+      actions.appendChild(btnPerfil);
+    }
+
     item.appendChild(actions);
     lista.appendChild(item);
   });
@@ -132,6 +145,12 @@ function bindFiltros() {
     element?.addEventListener("input", renderChats);
     element?.addEventListener("change", renderChats);
   });
+}
+
+function getTemNovasMensagens(chat, userId) {
+  const ultimoAcesso = chat?.ultimoAcessoPor?.[userId];
+  const ultimaMensagemEm = chat?.ultimaMensagemEm;
+  return getDateValue(ultimaMensagemEm) > getDateValue(ultimoAcesso);
 }
 
 async function carregarChats(user) {
@@ -148,12 +167,17 @@ async function carregarChats(user) {
     }
 
     const campo = tipo === "empresa" ? "empresaId" : "freelancerId";
-    const chatsQuery = query(collection(db, "chats"), where(campo, "==", user.uid));
-    const chatsSnap = await getDocs(chatsQuery);
+    const chatsProjetoQuery = query(collection(db, "chats"), where(campo, "==", user.uid));
+    const chatsEquipeQuery = query(collection(db, "chatsEquipe"), where("participants", "array-contains", user.uid));
+
+    const [chatsProjetoSnap, chatsEquipeSnap] = await Promise.all([
+      getDocs(chatsProjetoQuery),
+      getDocs(chatsEquipeQuery)
+    ]);
 
     const chats = [];
 
-    for (const chatDoc of chatsSnap.docs) {
+    for (const chatDoc of chatsProjetoSnap.docs) {
       const chat = { id: chatDoc.id, ...chatDoc.data() };
 
       const [problemaSnap, outroPerfil] = await Promise.all([
@@ -163,9 +187,25 @@ async function carregarChats(user) {
 
       chats.push({
         ...chat,
+        tipoChat: "projeto",
+        tipoLabel: "Chat de projeto",
         titulo: problemaSnap.exists() ? problemaSnap.data().titulo : "Problema removido",
         outroNome: outroPerfil?.nome || "Usuário",
-        outroId: tipo === "empresa" ? chat.freelancerId : chat.empresaId
+        outroId: tipo === "empresa" ? chat.freelancerId : chat.empresaId,
+        temNovasMensagens: getTemNovasMensagens(chat, user.uid)
+      });
+    }
+
+    for (const chatDoc of chatsEquipeSnap.docs) {
+      const chat = { id: chatDoc.id, ...chatDoc.data() };
+      chats.push({
+        ...chat,
+        tipoChat: "equipe",
+        tipoLabel: "Chat da equipe",
+        titulo: chat.equipeNome || "Equipe",
+        outroNome: "Membros da equipe",
+        outroId: "",
+        temNovasMensagens: getTemNovasMensagens(chat, user.uid)
       });
     }
 

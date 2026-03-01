@@ -69,5 +69,45 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    match /chats/{chatId} {
+      allow read, update: if isSignedIn()
+        && (resource.data.empresaId == request.auth.uid || resource.data.freelancerId == request.auth.uid);
+
+      allow create: if isSignedIn()
+        && (request.resource.data.empresaId == request.auth.uid || request.resource.data.freelancerId == request.auth.uid);
+
+      match /mensagens/{mensagemId} {
+        allow read, create: if isSignedIn()
+          && exists(/databases/$(database)/documents/chats/$(chatId))
+          && (get(/databases/$(database)/documents/chats/$(chatId)).data.empresaId == request.auth.uid
+            || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid);
+      }
+    }
+
+    match /chatsAmizade/{chatId} {
+      allow read, update: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow create: if isSignedIn() && request.auth.uid in request.resource.data.participants;
+
+      match /mensagens/{mensagemId} {
+        allow read, create: if isSignedIn()
+          && exists(/databases/$(database)/documents/chatsAmizade/$(chatId))
+          && request.auth.uid in get(/databases/$(database)/documents/chatsAmizade/$(chatId)).data.participants;
+      }
+    }
+
+    match /chatsEquipe/{chatId} {
+      allow read, update: if isSignedIn() && request.auth.uid in resource.data.participants;
+
+      allow create: if isSignedIn()
+        && request.auth.uid in request.resource.data.participants
+        && request.resource.data.equipeId != null
+        && isTeamMember(request.resource.data.equipeId);
+
+      match /mensagens/{mensagemId} {
+        allow read, create: if isSignedIn()
+          && exists(/databases/$(database)/documents/chatsEquipe/$(chatId))
+          && request.auth.uid in get(/databases/$(database)/documents/chatsEquipe/$(chatId)).data.participants;
+      }
+    }
   }
 }

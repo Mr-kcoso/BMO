@@ -1,10 +1,17 @@
 import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
-import { validarAcessoAoChat, escutarMensagens, enviarMensagem } from "./chatService.js";
+import {
+  escutarMensagens,
+  escutarMetadataChat,
+  enviarMensagem,
+  marcarChatComoLido,
+  validarAcessoAoChat
+} from "./chatService.js";
 import { clearElement, createElement, setButtonLoading, showToast } from "./utils.js";
 
 const params = new URLSearchParams(window.location.search);
 const chatId = params.get("chatId");
-const tipoChat = params.get("tipo") === "amizade" ? "amizade" : "projeto";
+const tipoChatParam = params.get("tipo");
+const tipoChat = ["amizade", "equipe"].includes(tipoChatParam) ? tipoChatParam : "projeto";
 
 const mensagensDiv = document.getElementById("mensagens");
 const texto = document.getElementById("texto");
@@ -80,27 +87,44 @@ async function iniciarChat(user) {
       return;
     }
 
-    const outroId =
-      tipoChat === "amizade"
-        ? (acesso.chat.participants || []).find((participantId) => participantId !== user.uid)
-        : acesso.chat.empresaId === user.uid
-          ? acesso.chat.freelancerId
-          : acesso.chat.empresaId;
-    const outroNome = await getProfileName(outroId);
+    let outroId = null;
 
-    if (chatTitulo) chatTitulo.textContent = outroNome;
-    if (chatSubtitulo) {
-      chatSubtitulo.textContent = tipoChat === "amizade" ? "Conversa entre amigos" : "Conversa em tempo real";
-    }
-    if (btnVerPerfil) {
-      btnVerPerfil.hidden = false;
-      btnVerPerfil.addEventListener("click", () => {
-        window.location.href = `perfil-publico.html?userId=${outroId}`;
-      });
+    if (tipoChat === "amizade") {
+      outroId = (acesso.chat.participants || []).find((participantId) => participantId !== user.uid);
+    } else if (tipoChat === "projeto") {
+      outroId = acesso.chat.empresaId === user.uid ? acesso.chat.freelancerId : acesso.chat.empresaId;
     }
 
-    escutarMensagens(chatId, (mensagens) => {
-      renderMensagens(mensagens, user.uid);
+    if (tipoChat === "equipe") {
+      if (chatTitulo) chatTitulo.textContent = acesso.chat.equipeNome || "Chat da equipe";
+      if (chatSubtitulo) chatSubtitulo.textContent = "Conversa em grupo da equipe";
+      if (btnVerPerfil) btnVerPerfil.hidden = true;
+    } else {
+      const outroNome = await getProfileName(outroId);
+
+      if (chatTitulo) chatTitulo.textContent = outroNome;
+      if (chatSubtitulo) {
+        chatSubtitulo.textContent = tipoChat === "amizade" ? "Conversa entre amigos" : "Conversa em tempo real";
+      }
+      if (btnVerPerfil) {
+        btnVerPerfil.hidden = false;
+        btnVerPerfil.addEventListener("click", () => {
+          window.location.href = `perfil-publico.html?userId=${outroId}`;
+        });
+      }
+    }
+
+    escutarMensagens(
+      chatId,
+      async (mensagens) => {
+        await renderMensagens(mensagens, user.uid);
+        await marcarChatComoLido(chatId, user.uid, tipoChat);
+      },
+      tipoChat
+    );
+
+    escutarMetadataChat(chatId, () => {
+      marcarChatComoLido(chatId, user.uid, tipoChat);
     }, tipoChat);
 
     const enviar = async () => {
@@ -113,22 +137,22 @@ async function iniciarChat(user) {
         texto.value = "";
       } catch (error) {
         console.error(error);
-        showToast("Falha ao enviar mensagem", "error");
+        showToast("Não foi possível enviar mensagem", "error");
       } finally {
         setButtonLoading(btnEnviar, false);
       }
     };
 
-    btnEnviar.addEventListener("click", enviar);
-    texto.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.shiftKey) {
+    btnEnviar?.addEventListener("click", enviar);
+    texto?.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
         event.preventDefault();
         enviar();
       }
     });
   } catch (error) {
     console.error(error);
-    showToast("Erro ao iniciar chat", "error");
+    showToast("Erro ao carregar chat", "error");
   }
 }
 

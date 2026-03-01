@@ -1,4 +1,5 @@
 import { observeAuthenticatedUser, getUserProfile } from "./authService.js";
+import { escutarMetadataChat, garantirChatEquipe } from "./chatService.js";
 import {
   convidarMembroEquipe,
   getEquipe,
@@ -18,9 +19,33 @@ const blocoAdmin = document.getElementById("blocoAdmin");
 const inputNovoMembroId = document.getElementById("novoMembroId");
 const btnAdicionarMembro = document.getElementById("btnAdicionarMembro");
 const listaMembros = document.getElementById("listaMembros");
+const btnAbrirChatEquipe = document.getElementById("btnAbrirChatEquipe");
+const alertaChatEquipe = document.getElementById("alertaChatEquipe");
 
 let currentUser = null;
 let currentUserRole = null;
+let currentEquipe = null;
+
+function getDateValue(value) {
+  if (!value) return 0;
+  if (typeof value.toDate === "function") return value.toDate().getTime();
+  const parsed = new Date(value).getTime();
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+function atualizarAlertaNovasMensagens(chatMetadata) {
+  if (!alertaChatEquipe || !currentUser) return;
+
+  if (!chatMetadata) {
+    alertaChatEquipe.textContent = "";
+    return;
+  }
+
+  const ultimaMensagemEm = getDateValue(chatMetadata.ultimaMensagemEm);
+  const ultimoAcesso = getDateValue(chatMetadata?.ultimoAcessoPor?.[currentUser.uid]);
+
+  alertaChatEquipe.textContent = ultimaMensagemEm > ultimoAcesso ? "🔔 Novas mensagens no chat da equipe" : "";
+}
 
 async function expulsarMembro(button, membroId) {
   if (!membroId || membroId === currentUser.uid) {
@@ -47,7 +72,7 @@ async function renderMembros() {
 
   if (!membros.length) {
     listaMembros.appendChild(createElement("li", { className: "empresa-empty", text: "Equipe sem membros." }));
-    return;
+    return [];
   }
 
   for (const membro of membros) {
@@ -74,6 +99,20 @@ async function renderMembros() {
     item.appendChild(content);
     listaMembros.appendChild(item);
   }
+
+  return membros.map((membro) => membro.userId);
+}
+
+async function configurarChatEquipe(participantes) {
+  if (!currentEquipe) return;
+
+  await garantirChatEquipe({
+    equipeId,
+    equipeNome: currentEquipe.nome || "Equipe",
+    participantes
+  });
+
+  escutarMetadataChat(equipeId, atualizarAlertaNovasMensagens, "equipe");
 }
 
 async function carregarEquipe() {
@@ -91,6 +130,7 @@ async function carregarEquipe() {
     return;
   }
 
+  currentEquipe = equipe;
   equipeNome.textContent = equipe.nome || "Equipe";
   equipeDescricao.textContent = equipe.descricao || "Sem descrição";
   equipeFoto.src = equipe.fotoEquipe || "larva.jpeg";
@@ -98,8 +138,13 @@ async function carregarEquipe() {
   currentUserRole = await getRoleMembroEquipe(equipeId, currentUser.uid);
   blocoAdmin.classList.toggle("hidden", currentUserRole !== "admin");
 
-  await renderMembros();
+  const participantes = await renderMembros();
+  await configurarChatEquipe(participantes);
 }
+
+btnAbrirChatEquipe?.addEventListener("click", () => {
+  window.location.href = `chat.html?chatId=${equipeId}&tipo=equipe`;
+});
 
 btnAdicionarMembro.addEventListener("click", async () => {
   const novoMembroId = inputNovoMembroId.value.trim();
