@@ -12,30 +12,18 @@
         <h1>Dashboard empresa</h1>
         <p id="resumoCandidaturas" class="empresa-subtitle">Carregando candidaturas...</p>
       </div>
-      <div class="button-row">
+      <div class="button-row empresa-nav-group">
         <button class="empresa-nav-btn" onclick="window.location.href='perfil-empresa.html'">Meu perfil</button>
         <button class="empresa-nav-btn" onclick="window.location.href='meus-amigos.html'">Meus amigos</button>
         <button class="empresa-nav-btn" onclick="window.location.href='busca-perfis.html'">Buscar perfis</button>
         <button class="empresa-nav-btn" onclick="window.location.href='minhas-equipes.html'">Minhas equipes</button>
-        <button class="empresa-nav-btn" onclick="document.getElementById('secaoMeusPlanos')?.scrollIntoView({ behavior: 'smooth' })">Meus planos</button>
+        <button class="empresa-nav-btn" onclick="window.location.href='meus-planos-empresa.html'">Meus planos</button>
         <button class="empresa-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
       </div>
     </header>
 
 
-    <section id="secaoMeusPlanos" class="empresa-list-card" aria-label="Meus planos">
-      <div class="empresa-list-head">
-        <h2>Meus Planos</h2>
-      </div>
-
-      <p id="planoAtualResumo" class="empresa-msg">Carregando plano atual...</p>
-      <ul id="listaPlanosEmpresa" class="empresa-candidaturas-grid"></ul>
-
-      <div class="perfil-section">
-        <h3>Histórico de mudanças de plano</h3>
-        <ul id="historicoPlanosEmpresa" class="empresa-candidaturas-grid"></ul>
-      </div>
-    </section>
+    
 
     <section class="empresa-form-card" aria-label="Publicar problema">
       <h2>Publicar problema</h2>
