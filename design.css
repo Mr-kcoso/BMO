@@ -629,6 +629,13 @@ button:hover {
   box-shadow: 0 0 0 1px rgba(255, 107, 0, 0.25);
 }
 
+
+.plano-detalhes-text {
+  white-space: pre-wrap;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+
 .empresa-card-title {
   margin: 0;
   color: #fff;

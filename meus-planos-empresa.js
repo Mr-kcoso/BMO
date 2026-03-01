@@ -12,25 +12,33 @@ const PLANOS_EMPRESA = [
     id: "simples",
     tipo: "Empresas simples",
     servicos: "Publicação limitada, suporte básico",
-    preco: 0
+    preco: 0,
+    detalhes:
+      "Ideal para microempreendedores e negócios em fase inicial. Permite criar perfil da empresa e publicar vagas ou demandas de forma limitada. Inclui acesso às funcionalidades básicas da plataforma, visualização de candidatos/interessados e suporte padrão via canais digitais. Indicado para quem está começando e precisa testar a plataforma sem investimento inicial."
   },
   {
     id: "pequeno_porte",
     tipo: "Empresas de pequeno porte",
     servicos: "Publicação de demandas pontuais, suporte básico",
-    preco: 59
+    preco: 59,
+    detalhes:
+      "Voltado para empresas em crescimento que precisam publicar demandas com mais frequência. Permite publicação de demandas pontuais sem limite rígido mensal, maior visibilidade dentro da plataforma e acesso prioritário ao suporte básico. Indicado para negócios que já possuem fluxo recorrente de contratações ou projetos."
   },
   {
     id: "medio_porte",
     tipo: "Empresas de médio porte",
     servicos: "Publicação ilimitada, relatórios e suporte",
-    preco: 99
+    preco: 99,
+    detalhes:
+      "Plano estruturado para empresas com maior volume de operações. Inclui publicação ilimitada, relatórios básicos de desempenho (visualizações, candidaturas, engajamento), melhor posicionamento nas buscas internas e suporte aprimorado. Ideal para organizações que precisam acompanhar métricas e otimizar seus resultados."
   },
   {
     id: "grande_porte",
     tipo: "Empresas de grande porte",
     servicos: "Recursos premium, integração e suporte avançado",
-    preco: 199
+    preco: 199,
+    detalhes:
+      "Plano premium com recursos avançados. Inclui publicações ilimitadas, relatórios completos e detalhados, integração com sistemas externos (quando aplicável), prioridade máxima no suporte e recursos estratégicos exclusivos da plataforma. Indicado para empresas com alto volume de demandas e necessidade de controle e performance mais sofisticados."
   }
 ];
 
@@ -157,6 +165,22 @@ function renderPlanosEmpresa() {
       item.appendChild(createElement("span", { className: "empresa-tag", text: "Plano atual" }));
     }
 
+    const detalhesTexto = createElement("p", {
+      className: "empresa-card-line plano-detalhes-text hidden",
+      text: plano.detalhes || "Sem detalhes adicionais para este plano."
+    });
+
+    const btnDetalhes = createElement("button", {
+      className: "empresa-secondary-btn",
+      text: "Mais detalhes"
+    });
+
+    btnDetalhes.addEventListener("click", () => {
+      const expanded = !detalhesTexto.classList.contains("hidden");
+      detalhesTexto.classList.toggle("hidden", expanded);
+      btnDetalhes.textContent = expanded ? "Mais detalhes" : "Ocultar detalhes";
+    });
+
     const btnPlano = createElement("button", {
       className: ativo ? "empresa-status-btn" : "btn-primary",
       text: ativo ? "Plano atual" : "Assinar / Alterar plano"
@@ -166,6 +190,8 @@ function renderPlanosEmpresa() {
       btnPlano.addEventListener("click", () => selecionarPlano(plano, btnPlano));
     }
 
+    item.appendChild(btnDetalhes);
+    item.appendChild(detalhesTexto);
     item.appendChild(btnPlano);
     listaPlanosEmpresa.appendChild(item);
   });
