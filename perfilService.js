@@ -4,11 +4,41 @@ import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/fi
 const CLOUDINARY_CLOUD_NAME = "dom598ut1";
 const CLOUDINARY_UPLOAD_PRESET = "bmo_unsigned_upload";
 
+function gerarUidUsuario(userId) {
+  const prefixo = String(userId || "").slice(0, 6).toUpperCase();
+  const aleatorio = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `BMO-${prefixo}-${aleatorio}`;
+}
+
 export async function getPerfil(userId) {
   const refDoc = doc(db, "usuarios", userId);
   const snap = await getDoc(refDoc);
   if (!snap.exists()) return null;
   return snap.data();
+}
+
+export async function garantirUidUsuario(userId) {
+  const refDoc = doc(db, "usuarios", userId);
+  const snap = await getDoc(refDoc);
+
+  if (!snap.exists()) return null;
+
+  const dados = snap.data();
+  if (dados.uidUsuario) {
+    return dados.uidUsuario;
+  }
+
+  const uidGerado = gerarUidUsuario(userId);
+  await setDoc(
+    refDoc,
+    {
+      uidUsuario: uidGerado,
+      atualizadoEm: serverTimestamp()
+    },
+    { merge: true }
+  );
+
+  return uidGerado;
 }
 
 export async function salvarPerfil(userId, dados) {

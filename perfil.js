@@ -1,5 +1,5 @@
 import { observeAuthenticatedUser } from "./authService.js";
-import { salvarPerfil, getPerfil, uploadImagemCloudinary } from "./perfilService.js";
+import { garantirUidUsuario, salvarPerfil, getPerfil, uploadImagemCloudinary } from "./perfilService.js";
 import { setButtonLoading, showToast } from "./utils.js";
 
 const tipoPagina = document.body?.dataset?.perfilTipo || null;
@@ -44,10 +44,10 @@ function setTipoFields(tipo) {
   }
 }
 
-function preencherFormulario(perfil, authUser) {
+function preencherFormulario(perfil, authUser, uidUsuario) {
   if (nomeInput) nomeInput.value = perfil?.nome || "";
   if (emailInput) emailInput.value = perfil?.email || authUser.email || "";
-  if (uidInput) uidInput.value = authUser.uid || "";
+  if (uidInput) uidInput.value = uidUsuario || perfil?.uidUsuario || authUser.uid || "";
 
   if (bioInput) bioInput.value = perfil?.bio || "";
   if (habilidadesInput) {
@@ -74,11 +74,12 @@ async function carregarPerfil(user) {
 
   try {
     const perfil = await getPerfil(user.uid);
+    const uidUsuario = await garantirUidUsuario(user.uid);
     const tipoPerfil = tipoPagina || perfil?.tipo || "freelancer";
-    currentPerfil = { ...(perfil || {}), tipo: tipoPerfil };
+    currentPerfil = { ...(perfil || {}), tipo: tipoPerfil, uidUsuario };
 
     setTipoFields(tipoPerfil);
-    preencherFormulario(currentPerfil, user);
+    preencherFormulario(currentPerfil, user, uidUsuario);
   } catch (error) {
     console.error(error);
     showToast("Erro ao carregar perfil", "error");
@@ -136,7 +137,8 @@ async function salvar() {
       tipo,
       fotoURL,
       linkedin: linkedinInput?.value?.trim() || "",
-      github: githubInput?.value?.trim() || ""
+      github: githubInput?.value?.trim() || "",
+      uidUsuario: currentPerfil?.uidUsuario || currentUser.uid
     };
 
     if (tipo === "freelancer") {

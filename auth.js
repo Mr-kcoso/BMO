@@ -73,10 +73,13 @@ cadastroForm.addEventListener("submit", async (event) => {
       cadastroPassword.value
     );
 
+    const uidUsuario = `BMO-${cred.user.uid.slice(0, 6).toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+
     await setDoc(doc(db, "usuarios", cred.user.uid), {
       nome: nome.value,
       email: cadastroEmail.value,
       tipo: tipo.value,
+      uidUsuario,
       criadoEm: new Date()
     });
 

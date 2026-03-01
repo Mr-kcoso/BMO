@@ -10,6 +10,7 @@ const subtitulo = document.getElementById("perfilPublicoSubtitulo");
 const foto = document.getElementById("perfilPublicoFoto");
 const tipo = document.getElementById("perfilPublicoTipo");
 const nome = document.getElementById("perfilPublicoNome");
+const uidPublico = document.getElementById("perfilPublicoUid");
 const bio = document.getElementById("perfilPublicoBio");
 const area = document.getElementById("perfilPublicoArea");
 const disponibilidade = document.getElementById("perfilPublicoDisponibilidade");
@@ -115,6 +116,7 @@ async function carregarPerfilPublico(usuarioLogado) {
   setText(subtitulo, "Use estes dados para validar experiência, disponibilidade e fit.");
   setText(tipo, tipoPerfil);
   setText(nome, perfil.nome || "Usuário");
+  setText(uidPublico, `UID: ${perfil.uidUsuario || userId}`);
 
   if (foto) {
     foto.src = perfil.fotoURL || perfil.logoURL || "larva.jpeg";
