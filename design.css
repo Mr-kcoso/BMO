@@ -1196,6 +1196,7 @@ button:hover {
   font-weight: 800;
   color: #ff6b00;
   letter-spacing: 0.6px;
+  text-decoration: none;
 }
 
 .landing-nav {
