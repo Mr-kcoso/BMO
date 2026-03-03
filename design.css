@@ -189,7 +189,7 @@ button:hover {
   width: 46px;
   height: 46px;
   border-radius: 12px;
-  background: #1f2937;
+  background: #372b1f;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -221,7 +221,7 @@ button:hover {
 .dashboard-menu-panel {
   width: min(360px, 92vw);
   height: 100%;
-  background: #0f172a;
+  background: #2a1b0f;
   border-left: 1px solid rgba(255, 107, 0, 0.35);
   padding: 20px 16px;
   overflow-y: auto;
@@ -369,8 +369,8 @@ button:hover {
 }
 
 .freelancer-nav-group {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.14), rgba(17, 24, 39, 0.75));
-  border: 1px solid rgba(59, 130, 246, 0.28);
+  background:linear-gradient(135deg, rgba(255, 107, 0, 0.12), rgba(17, 24, 39, 0.75));
+  border: 1px solid rgba(255, 107, 0, 0.25);
   border-radius: 14px;
   padding: 10px;
   gap: 10px;
@@ -387,7 +387,7 @@ button:hover {
 
 .freelancer-nav-group .freelancer-nav-btn:hover {
   transform: translateY(-1px);
-  border-color: rgba(59, 130, 246, 0.5);
+  border-color: rgba(246, 159, 59, 0.5);
   background: #253244;
 }
 
