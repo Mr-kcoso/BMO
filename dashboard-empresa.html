@@ -46,24 +46,25 @@
         <p class="empresa-msg empresa-msg--helper">Organize os dados da vaga para facilitar o match com freelancers.</p>
       </div>
 
-      <div class="empresa-form-grid empresa-form-grid--primary">
-        <label class="empresa-field empresa-field--full" for="titulo">
-          <span>Título do problema</span>
-          <input id="titulo" placeholder="Ex.: Ajustar bugs no checkout" />
-        </label>
-        <label class="empresa-field empresa-field--full" for="descricao">
-          <span>Resumo do problema</span>
+      <div class="empresa-field empresa-field--full">
+        <label for="titulo">Título do problema</label>
+        <input id="titulo" placeholder="Ex.: Ajustar bugs no checkout" />
+      </div>
+
+      <div class="empresa-form-grid empresa-form-grid--content">
+        <div class="empresa-field">
+          <label for="descricao">Resumo do problema</label>
           <textarea id="descricao" class="resizeno" placeholder="Descreva o problema de forma objetiva"></textarea>
-        </label>
-        <label class="empresa-field empresa-field--full" for="detalhamentoProblema">
-          <span>Detalhamento técnico</span>
-          <textarea id="detalhamentoProblema" class="resizeno empresa-form-full" placeholder="Visível em Ver detalhes"></textarea>
-        </label>
+        </div>
+        <div class="empresa-field">
+          <label for="detalhamentoProblema">Detalhamento técnico</label>
+          <textarea id="detalhamentoProblema" class="resizeno empresa-form-full" placeholder="Contexto técnico, stack e critérios de entrega"></textarea>
+        </div>
       </div>
 
       <div class="empresa-form-grid empresa-form-grid--options">
-        <label class="empresa-field" for="tipoProblema">
-          <span>Tipo</span>
+        <div class="empresa-field">
+          <label for="tipoProblema">Tipo</label>
           <select id="tipoProblema">
             <option value="software">Software</option>
             <option value="hardware">Hardware</option>
@@ -71,33 +72,25 @@
             <option value="front-end">Front-end</option>
             <option value="back-end">Back-end</option>
           </select>
-        </label>
+        </div>
 
-        <label class="empresa-field" for="nivelProblema">
-          <span>Nível</span>
+        <div class="empresa-field">
+          <label for="nivelProblema">Nível</label>
           <select id="nivelProblema">
             <option value="iniciante">Iniciante</option>
             <option value="intermediario" selected>Intermediário</option>
           </select>
-        </label>
+        </div>
 
-        <label class="empresa-field" for="valorProblema">
-          <span>Valor simulado (R$)</span>
+        <div class="empresa-field">
+          <label for="valorProblema">Valor simulado (R$)</label>
           <input id="valorProblema" type="number" min="0" step="50" placeholder="Ex.: 1500" />
-        </label>
+        </div>
 
-        <label class="empresa-field" for="escrowOpcao">
-          <span>Escrow</span>
-          <select id="escrowOpcao">
-            <option value="sem_escrow" selected>Sem escrow</option>
-            <option value="com_escrow">Usar escrow simulado</option>
-          </select>
-        </label>
-
-        <label class="empresa-field" for="prazoProblema">
-          <span>Prazo</span>
+        <div class="empresa-field">
+          <label for="prazoProblema">Prazo</label>
           <input id="prazoProblema" type="date" />
-        </label>
+        </div>
       </div>
 
       <div class="empresa-form-footer">
@@ -112,7 +105,7 @@
         </div>
       </div>
 
-      <p class="empresa-msg empresa-msg--helper">Escrow e valor são apenas simulações para representar pagamento, sem transação real.</p>
+      <p class="empresa-msg empresa-msg--helper">Valor é apenas simulação para representar pagamento, sem transação real.</p>
       <p id="msg" class="empresa-msg"></p>
     </section>
 

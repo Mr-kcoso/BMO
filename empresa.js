@@ -23,7 +23,6 @@ const tipoProblema = document.getElementById("tipoProblema");
 const nivelProblema = document.getElementById("nivelProblema");
 const prazoProblema = document.getElementById("prazoProblema");
 const valorProblema = document.getElementById("valorProblema");
-const escrowOpcao = document.getElementById("escrowOpcao");
 const remotoProblema = document.getElementById("remotoProblema");
 const urgenteProblema = document.getElementById("urgenteProblema");
 
@@ -108,9 +107,6 @@ function formatCurrency(value) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
 }
 
-function formatEscrowLabel(escrow) {
-  return escrow === "com_escrow" ? "Escrow simulado" : "Sem escrow";
-}
 
 function getPlanoById(planoId) {
   return PLANOS_EMPRESA.find((plano) => plano.id === planoId) || PLANOS_EMPRESA[0];
@@ -290,7 +286,6 @@ function limparFormularioProblema() {
   if (detalhamentoProblema) detalhamentoProblema.value = "";
   prazoProblema.value = "";
   if (valorProblema) valorProblema.value = "";
-  if (escrowOpcao) escrowOpcao.value = "sem_escrow";
   urgenteProblema.checked = false;
   remotoProblema.checked = true;
   tipoProblema.value = "software";
@@ -314,7 +309,6 @@ function iniciarEdicaoProblema(problema) {
     ? problema.prazo.toDate().toISOString().slice(0, 10)
     : "";
   if (valorProblema) valorProblema.value = Number(problema.valorSimulado || 0) || "";
-  if (escrowOpcao) escrowOpcao.value = problema.escrow || "sem_escrow";
   remotoProblema.checked = Boolean(problema.remoto);
   urgenteProblema.checked = Boolean(problema.urgente);
   atualizarEstadoEdicao();
@@ -347,12 +341,6 @@ function renderProblemasPublicados() {
       createElement("span", {
         className: "empresa-tag",
         text: `Valor: ${formatCurrency(problema.valorSimulado || 0)}`
-      })
-    );
-    tags.appendChild(
-      createElement("span", {
-        className: "empresa-tag",
-        text: formatEscrowLabel(problema.escrow)
       })
     );
     if (problema.urgente) {
@@ -422,12 +410,6 @@ function renderCandidaturas() {
       createElement("span", {
         className: "empresa-tag",
         text: `Valor: ${formatCurrency(problema.valorSimulado || 0)}`
-      })
-    );
-    tags.appendChild(
-      createElement("span", {
-        className: "empresa-tag",
-        text: formatEscrowLabel(problema.escrow)
       })
     );
     if (problema.urgente) {
@@ -547,7 +529,6 @@ async function publicarProblema() {
       remoto: remotoProblema.checked,
       urgente: urgenteProblema.checked,
       valorSimulado: valorInformado,
-      escrow: escrowOpcao?.value || "sem_escrow",
       prazo
     };
 
