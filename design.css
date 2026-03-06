@@ -659,6 +659,11 @@ button:hover {
   color: #9ca3af;
 }
 
+.empresa-msg--helper {
+  margin: 8px 0 12px;
+  font-size: 13px;
+}
+
 .empresa-list-head {
   display: flex;
   justify-content: space-between;

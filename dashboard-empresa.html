@@ -57,12 +57,18 @@
           <option value="iniciante">Iniciante</option>
           <option value="intermediario" selected>Intermediário</option>
         </select>
+        <input id="valorProblema" type="number" min="0" step="50" placeholder="Valor simulado (R$)" />
+        <select id="escrowOpcao">
+          <option value="sem_escrow" selected>Sem escrow</option>
+          <option value="com_escrow">Usar escrow simulado</option>
+        </select>
         <input id="prazoProblema" type="date" />
         <div class="empresa-switch-row">
           <label><input id="remotoProblema" type="checkbox" checked /> Remoto</label>
           <label><input id="urgenteProblema" type="checkbox" /> Presencial</label>
         </div>
       </div>
+      <p class="empresa-msg empresa-msg--helper">Escrow e valor são apenas simulações para representar pagamento, sem transação real.</p>
       <div class="button-row">
         <button id="btnPublicar" class="btn-primary">Publicar problema</button>
         <button id="btnCancelarEdicao" class="empresa-secondary-btn" hidden>Cancelar edição</button>
