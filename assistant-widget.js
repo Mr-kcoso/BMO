@@ -1,4 +1,5 @@
 import { auth } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const ENDPOINT = window.BMO_AI_ASSISTANT_ENDPOINT || "https://us-central1-bmo-tcc.cloudfunctions.net/chatBot";
 const FEEDBACK_ENDPOINT =
@@ -9,7 +10,12 @@ const SESSION_KEY = "bmo_ai_assistant_session";
 const sessionId = localStorage.getItem(SESSION_KEY) || crypto.randomUUID();
 localStorage.setItem(SESSION_KEY, sessionId);
 
+let widgetMounted = false;
+let widgetElement = null;
+
 function createAssistantWidget() {
+  if (widgetMounted) return;
+
   const wrapper = document.createElement("div");
   wrapper.className = "ai-assistant";
   wrapper.innerHTML = `
@@ -17,7 +23,7 @@ function createAssistantWidget() {
       🤖 Assistente
     </button>
 
-    <section id="aiAssistantPanel" class="ai-assistant-panel hidden" aria-label="Assistente virtual">
+    <section id="aiAssistantPanel" class="ai-assistant-panel hidden" aria-label="Assistente virtual" aria-hidden="true">
       <header class="ai-assistant-header">
         <div>
           <h3>Assistente BMO</h3>
@@ -36,6 +42,8 @@ function createAssistantWidget() {
   `;
 
   document.body.appendChild(wrapper);
+  widgetMounted = true;
+  widgetElement = wrapper;
 
   const toggle = wrapper.querySelector("#aiAssistantToggle");
   const panel = wrapper.querySelector("#aiAssistantPanel");
@@ -44,6 +52,12 @@ function createAssistantWidget() {
   const input = wrapper.querySelector("#aiAssistantInput");
   const messages = wrapper.querySelector("#aiAssistantMessages");
   const sendButton = wrapper.querySelector("#aiAssistantSend");
+
+  function setPanelOpen(isOpen) {
+    panel.classList.toggle("hidden", !isOpen);
+    panel.setAttribute("aria-hidden", String(!isOpen));
+    if (isOpen) input.focus();
+  }
 
   function addMessage(role, text, chatId = null) {
     const bubble = document.createElement("article");
@@ -63,6 +77,7 @@ function createAssistantWidget() {
         const target = event.target;
         if (!(target instanceof HTMLButtonElement)) return;
         const value = Number(target.dataset.feedback || 0);
+
         try {
           await fetch(FEEDBACK_ENDPOINT, {
             method: "POST",
@@ -90,11 +105,11 @@ function createAssistantWidget() {
   }
 
   toggle.addEventListener("click", () => {
-    panel.classList.toggle("hidden");
-    if (!panel.classList.contains("hidden")) input.focus();
+    const isOpen = panel.classList.contains("hidden");
+    setPanelOpen(isOpen);
   });
 
-  close.addEventListener("click", () => panel.classList.add("hidden"));
+  close.addEventListener("click", () => setPanelOpen(false));
 
   addMessage("bot", "Olá! Sou o assistente da BMO. Como posso ajudar hoje?");
 
@@ -133,10 +148,30 @@ function createAssistantWidget() {
       input.focus();
     }
   });
+
+  setPanelOpen(false);
+}
+
+function destroyAssistantWidget() {
+  if (!widgetMounted || !widgetElement) return;
+  widgetElement.remove();
+  widgetElement = null;
+  widgetMounted = false;
+}
+
+function bootstrapAssistant() {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      createAssistantWidget();
+      return;
+    }
+
+    destroyAssistantWidget();
+  });
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", createAssistantWidget);
+  document.addEventListener("DOMContentLoaded", bootstrapAssistant);
 } else {
-  createAssistantWidget();
+  bootstrapAssistant();
 }
