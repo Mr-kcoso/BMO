@@ -615,11 +615,38 @@ button:hover {
   margin-bottom: 16px;
 }
 
+.empresa-form-head h2 {
+  margin-bottom: 6px;
+}
+
 .empresa-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
-  margin-bottom: 8px;
+}
+
+.empresa-form-grid--primary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 12px;
+}
+
+.empresa-form-grid--options {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 12px;
+}
+
+.empresa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.empresa-field--full {
+  grid-column: 1 / -1;
+}
+
+.empresa-field span {
+  font-size: 13px;
+  color: #d1d5db;
 }
 
 .empresa-form-grid input,
@@ -638,8 +665,23 @@ button:hover {
 }
 
 .empresa-form-full {
-  grid-column: 1 / -1;
   min-height: 130px;
+}
+
+.empresa-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.empresa-form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .empresa-switch-row {
@@ -647,6 +689,7 @@ button:hover {
   gap: 14px;
   align-items: center;
   color: #d1d5db;
+  flex-wrap: wrap;
 }
 
 .empresa-switch-row label {
@@ -660,8 +703,23 @@ button:hover {
 }
 
 .empresa-msg--helper {
-  margin: 8px 0 12px;
+  margin: 0;
   font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .empresa-form-grid--primary {
+    grid-template-columns: 1fr;
+  }
+
+  .empresa-form-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .empresa-form-actions button {
+    flex: 1;
+  }
 }
 
 .empresa-list-head {

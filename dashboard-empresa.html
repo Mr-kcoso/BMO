@@ -41,38 +41,78 @@
     </div>
 
     <section class="empresa-form-card" aria-label="Publicar problema">
-      <h2>Publicar problema</h2>
-      <div class="empresa-form-grid">
-        <input id="titulo" placeholder="Título do problema" />
-        <textarea id="descricao" class="resizeno" placeholder="Descreva o problema"></textarea>
-        <textarea id="detalhamentoProblema" class="resizeno empresa-form-full" placeholder="Detalhamento técnico (visível apenas em Ver detalhes)"></textarea>
-        <select id="tipoProblema">
-          <option value="software">Software</option>
-          <option value="hardware">Hardware</option>
-          <option value="banco de dados">Banco de dados</option>
-          <option value="front-end">Front-end</option>
-          <option value="back-end">Back-end</option>
-        </select>
-        <select id="nivelProblema">
-          <option value="iniciante">Iniciante</option>
-          <option value="intermediario" selected>Intermediário</option>
-        </select>
-        <input id="valorProblema" type="number" min="0" step="50" placeholder="Valor simulado (R$)" />
-        <select id="escrowOpcao">
-          <option value="sem_escrow" selected>Sem escrow</option>
-          <option value="com_escrow">Usar escrow simulado</option>
-        </select>
-        <input id="prazoProblema" type="date" />
+      <div class="empresa-form-head">
+        <h2>Publicar problema</h2>
+        <p class="empresa-msg empresa-msg--helper">Organize os dados da vaga para facilitar o match com freelancers.</p>
+      </div>
+
+      <div class="empresa-form-grid empresa-form-grid--primary">
+        <label class="empresa-field empresa-field--full" for="titulo">
+          <span>Título do problema</span>
+          <input id="titulo" placeholder="Ex.: Ajustar bugs no checkout" />
+        </label>
+        <label class="empresa-field empresa-field--full" for="descricao">
+          <span>Resumo do problema</span>
+          <textarea id="descricao" class="resizeno" placeholder="Descreva o problema de forma objetiva"></textarea>
+        </label>
+        <label class="empresa-field empresa-field--full" for="detalhamentoProblema">
+          <span>Detalhamento técnico</span>
+          <textarea id="detalhamentoProblema" class="resizeno empresa-form-full" placeholder="Visível em Ver detalhes"></textarea>
+        </label>
+      </div>
+
+      <div class="empresa-form-grid empresa-form-grid--options">
+        <label class="empresa-field" for="tipoProblema">
+          <span>Tipo</span>
+          <select id="tipoProblema">
+            <option value="software">Software</option>
+            <option value="hardware">Hardware</option>
+            <option value="banco de dados">Banco de dados</option>
+            <option value="front-end">Front-end</option>
+            <option value="back-end">Back-end</option>
+          </select>
+        </label>
+
+        <label class="empresa-field" for="nivelProblema">
+          <span>Nível</span>
+          <select id="nivelProblema">
+            <option value="iniciante">Iniciante</option>
+            <option value="intermediario" selected>Intermediário</option>
+          </select>
+        </label>
+
+        <label class="empresa-field" for="valorProblema">
+          <span>Valor simulado (R$)</span>
+          <input id="valorProblema" type="number" min="0" step="50" placeholder="Ex.: 1500" />
+        </label>
+
+        <label class="empresa-field" for="escrowOpcao">
+          <span>Escrow</span>
+          <select id="escrowOpcao">
+            <option value="sem_escrow" selected>Sem escrow</option>
+            <option value="com_escrow">Usar escrow simulado</option>
+          </select>
+        </label>
+
+        <label class="empresa-field" for="prazoProblema">
+          <span>Prazo</span>
+          <input id="prazoProblema" type="date" />
+        </label>
+      </div>
+
+      <div class="empresa-form-footer">
         <div class="empresa-switch-row">
           <label><input id="remotoProblema" type="checkbox" checked /> Remoto</label>
           <label><input id="urgenteProblema" type="checkbox" /> Presencial</label>
         </div>
+
+        <div class="empresa-form-actions">
+          <button id="btnCancelarEdicao" class="empresa-secondary-btn" hidden>Cancelar edição</button>
+          <button id="btnPublicar" class="btn-primary">Publicar problema</button>
+        </div>
       </div>
+
       <p class="empresa-msg empresa-msg--helper">Escrow e valor são apenas simulações para representar pagamento, sem transação real.</p>
-      <div class="button-row">
-        <button id="btnPublicar" class="btn-primary">Publicar problema</button>
-        <button id="btnCancelarEdicao" class="empresa-secondary-btn" hidden>Cancelar edição</button>
-      </div>
       <p id="msg" class="empresa-msg"></p>
     </section>
 
