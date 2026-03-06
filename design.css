@@ -1611,6 +1611,10 @@ button:hover {
   flex-direction: column;
 }
 
+.ai-assistant-panel.hidden {
+  display: none !important;
+}
+
 .ai-assistant-header {
   display: flex;
   justify-content: space-between;

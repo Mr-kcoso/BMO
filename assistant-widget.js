@@ -160,6 +160,10 @@ function destroyAssistantWidget() {
 }
 
 function bootstrapAssistant() {
+  if (!auth.currentUser) {
+    destroyAssistantWidget();
+  }
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       createAssistantWidget();
