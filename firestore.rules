@@ -15,7 +15,6 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/equipes/$(teamId)/membros/$(request.auth.uid)).data.role == "admin";
     }
 
-
     match /usuarios/{userId} {
       allow read: if isSignedIn();
       allow create, update: if isSignedIn() && request.auth.uid == userId;
@@ -36,6 +35,33 @@ service cloud.firestore {
         && request.resource.data.userA == resource.data.userA
         && request.resource.data.userB == resource.data.userB
         && request.auth.uid == resource.data.userB;
+
+      allow delete: if false;
+    }
+
+    match /problemas/{problemaId} {
+      allow read: if isSignedIn();
+
+      allow create: if isSignedIn()
+        && request.resource.data.empresaId == request.auth.uid;
+
+      allow update, delete: if isSignedIn()
+        && resource.data.empresaId == request.auth.uid;
+    }
+
+    match /candidaturas/{candidaturaId} {
+      allow read: if isSignedIn()
+        && (resource.data.empresaId == request.auth.uid || resource.data.freelancerId == request.auth.uid);
+
+      allow create: if isSignedIn()
+        && request.resource.data.freelancerId == request.auth.uid
+        && request.resource.data.status == "pendente";
+
+      allow update: if isSignedIn()
+        && (
+          resource.data.empresaId == request.auth.uid
+          || resource.data.freelancerId == request.auth.uid
+        );
 
       allow delete: if false;
     }
@@ -119,6 +145,13 @@ service cloud.firestore {
           && exists(/databases/$(database)/documents/chatsEquipe/$(chatId))
           && isTeamMember(chatId);
       }
+    }
+
+    match /chat/{chatId} {
+      allow read: if false;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow delete: if false;
     }
   }
 }
