@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Minhas equipes - BMO</title>
+  <link rel="stylesheet" href="design.css">
+</head>
+<body class="perfil-page">
+  <main class="perfil-layout">
+    <header class="page-header perfil-header">
+      <div>
+        <h1>Minhas Equipes</h1>
+        <p class="perfil-subtitle">Crie e acompanhe as equipes que você participa.</p>
+      </div>
+      <div class="button-row">
+        <button class="chats-nav-btn" onclick="window.history.back()">Voltar</button>
+      </div>
+    </header>
+
+    <section class="card perfil-card">
+      <div class="perfil-section">
+        <h2>Criar equipe</h2>
+        <div class="empresa-form-grid">
+          <input id="equipeNome" placeholder="Nome da equipe" />
+          <textarea id="equipeDescricao" class="resizeno" placeholder="Descrição"></textarea>
+          <input id="equipeFoto" type="file" accept="image/*" />
+        </div>
+        <button id="btnCriarEquipe" class="btn-primary">Criar equipe</button>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Lista de equipes</h2>
+        <ul id="listaEquipes" class="empresa-candidaturas-grid"></ul>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Solicitações de equipe</h2>
+        <div id="convitesResumo" class="perfil-subinfo">Acompanhe os convites pendentes e respondidos.</div>
+        <ul id="listaConvites" class="empresa-candidaturas-grid"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="minhas-equipes.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Perfil público - BMO</title>
+  <link rel="stylesheet" href="design.css">
+</head>
+<body class="perfil-page">
+  <main class="perfil-layout">
+    <header class="page-header perfil-header">
+      <div>
+        <h1 id="perfilPublicoTitulo">Perfil público</h1>
+        <p id="perfilPublicoSubtitulo" class="perfil-subtitle">Confira as informações para validar se há aderência para o projeto.</p>
+      </div>
+      <div class="button-row">
+        <button class="chats-nav-btn" onclick="window.location.href='meus-amigos.html'">Meus amigos</button>
+        <button class="chats-nav-btn" onclick="window.history.back()">Voltar</button>
+      </div>
+    </header>
+
+    <section class="card perfil-card">
+      <div class="perfil-hero">
+        <div class="perfil-avatar-wrapper">
+          <img id="perfilPublicoFoto" class="perfil-avatar" alt="Foto de perfil">
+        </div>
+        <div class="perfil-tag-area">
+          <span id="perfilPublicoTipo" class="perfil-tag">Usuário</span>
+          <p id="perfilPublicoNome">Carregando...</p>
+          <p id="perfilPublicoUid" class="perfil-publico-text"></p>
+          <div id="perfilPublicoAmizadeAcao" class="button-row"></div>
+        </div>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Sobre</h2>
+        <p id="perfilPublicoBio" class="perfil-publico-text">Sem descrição disponível.</p>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Informações profissionais</h2>
+        <p id="perfilPublicoArea" class="perfil-publico-text"></p>
+        <p id="perfilPublicoDisponibilidade" class="perfil-publico-text"></p>
+        <p id="perfilPublicoLocalizacao" class="perfil-publico-text"></p>
+        <p id="perfilPublicoHabilidades" class="perfil-publico-text"></p>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Links</h2>
+        <div id="perfilPublicoLinks" class="button-row"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="perfil-publico.js"></script>
+</body>
+</html>
