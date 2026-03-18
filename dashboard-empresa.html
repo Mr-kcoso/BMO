@@ -41,32 +41,71 @@
     </div>
 
     <section class="empresa-form-card" aria-label="Publicar problema">
-      <h2>Publicar problema</h2>
-      <div class="empresa-form-grid">
-        <input id="titulo" placeholder="Título do problema" />
-        <textarea id="descricao" class="resizeno" placeholder="Descreva o problema"></textarea>
-        <textarea id="detalhamentoProblema" class="resizeno empresa-form-full" placeholder="Detalhamento técnico (visível apenas em Ver detalhes)"></textarea>
-        <select id="tipoProblema">
-          <option value="software">Software</option>
-          <option value="hardware">Hardware</option>
-          <option value="banco de dados">Banco de dados</option>
-          <option value="front-end">Front-end</option>
-          <option value="back-end">Back-end</option>
-        </select>
-        <select id="nivelProblema">
-          <option value="iniciante">Iniciante</option>
-          <option value="intermediario" selected>Intermediário</option>
-        </select>
-        <input id="prazoProblema" type="date" />
+      <div class="empresa-form-head">
+        <h2>Publicar problema</h2>
+        <p class="empresa-msg empresa-msg--helper">Organize os dados da vaga para facilitar o match com freelancers.</p>
+      </div>
+
+      <div class="empresa-field empresa-field--full">
+        <label for="titulo">Título do problema</label>
+        <input id="titulo" placeholder="Ex.: Ajustar bugs no checkout" />
+      </div>
+
+      <div class="empresa-form-grid empresa-form-grid--content">
+        <div class="empresa-field">
+          <label for="descricao">Resumo do problema</label>
+          <textarea id="descricao" class="resizeno" placeholder="Descreva o problema de forma objetiva"></textarea>
+        </div>
+        <div class="empresa-field">
+          <label for="detalhamentoProblema">Detalhamento técnico</label>
+          <textarea id="detalhamentoProblema" class="resizeno empresa-form-full" placeholder="Contexto técnico, stack e critérios de entrega"></textarea>
+        </div>
+      </div>
+
+      <div class="empresa-form-grid empresa-form-grid--options">
+        <div class="empresa-field">
+          <label for="tipoProblema">Tipo</label>
+          <select id="tipoProblema">
+            <option value="software">Software</option>
+            <option value="hardware">Hardware</option>
+            <option value="banco de dados">Banco de dados</option>
+            <option value="front-end">Front-end</option>
+            <option value="back-end">Back-end</option>
+          </select>
+        </div>
+
+        <div class="empresa-field">
+          <label for="nivelProblema">Nível</label>
+          <select id="nivelProblema">
+            <option value="iniciante">Iniciante</option>
+            <option value="intermediario" selected>Intermediário</option>
+          </select>
+        </div>
+
+        <div class="empresa-field">
+          <label for="valorProblema">Valor simulado (R$)</label>
+          <input id="valorProblema" type="number" min="0" step="50" placeholder="Ex.: 1500" />
+        </div>
+
+        <div class="empresa-field">
+          <label for="prazoProblema">Prazo</label>
+          <input id="prazoProblema" type="date" />
+        </div>
+      </div>
+
+      <div class="empresa-form-footer">
         <div class="empresa-switch-row">
           <label><input id="remotoProblema" type="checkbox" checked /> Remoto</label>
           <label><input id="urgenteProblema" type="checkbox" /> Presencial</label>
         </div>
+
+        <div class="empresa-form-actions">
+          <button id="btnCancelarEdicao" class="empresa-secondary-btn" hidden>Cancelar edição</button>
+          <button id="btnPublicar" class="btn-primary">Publicar problema</button>
+        </div>
       </div>
-      <div class="button-row">
-        <button id="btnPublicar" class="btn-primary">Publicar problema</button>
-        <button id="btnCancelarEdicao" class="empresa-secondary-btn" hidden>Cancelar edição</button>
-      </div>
+
+      <p class="empresa-msg empresa-msg--helper">Valor é apenas simulação para representar pagamento, sem transação real.</p>
       <p id="msg" class="empresa-msg"></p>
     </section>
 
@@ -110,6 +149,7 @@
   </main>
 
   <script type="module" src="dashboard-menu.js"></script>
+  <script type="module" src="assistant-widget.js"></script>
   <script type="module" src="empresa.js"></script>
 </body>
 </html>

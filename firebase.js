@@ -4,17 +4,18 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyCsYcXHWa0S6g9FbUKpDbxE2jvuQ-YB5Ko",
-  authDomain: "bmo-tcc.firebaseapp.com",
-  projectId: "bmo-tcc",
-  storageBucket: "bmo-tcc.firebasestorage.app",
-  messagingSenderId: "808332187636",
-  appId: "1:808332187636:web:116a40a291ee53d73acba1"
+  apiKey: "AIzaSyCz6-QK_ZYdPwcb3s_IRl_h59pHhw8TByk",
+  authDomain: "bmo-45fdc.firebaseapp.com",
+  projectId: "bmo-45fdc",
+  storageBucket: "bmo-45fdc.firebasestorage.app",
+  messagingSenderId: "382426348718",
+  appId: "1:382426348718:web:64d69063162073ca71813f",
+  measurementId: "G-0H21SP724L"
 };
 
 export const STORAGE_BUCKET_CANDIDATES = [
-  "gs://bmo-tcc.firebasestorage.app",
-  "gs://bmo-tcc.appspot.com"
+  "gs://bmo-45fdc.firebasestorage.app",
+  "gs://bmo-45fdc.appspot.com"
 ];
 
 export const app = initializeApp(firebaseConfig);
