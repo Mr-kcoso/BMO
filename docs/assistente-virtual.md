@@ -40,8 +40,8 @@ firebase deploy --only functions:chatBot,functions:chatBotFeedback
 
 ## Endpoint no front-end
 Por padrão, o widget usa:
-- `https://us-central1-bmo-tcc.cloudfunctions.net/chatBot`
-- `https://us-central1-bmo-tcc.cloudfunctions.net/chatBotFeedback`
+- `https://us-central1-bmo-45fdc.cloudfunctions.net/chatBot`
+- `https://us-central1-bmo-45fdc.cloudfunctions.net/chatBotFeedback`
 
 Se quiser sobrescrever em runtime:
 

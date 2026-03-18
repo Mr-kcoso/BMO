@@ -1,10 +1,12 @@
-import { auth } from "./firebase.js";
+import { auth, firebaseConfig } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const ENDPOINT = window.BMO_AI_ASSISTANT_ENDPOINT || "https://us-central1-bmo-tcc.cloudfunctions.net/chatBot";
+const FUNCTIONS_REGION = "us-central1";
+const FUNCTIONS_BASE_URL = `https://${FUNCTIONS_REGION}-${firebaseConfig.projectId}.cloudfunctions.net`;
+const ENDPOINT = window.BMO_AI_ASSISTANT_ENDPOINT || `${FUNCTIONS_BASE_URL}/chatBot`;
 const FEEDBACK_ENDPOINT =
   window.BMO_AI_ASSISTANT_FEEDBACK_ENDPOINT ||
-  "https://us-central1-bmo-tcc.cloudfunctions.net/chatBotFeedback";
+  `${FUNCTIONS_BASE_URL}/chatBotFeedback`;
 
 const SESSION_KEY = "bmo_ai_assistant_session";
 const sessionId = localStorage.getItem(SESSION_KEY) || crypto.randomUUID();
