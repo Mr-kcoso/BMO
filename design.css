@@ -1367,7 +1367,9 @@ body.landing-menu-open {
 }
 
 .landing-cta {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--bmo-laranja);
   color: #ffffff;
   text-decoration: none;
@@ -1375,6 +1377,7 @@ body.landing-menu-open {
   font-weight: 700;
   padding: 12px 20px;
   border-radius: 12px;
+  min-width: 220px;
 }
 
 .landing-cta-light {
@@ -1706,7 +1709,6 @@ body.landing-menu-open {
   textarea,
   select,
   button,
-  .landing-cta,
   .landing-nav a,
   .landing-nav-btn,
   .chat-nav-btn,
@@ -1715,6 +1717,12 @@ body.landing-menu-open {
   .empresa-nav-btn {
     width: 100%;
     min-height: 46px;
+  }
+
+  .landing-cta {
+    width: auto;
+    min-width: min(100%, 220px);
+    max-width: 100%;
   }
 
   .landing-parceiro-logo-box {
