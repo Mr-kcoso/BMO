@@ -14,6 +14,10 @@ function formatDate(criadoEm) {
   });
 }
 
+function formatCurrency(value) {
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
+}
+
 function getNivel(problema) {
   const nivel = (problema.nivel || "intermediario").toLowerCase();
   if (nivel === "iniciante") return "Iniciante";
@@ -26,6 +30,9 @@ function getTags(problema) {
   tags.push(getNivel(problema));
   if (problema.urgente) tags.push("Urgente");
   if (problema.remoto !== false) tags.push("Remoto");
+  if (typeof problema.valorSimulado === "number") {
+    tags.push(`Valor: ${formatCurrency(problema.valorSimulado)}`);
+  }
   return tags;
 }
 
@@ -55,6 +62,11 @@ export function renderProblema({
   metadata.appendChild(
     createElement("span", { text: `Empresa: ${problema.empresaNome || "Empresa parceira"}` })
   );
+  if (typeof problema.valorSimulado === "number") {
+    metadata.appendChild(
+      createElement("span", { text: `Valor estimado: ${formatCurrency(problema.valorSimulado)}` })
+    );
+  }
 
   const actions = createElement("div", { className: "button-row freelancer-card-actions" });
 

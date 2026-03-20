@@ -22,6 +22,7 @@ const detalhamentoProblema = document.getElementById("detalhamentoProblema");
 const tipoProblema = document.getElementById("tipoProblema");
 const nivelProblema = document.getElementById("nivelProblema");
 const prazoProblema = document.getElementById("prazoProblema");
+const valorProblema = document.getElementById("valorProblema");
 const remotoProblema = document.getElementById("remotoProblema");
 const urgenteProblema = document.getElementById("urgenteProblema");
 
@@ -105,6 +106,7 @@ function renderResumo(total) {
 function formatCurrency(value) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
 }
+
 
 function getPlanoById(planoId) {
   return PLANOS_EMPRESA.find((plano) => plano.id === planoId) || PLANOS_EMPRESA[0];
@@ -283,6 +285,7 @@ function limparFormularioProblema() {
   descricao.value = "";
   if (detalhamentoProblema) detalhamentoProblema.value = "";
   prazoProblema.value = "";
+  if (valorProblema) valorProblema.value = "";
   urgenteProblema.checked = false;
   remotoProblema.checked = true;
   tipoProblema.value = "software";
@@ -305,6 +308,7 @@ function iniciarEdicaoProblema(problema) {
   prazoProblema.value = problema.prazo?.toDate
     ? problema.prazo.toDate().toISOString().slice(0, 10)
     : "";
+  if (valorProblema) valorProblema.value = Number(problema.valorSimulado || 0) || "";
   remotoProblema.checked = Boolean(problema.remoto);
   urgenteProblema.checked = Boolean(problema.urgente);
   atualizarEstadoEdicao();
@@ -331,6 +335,12 @@ function renderProblemasPublicados() {
       createElement("span", {
         className: "empresa-tag",
         text: problema.nivel === "iniciante" ? "Iniciante" : "Intermediário"
+      })
+    );
+    tags.appendChild(
+      createElement("span", {
+        className: "empresa-tag",
+        text: `Valor: ${formatCurrency(problema.valorSimulado || 0)}`
       })
     );
     if (problema.urgente) {
@@ -394,6 +404,12 @@ function renderCandidaturas() {
       createElement("span", {
         className: "empresa-tag",
         text: problema.nivel === "iniciante" ? "Iniciante" : "Intermediário"
+      })
+    );
+    tags.appendChild(
+      createElement("span", {
+        className: "empresa-tag",
+        text: `Valor: ${formatCurrency(problema.valorSimulado || 0)}`
       })
     );
     if (problema.urgente) {
@@ -490,6 +506,13 @@ async function publicarProblema() {
     return;
   }
 
+  const valorInformado = Number(valorProblema?.value || 0);
+
+  if (!Number.isFinite(valorInformado) || valorInformado < 0) {
+    showToast("Informe um valor simulado válido", "error");
+    return;
+  }
+
   try {
     setButtonLoading(btnPublicar, true, state.problemaEditandoId ? "Salvando..." : "Publicando...");
 
@@ -505,6 +528,7 @@ async function publicarProblema() {
       nivel: nivelProblema.value,
       remoto: remotoProblema.checked,
       urgente: urgenteProblema.checked,
+      valorSimulado: valorInformado,
       prazo
     };
 

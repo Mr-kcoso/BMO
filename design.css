@@ -615,11 +615,39 @@ button:hover {
   margin-bottom: 16px;
 }
 
+.empresa-form-head h2 {
+  margin-bottom: 6px;
+}
+
 .empresa-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
-  margin-bottom: 8px;
+}
+
+.empresa-form-grid--content {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 12px 0;
+}
+
+.empresa-form-grid--options {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  margin-bottom: 14px;
+}
+
+.empresa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.empresa-field--full {
+  margin-top: 10px;
+}
+
+.empresa-field label {
+  font-size: 13px;
+  color: #d1d5db;
+  margin-bottom: 2px;
 }
 
 .empresa-form-grid input,
@@ -634,12 +662,34 @@ button:hover {
 }
 
 .empresa-form-grid textarea {
-  min-height: 88px;
+  min-height: 120px;
 }
 
 .empresa-form-full {
-  grid-column: 1 / -1;
-  min-height: 130px;
+  min-height: 120px;
+}
+
+.empresa-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  padding-top: 4px;
+}
+
+.empresa-form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.empresa-form-actions .btn-primary,
+.empresa-form-actions .empresa-secondary-btn {
+  min-width: 170px;
 }
 
 .empresa-switch-row {
@@ -647,6 +697,7 @@ button:hover {
   gap: 14px;
   align-items: center;
   color: #d1d5db;
+  flex-wrap: wrap;
 }
 
 .empresa-switch-row label {
@@ -657,6 +708,33 @@ button:hover {
 
 .empresa-msg {
   color: #9ca3af;
+}
+
+.empresa-msg--helper {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .empresa-form-grid--content {
+    grid-template-columns: 1fr;
+  }
+
+  .empresa-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .empresa-form-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .empresa-form-actions button {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 .empresa-list-head {
@@ -1501,4 +1579,124 @@ button:hover {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+}
+
+.ai-assistant {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1100;
+}
+
+.ai-assistant-toggle {
+  border: 1px solid rgba(255, 107, 0, 0.6);
+  background: #ff6b00;
+  color: #fff;
+  border-radius: 999px;
+  padding: 12px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.ai-assistant-panel {
+  width: min(92vw, 360px);
+  height: min(74vh, 520px);
+  margin-bottom: 12px;
+  background: #171717;
+  border: 1px solid #303030;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-assistant-panel.hidden {
+  display: none !important;
+}
+
+.ai-assistant-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.ai-assistant-header h3 {
+  margin: 0;
+  color: #fff;
+}
+
+.ai-assistant-header p {
+  margin: 4px 0 0;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.ai-assistant-close {
+  border: 0;
+  background: transparent;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.ai-assistant-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-assistant-bubble {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 90%;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.ai-assistant-bubble.user {
+  align-self: flex-end;
+  background: rgba(255, 107, 0, 0.2);
+  border: 1px solid rgba(255, 107, 0, 0.35);
+}
+
+.ai-assistant-bubble.bot {
+  align-self: flex-start;
+  background: #222;
+  border: 1px solid #3a3a3a;
+}
+
+.ai-assistant-form {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid #2a2a2a;
+}
+
+.ai-assistant-form input {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-assistant-feedback {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #d1d5db;
+}
+
+.ai-assistant-feedback button {
+  border: 1px solid #3b3b3b;
+  background: #2a2a2a;
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 8px;
+  cursor: pointer;
 }
