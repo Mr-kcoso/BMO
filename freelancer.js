@@ -57,6 +57,10 @@ function normalizarNivel(nivel) {
   return value.startsWith("inic") ? "iniciante" : "intermediario";
 }
 
+function formatCurrency(value) {
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
+}
+
 function getDateValue(value) {
   if (!value) return 0;
   if (typeof value.toDate === "function") return value.toDate().getTime();
@@ -146,7 +150,12 @@ function onVerDetalhes(problema) {
 
   if (modalDetalhesTitulo) modalDetalhesTitulo.textContent = problema.titulo || "Detalhes do problema";
   if (modalDetalhesSubtitulo) {
-    modalDetalhesSubtitulo.textContent = `Empresa: ${problema.empresaNome || "Empresa parceira"}`;
+    const empresaLabel = `Empresa: ${problema.empresaNome || "Empresa parceira"}`;
+    const valorLabel =
+      typeof problema.valorSimulado === "number"
+        ? ` • Valor estimado: ${formatCurrency(problema.valorSimulado)}`
+        : "";
+    modalDetalhesSubtitulo.textContent = `${empresaLabel}${valorLabel}`;
   }
   if (modalDetalhesDescricao) {
     modalDetalhesDescricao.textContent = problema.descricao || "Sem descrição";

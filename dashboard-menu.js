@@ -1,14 +1,22 @@
+const MENU_CLOSE_DELAY_MS = 220;
+
 function abrirMenu(menuId) {
   const overlay = document.getElementById(menuId);
   if (!overlay) return;
   overlay.classList.remove("hidden");
+  requestAnimationFrame(() => overlay.classList.add("menu-open"));
   document.body.style.overflow = "hidden";
 }
 
 function fecharMenu(menuId) {
   const overlay = document.getElementById(menuId);
   if (!overlay) return;
-  overlay.classList.add("hidden");
+  overlay.classList.remove("menu-open");
+  window.setTimeout(() => {
+    if (!overlay.classList.contains("menu-open")) {
+      overlay.classList.add("hidden");
+    }
+  }, MENU_CLOSE_DELAY_MS);
   document.body.style.overflow = "";
 }
 
@@ -18,6 +26,7 @@ window.__bmoCloseMenu = fecharMenu;
 // Estado inicial defensivo: qualquer overlay de dashboard começa fechado.
 document.querySelectorAll(".dashboard-menu-overlay").forEach((overlay) => {
   overlay.classList.add("hidden");
+  overlay.classList.remove("menu-open");
 });
 document.body.style.overflow = "";
 

@@ -53,8 +53,8 @@ async function renderMensagens(mensagens, currentUserId) {
     const item = createElement("div", {
       className:
         mensagem.autorId === currentUserId
-          ? "mensagem mensagem-propria chat-bubble"
-          : "mensagem mensagem-outro chat-bubble"
+          ? "mensagem mensagem-propria chat-bubble chat-bubble-enter"
+          : "mensagem mensagem-outro chat-bubble chat-bubble-enter"
     });
 
     const header = createElement("div", { className: "chat-bubble-header" });
