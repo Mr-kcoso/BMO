@@ -25,8 +25,10 @@ function renderTipo(tipo) {
 function renderAcoesPerfil(perfil, amizade) {
   const actions = createElement("div", { className: "button-row" });
 
-  const btnPerfil = createElement("a", { className: "empresa-secondary-btn", text: "Ver perfil" });
-  btnPerfil.href = `perfil-publico.html?userId=${perfil.id}`;
+  const btnPerfil = createElement("button", { className: "empresa-secondary-btn", text: "Ver perfil" });
+  btnPerfil.addEventListener("click", () => {
+    window.location.href = `perfil-publico.html?userId=${perfil.id}`;
+  });
   actions.appendChild(btnPerfil);
 
   if (!amizade) {
