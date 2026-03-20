@@ -1591,6 +1591,9 @@ button:hover {
 .empresa-secondary-btn,
 .freelancer-secondary-btn,
 .chat-nav-btn,
+.chats-nav-btn,
+.freelancer-nav-btn,
+.empresa-nav-btn,
 .landing-cta,
 .landing-nav a,
 .landing-nav-btn {
@@ -1605,11 +1608,28 @@ button:hover {
 .empresa-secondary-btn:hover,
 .freelancer-secondary-btn:hover,
 .chat-nav-btn:hover,
+.chats-nav-btn:hover,
+.freelancer-nav-btn:hover,
+.empresa-nav-btn:hover,
 .landing-cta:hover,
 .landing-nav a:hover,
 .landing-nav-btn:hover {
   transform: translateY(-2px) scale(1.01);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.btn-primary:focus-visible,
+.empresa-secondary-btn:focus-visible,
+.freelancer-secondary-btn:focus-visible,
+.chat-nav-btn:focus-visible,
+.chats-nav-btn:focus-visible,
+.freelancer-nav-btn:focus-visible,
+.empresa-nav-btn:focus-visible,
+.landing-cta:focus-visible,
+.landing-nav a:focus-visible,
+.landing-nav-btn:focus-visible {
+  outline: 2px solid rgba(255, 107, 0, 0.95);
+  outline-offset: 3px;
 }
 
 .freelancer-card,
@@ -1638,9 +1658,22 @@ button:hover {
   transition-delay: var(--reveal-delay, 0ms);
 }
 
+.reveal-on-scroll:nth-child(2n) {
+  transform: translate3d(0, 30px, 0) scale(0.985);
+}
+
 .reveal-on-scroll.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.dashboard-menu-overlay {
+  opacity: 0;
+  transition: opacity 220ms var(--motion-ease);
+}
+
+.dashboard-menu-overlay.menu-open {
+  opacity: 1;
 }
 
 .dashboard-menu-panel {
@@ -1656,6 +1689,16 @@ button:hover {
 
 .chat-bubble-enter {
   animation: chatBubbleIn 320ms var(--motion-ease);
+}
+
+.mensagem {
+  transition: transform var(--motion-duration-fast) var(--motion-ease),
+    box-shadow var(--motion-duration-fast) var(--motion-ease);
+}
+
+.mensagem:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes chatBubbleIn {
@@ -1711,9 +1754,28 @@ button:hover {
 }
 
 .menu-hamburger-btn:hover,
-.landing-icon:hover {
+.landing-icon:hover,
+.perfil-tag:hover {
   transform: translateY(-1px) scale(1.06);
   filter: brightness(1.08);
+}
+
+.is-micro-active {
+  animation: microBounce 420ms var(--motion-ease);
+}
+
+@keyframes microBounce {
+  0% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(1.06);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 #menuOverlayFreelancer .dashboard-menu-panel {
