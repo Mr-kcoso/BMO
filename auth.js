@@ -37,6 +37,20 @@ function mostrarAutenticacao(modo = "login") {
   alternarAba(modo);
 }
 
+function redirectByTipo(tipoUsuario) {
+  if (tipoUsuario === "freelancer") {
+    window.location.href = "dashboard-freelancer.html";
+    return;
+  }
+
+  if (tipoUsuario === "empresa") {
+    window.location.href = "dashboard-empresa.html";
+    return;
+  }
+
+  msg.innerText = "Conta criada, mas o tipo de usuário está inválido.";
+}
+
 function alternarAba(modo) {
   const loginAtivo = modo === "login";
 
@@ -67,6 +81,7 @@ cadastroForm.addEventListener("submit", async (event) => {
   }
 
   try {
+    const tipoSelecionado = tipo.value;
     const cred = await createUserWithEmailAndPassword(
       auth,
       cadastroEmail.value,
@@ -78,15 +93,14 @@ cadastroForm.addEventListener("submit", async (event) => {
     await setDoc(doc(db, "usuarios", cred.user.uid), {
       nome: nome.value,
       email: cadastroEmail.value,
-      tipo: tipo.value,
+      tipo: tipoSelecionado,
       uidUsuario,
       criadoEm: new Date()
     });
 
     msg.innerText = "Cadastro completo";
-    alternarAba("login");
-    loginEmail.value = cadastroEmail.value;
     cadastroForm.reset();
+    redirectByTipo(tipoSelecionado);
   } catch (error) {
     msg.innerText = error.message;
   }
@@ -105,15 +119,13 @@ loginForm.addEventListener("submit", async (event) => {
     const ref = doc(db, "usuarios", cred.user.uid);
     const snap = await getDoc(ref);
 
-    if (snap.exists()) {
-      const tipoUsuario = snap.data().tipo;
-
-      if (tipoUsuario === "freelancer") {
-        window.location.href = "dashboard-freelancer.html";
-      } else if (tipoUsuario === "empresa") {
-        window.location.href = "dashboard-empresa.html";
-      }
+    if (!snap.exists()) {
+      msg.innerText = "Seu perfil não foi encontrado no banco de dados.";
+      return;
     }
+
+    const tipoUsuario = snap.data().tipo;
+    redirectByTipo(tipoUsuario);
   } catch (error) {
     msg.innerText = error.message;
   }

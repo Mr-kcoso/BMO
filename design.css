@@ -615,11 +615,39 @@ button:hover {
   margin-bottom: 16px;
 }
 
+.empresa-form-head h2 {
+  margin-bottom: 6px;
+}
+
 .empresa-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
-  margin-bottom: 8px;
+}
+
+.empresa-form-grid--content {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 12px 0;
+}
+
+.empresa-form-grid--options {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  margin-bottom: 14px;
+}
+
+.empresa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.empresa-field--full {
+  margin-top: 10px;
+}
+
+.empresa-field label {
+  font-size: 13px;
+  color: #d1d5db;
+  margin-bottom: 2px;
 }
 
 .empresa-form-grid input,
@@ -634,12 +662,34 @@ button:hover {
 }
 
 .empresa-form-grid textarea {
-  min-height: 88px;
+  min-height: 120px;
 }
 
 .empresa-form-full {
-  grid-column: 1 / -1;
-  min-height: 130px;
+  min-height: 120px;
+}
+
+.empresa-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  padding-top: 4px;
+}
+
+.empresa-form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.empresa-form-actions .btn-primary,
+.empresa-form-actions .empresa-secondary-btn {
+  min-width: 170px;
 }
 
 .empresa-switch-row {
@@ -647,6 +697,7 @@ button:hover {
   gap: 14px;
   align-items: center;
   color: #d1d5db;
+  flex-wrap: wrap;
 }
 
 .empresa-switch-row label {
@@ -657,6 +708,33 @@ button:hover {
 
 .empresa-msg {
   color: #9ca3af;
+}
+
+.empresa-msg--helper {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .empresa-form-grid--content {
+    grid-template-columns: 1fr;
+  }
+
+  .empresa-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .empresa-form-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .empresa-form-actions button {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 .empresa-list-head {

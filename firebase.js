@@ -6,10 +6,12 @@ import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-s
 export const firebaseConfig = {
   apiKey: "AIzaSyCsYcXHWa0S6g9FbUKpDbxE2jvuQ-YB5Ko",
   authDomain: "bmo-tcc.firebaseapp.com",
+  databaseURL: "https://bmo-tcc-default-rtdb.firebaseio.com",
   projectId: "bmo-tcc",
   storageBucket: "bmo-tcc.firebasestorage.app",
   messagingSenderId: "808332187636",
-  appId: "1:808332187636:web:116a40a291ee53d73acba1"
+  appId: "1:808332187636:web:116a40a291ee53d73acba1",
+  measurementId: "G-2ERCRCRJ87"
 };
 
 export const STORAGE_BUCKET_CANDIDATES = [
