@@ -10,7 +10,16 @@
   <header class="landing-header" id="topo">
     <div class="landing-container landing-header-inner">
      <a class="landing-logo" href="index.html" >BMO</a>
-      <nav class="landing-nav" aria-label="Menu principal">
+      <button
+        class="landing-menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="landingNav"
+        aria-label="Abrir menu principal"
+      >
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="landing-nav" id="landingNav" aria-label="Menu principal">
         <a href="sobre.html">Sobre</a>
         <a href="#como-funciona">Como funciona</a>
       </nav>

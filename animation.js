@@ -5,18 +5,24 @@ const REVEAL_SELECTORS = [
   ".landing-parceiros",
   ".landing-parceiro-card",
   ".landing-final-cta",
+  ".perfil-card",
+  ".perfil-hero",
+  ".perfil-section",
   ".freelancer-card",
   ".empresa-candidatura-card",
   ".chats-item-card",
   ".empresa-form-card",
   ".empresa-list-card",
   ".freelancer-filtros",
-  ".chats-list-card"
+  ".empresa-filtros",
+  ".chats-list-card",
+  ".chat-card"
 ];
 
 function markRevealElements(root = document) {
   REVEAL_SELECTORS.forEach((selector) => {
     root.querySelectorAll(selector).forEach((element, index) => {
+      if (element.classList.contains("reveal-on-scroll")) return;
       element.classList.add("reveal-on-scroll");
       element.style.setProperty("--reveal-delay", `${Math.min(index * 70, 280)}ms`);
     });
@@ -54,9 +60,59 @@ function setupRevealObserver() {
   });
 }
 
+function triggerMicroInteraction(element, className = "is-micro-active") {
+  if (!element) return;
+  element.classList.remove(className);
+  requestAnimationFrame(() => {
+    element.classList.add(className);
+    window.setTimeout(() => element.classList.remove(className), 450);
+  });
+}
+
+function setupMicroInteractions() {
+  document.addEventListener("click", (event) => {
+    const interactiveElement = event.target.closest(
+      ".btn-primary, .empresa-secondary-btn, .freelancer-secondary-btn, .chat-nav-btn, .chats-nav-btn, .landing-cta, .menu-hamburger-btn, .landing-icon, .freelancer-tag, .empresa-tag, .perfil-tag"
+    );
+
+    if (interactiveElement) {
+      triggerMicroInteraction(interactiveElement);
+    }
+  });
+}
+
+function setupLandingMenu() {
+  const toggle = document.querySelector(".landing-menu-toggle");
+  const nav = document.querySelector(".landing-nav");
+  if (!toggle || !nav) return;
+
+  const setExpanded = (expanded) => {
+    toggle.setAttribute("aria-expanded", String(expanded));
+    nav.classList.toggle("is-open", expanded);
+    document.body.classList.toggle("landing-menu-open", expanded);
+  };
+
+  toggle.addEventListener("click", () => {
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    setExpanded(!expanded);
+  });
+
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setExpanded(false));
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+      setExpanded(false);
+    }
+  });
+}
+
 function initAnimations() {
   markRevealElements();
   setupRevealObserver();
+  setupMicroInteractions();
+  setupLandingMenu();
 }
 
 if (document.readyState === "loading") {

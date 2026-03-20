@@ -103,8 +103,10 @@ async function carregarAmigos(user) {
 
     const acoes = createElement("div", { className: "button-row" });
 
-    const verPerfil = createElement("a", { className: "empresa-secondary-btn", text: "Ver perfil" });
-    verPerfil.href = `perfil-publico.html?userId=${amigoId}`;
+    const verPerfil = createElement("button", { className: "empresa-secondary-btn", text: "Ver perfil" });
+    verPerfil.addEventListener("click", () => {
+      window.location.href = `perfil-publico.html?userId=${amigoId}`;
+    });
 
     const abrirChat = createElement("button", { className: "btn-primary", text: "Chat" });
     abrirChat.addEventListener("click", async () => {

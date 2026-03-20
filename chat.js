@@ -22,6 +22,7 @@ const chatTitulo = document.getElementById("chatTitulo");
 const chatSubtitulo = document.getElementById("chatSubtitulo");
 
 const profileCache = new Map();
+const mensagensRenderizadas = new Set();
 
 function formatDate(value) {
   const date = typeof value?.toDate === "function" ? value.toDate() : new Date(value || 0);
@@ -50,11 +51,12 @@ async function renderMensagens(mensagens, currentUserId) {
 
   for (const mensagem of mensagens) {
     const nomeAutor = await getProfileName(mensagem.autorId);
+    const isNovaMensagem = mensagem.id && !mensagensRenderizadas.has(mensagem.id);
     const item = createElement("div", {
       className:
         mensagem.autorId === currentUserId
-          ? "mensagem mensagem-propria chat-bubble chat-bubble-enter"
-          : "mensagem mensagem-outro chat-bubble chat-bubble-enter"
+          ? `mensagem mensagem-propria chat-bubble${isNovaMensagem ? " chat-bubble-enter" : ""}`
+          : `mensagem mensagem-outro chat-bubble${isNovaMensagem ? " chat-bubble-enter" : ""}`
     });
 
     const header = createElement("div", { className: "chat-bubble-header" });
@@ -66,6 +68,10 @@ async function renderMensagens(mensagens, currentUserId) {
     item.appendChild(header);
     item.appendChild(conteudo);
     mensagensDiv.appendChild(item);
+
+    if (mensagem.id) {
+      mensagensRenderizadas.add(mensagem.id);
+    }
   }
 
   mensagensDiv.scrollTop = mensagensDiv.scrollHeight;

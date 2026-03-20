@@ -47,6 +47,12 @@ body {
   margin: 0;
 }
 
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
 #larva {
   width: 89px;
   height: 58px;
@@ -60,6 +66,7 @@ button {
   font: inherit;
   padding: 12px 14px;
   margin-bottom: 8px;
+  box-sizing: border-box;
 }
 
 input,
@@ -74,7 +81,8 @@ button {
   cursor: pointer;
   border: 1px solid var(--bmo-laranja);
   border-radius: 12px;
-}chat
+  min-height: 44px;
+}
 
 button:hover {
   filter: brightness(1.03);
@@ -91,6 +99,7 @@ button:hover {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .site-header {
@@ -177,6 +186,7 @@ button:hover {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 
@@ -1247,6 +1257,10 @@ button:hover {
   color: #e5e7eb;
 }
 
+body.landing-menu-open {
+  overflow: hidden;
+}
+
 .landing-container {
   width: min(1120px, calc(100% - 40px));
   margin: 0 auto;
@@ -1267,6 +1281,7 @@ button:hover {
   align-items: center;
   min-height: 72px;
   gap: 16px;
+  position: relative;
 }
 
 .landing-logo {
@@ -1281,6 +1296,28 @@ button:hover {
   display: flex;
   align-items: center;
   gap: 18px;
+}
+
+.landing-menu-toggle {
+  display: none;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  background: #111827;
+  border: 1px solid rgba(255, 107, 0, 0.45);
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-direction: column;
+}
+
+.landing-menu-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: #f8fafc;
 }
 
 .landing-nav a,
@@ -1509,6 +1546,183 @@ button:hover {
   }
 }
 
+@media (max-width: 1024px) {
+  .freelancer-dashboard,
+  .empresa-dashboard,
+  .chats-dashboard,
+  .chat-layout,
+  .perfil-layout {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .empresa-form-grid--content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-container {
+    width: min(calc(100% - 24px), 1120px);
+  }
+
+  .landing-header-inner {
+    min-height: 64px;
+  }
+
+  .landing-menu-toggle {
+    display: inline-flex;
+  }
+
+  .landing-nav {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(7, 10, 16, 0.98);
+    border: 1px solid #1f2937;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.35);
+  }
+
+  .landing-nav.is-open {
+    display: flex;
+  }
+
+  .landing-nav a,
+  .landing-nav-btn {
+    width: 100%;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .landing-hero {
+    padding: 48px 0;
+  }
+
+  .landing-hero-grid,
+  .landing-beneficios-grid,
+  .landing-parceiros-grid,
+  .empresa-candidaturas-grid,
+  .freelancer-grid,
+  .chats-grid,
+  .perfil-grid,
+  .chats-filtros,
+  .chat-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header,
+  .empresa-list-head,
+  .empresa-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .landing-footer-inner,
+  .dashboard-menu-actions,
+  .button-row {
+    align-items: stretch;
+  }
+
+  .button-row > button,
+  .button-row > a,
+  .empresa-form-actions button,
+  .dashboard-menu-actions button {
+    width: 100%;
+  }
+
+  .perfil-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .chat-mensagens {
+    min-height: 300px;
+  }
+
+  .mensagem {
+    max-width: 88%;
+  }
+}
+
+@media (max-width: 540px) {
+  body {
+    font-size: 15px;
+  }
+
+  .freelancer-dashboard,
+  .empresa-dashboard,
+  .chats-dashboard,
+  .chat-layout,
+  .perfil-layout,
+  .auth-page-layout,
+  .about-layout {
+    width: min(100%, calc(100% - 24px));
+    padding: 18px 0 28px;
+  }
+
+  .card,
+  .auth-card,
+  .perfil-card,
+  .empresa-form-card,
+  .empresa-list-card,
+  .chats-list-card,
+  .chat-card,
+  .freelancer-card,
+  .empresa-candidatura-card,
+  .landing-beneficio-item,
+  .landing-parceiro-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .landing-hero h1,
+  .freelancer-topbar h1,
+  .empresa-topbar h1,
+  .chat-topbar h1,
+  .chats-topbar h1,
+  .perfil-header h1 {
+    font-size: clamp(26px, 9vw, 34px);
+  }
+
+  .landing-hero p,
+  .perfil-subtitle,
+  .empresa-subtitle,
+  .freelancer-subtitle,
+  .chat-subtitle,
+  .chats-subtitle {
+    font-size: 15px;
+  }
+
+  input,
+  textarea,
+  select,
+  button,
+  .landing-cta,
+  .landing-nav a,
+  .landing-nav-btn,
+  .chat-nav-btn,
+  .chats-nav-btn,
+  .freelancer-nav-btn,
+  .empresa-nav-btn {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .landing-parceiro-logo-box {
+    width: 120px;
+    height: 120px;
+  }
+}
+
 
 .auth-page {
   background: #f2f2f2;
@@ -1591,6 +1805,9 @@ button:hover {
 .empresa-secondary-btn,
 .freelancer-secondary-btn,
 .chat-nav-btn,
+.chats-nav-btn,
+.freelancer-nav-btn,
+.empresa-nav-btn,
 .landing-cta,
 .landing-nav a,
 .landing-nav-btn {
@@ -1605,11 +1822,28 @@ button:hover {
 .empresa-secondary-btn:hover,
 .freelancer-secondary-btn:hover,
 .chat-nav-btn:hover,
+.chats-nav-btn:hover,
+.freelancer-nav-btn:hover,
+.empresa-nav-btn:hover,
 .landing-cta:hover,
 .landing-nav a:hover,
 .landing-nav-btn:hover {
   transform: translateY(-2px) scale(1.01);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.btn-primary:focus-visible,
+.empresa-secondary-btn:focus-visible,
+.freelancer-secondary-btn:focus-visible,
+.chat-nav-btn:focus-visible,
+.chats-nav-btn:focus-visible,
+.freelancer-nav-btn:focus-visible,
+.empresa-nav-btn:focus-visible,
+.landing-cta:focus-visible,
+.landing-nav a:focus-visible,
+.landing-nav-btn:focus-visible {
+  outline: 2px solid rgba(255, 107, 0, 0.95);
+  outline-offset: 3px;
 }
 
 .freelancer-card,
@@ -1638,9 +1872,22 @@ button:hover {
   transition-delay: var(--reveal-delay, 0ms);
 }
 
+.reveal-on-scroll:nth-child(2n) {
+  transform: translate3d(0, 30px, 0) scale(0.985);
+}
+
 .reveal-on-scroll.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.dashboard-menu-overlay {
+  opacity: 0;
+  transition: opacity 220ms var(--motion-ease);
+}
+
+.dashboard-menu-overlay.menu-open {
+  opacity: 1;
 }
 
 .dashboard-menu-panel {
@@ -1656,6 +1903,16 @@ button:hover {
 
 .chat-bubble-enter {
   animation: chatBubbleIn 320ms var(--motion-ease);
+}
+
+.mensagem {
+  transition: transform var(--motion-duration-fast) var(--motion-ease),
+    box-shadow var(--motion-duration-fast) var(--motion-ease);
+}
+
+.mensagem:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes chatBubbleIn {
@@ -1701,6 +1958,39 @@ button:hover {
   }
 }
 
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  .reveal-on-scroll {
+    transform: translateY(16px);
+    transition-duration: 360ms;
+  }
+
+  .chat-bubble-enter,
+  .is-micro-active,
+  .empresa-tag,
+  .freelancer-tag {
+    animation-duration: 220ms;
+  }
+
+  .freelancer-card:hover,
+  .empresa-candidatura-card:hover,
+  .chats-item-card:hover,
+  .landing-beneficio-item:hover,
+  .landing-parceiro-card:hover,
+  .btn-primary:hover,
+  .empresa-secondary-btn:hover,
+  .freelancer-secondary-btn:hover,
+  .chat-nav-btn:hover,
+  .chats-nav-btn:hover,
+  .freelancer-nav-btn:hover,
+  .empresa-nav-btn:hover,
+  .landing-cta:hover,
+  .landing-nav a:hover,
+  .landing-nav-btn:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
 
 .menu-hamburger-btn,
 .landing-icon,
@@ -1711,9 +2001,28 @@ button:hover {
 }
 
 .menu-hamburger-btn:hover,
-.landing-icon:hover {
+.landing-icon:hover,
+.perfil-tag:hover {
   transform: translateY(-1px) scale(1.06);
   filter: brightness(1.08);
+}
+
+.is-micro-active {
+  animation: microBounce 420ms var(--motion-ease);
+}
+
+@keyframes microBounce {
+  0% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(1.06);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 #menuOverlayFreelancer .dashboard-menu-panel {
