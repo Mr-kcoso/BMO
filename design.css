@@ -615,11 +615,39 @@ button:hover {
   margin-bottom: 16px;
 }
 
+.empresa-form-head h2 {
+  margin-bottom: 6px;
+}
+
 .empresa-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
-  margin-bottom: 8px;
+}
+
+.empresa-form-grid--content {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 12px 0;
+}
+
+.empresa-form-grid--options {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  margin-bottom: 14px;
+}
+
+.empresa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.empresa-field--full {
+  margin-top: 10px;
+}
+
+.empresa-field label {
+  font-size: 13px;
+  color: #d1d5db;
+  margin-bottom: 2px;
 }
 
 .empresa-form-grid input,
@@ -634,12 +662,34 @@ button:hover {
 }
 
 .empresa-form-grid textarea {
-  min-height: 88px;
+  min-height: 120px;
 }
 
 .empresa-form-full {
-  grid-column: 1 / -1;
-  min-height: 130px;
+  min-height: 120px;
+}
+
+.empresa-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  padding-top: 4px;
+}
+
+.empresa-form-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.empresa-form-actions .btn-primary,
+.empresa-form-actions .empresa-secondary-btn {
+  min-width: 170px;
 }
 
 .empresa-switch-row {
@@ -647,6 +697,7 @@ button:hover {
   gap: 14px;
   align-items: center;
   color: #d1d5db;
+  flex-wrap: wrap;
 }
 
 .empresa-switch-row label {
@@ -657,6 +708,33 @@ button:hover {
 
 .empresa-msg {
   color: #9ca3af;
+}
+
+.empresa-msg--helper {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .empresa-form-grid--content {
+    grid-template-columns: 1fr;
+  }
+
+  .empresa-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .empresa-form-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .empresa-form-actions button {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 .empresa-list-head {
@@ -1501,4 +1579,124 @@ button:hover {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+}
+
+:root {
+  --motion-duration-fast: 180ms;
+  --motion-duration-base: 300ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-primary,
+.empresa-secondary-btn,
+.freelancer-secondary-btn,
+.chat-nav-btn,
+.landing-cta,
+.landing-nav a,
+.landing-nav-btn {
+  transition: transform var(--motion-duration-fast) var(--motion-ease),
+    box-shadow var(--motion-duration-base) var(--motion-ease),
+    background var(--motion-duration-fast) var(--motion-ease),
+    color var(--motion-duration-fast) var(--motion-ease),
+    border-color var(--motion-duration-fast) var(--motion-ease);
+}
+
+.btn-primary:hover,
+.empresa-secondary-btn:hover,
+.freelancer-secondary-btn:hover,
+.chat-nav-btn:hover,
+.landing-cta:hover,
+.landing-nav a:hover,
+.landing-nav-btn:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.freelancer-card,
+.empresa-candidatura-card,
+.chats-item-card,
+.landing-beneficio-item,
+.landing-parceiro-card {
+  transition: transform var(--motion-duration-base) var(--motion-ease),
+    box-shadow var(--motion-duration-base) var(--motion-ease),
+    border-color var(--motion-duration-fast) var(--motion-ease);
+}
+
+.freelancer-card:hover,
+.empresa-candidatura-card:hover,
+.chats-item-card:hover,
+.landing-beneficio-item:hover,
+.landing-parceiro-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 560ms var(--motion-ease), transform 560ms var(--motion-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dashboard-menu-panel {
+  transform: translateX(28px);
+  opacity: 0;
+  transition: transform 220ms var(--motion-ease), opacity 220ms var(--motion-ease);
+}
+
+.dashboard-menu-overlay.menu-open .dashboard-menu-panel {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.chat-bubble-enter {
+  animation: chatBubbleIn 320ms var(--motion-ease);
+}
+
+@keyframes chatBubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes subtlePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.empresa-tag,
+.freelancer-tag {
+  animation: subtlePulse 1.8s ease-in-out 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+  }
 }
