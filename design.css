@@ -48,9 +48,11 @@ body {
 }
 
 img,
-video {
+#video1{
   max-width: 100%;
   height: auto;
+  border: 4px solid var(--bmo-laranja);
+  border-radius: 17px;
 }
 
 #larva {
@@ -700,7 +702,10 @@ button:hover {
 .empresa-form-actions .btn-primary,
 .empresa-form-actions .empresa-secondary-btn {
   min-width: 170px;
+
 }
+
+
 
 .empresa-switch-row {
   display: flex;
@@ -834,9 +839,13 @@ button:hover {
 }
 
 .empresa-secondary-btn {
-  background: #2c2c2c;
-  color: #e5e7eb;
-  border-color: var(--bmo-laranja);
+  cursor: pointer;
+  border: 1px solid var(--bmo-laranja);
+  border-radius: 12px;
+  min-height: 44px;
+  padding: 2px 12px;
+  text-decoration: none;
+  color: #f3f4f6;
 }
 
 .empresa-status-btn {
