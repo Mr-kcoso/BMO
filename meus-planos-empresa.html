@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meus Planos - Empresa | BMO</title>
+  <link rel="stylesheet" href="design.css">
+  <link rel="icon" href="logo.png" type="image/x-icon">
+</head>
+<body class="empresa-dashboard-page">
+  <main class="empresa-dashboard">
+    <header class="page-header empresa-topbar">
+      <div>
+        <h1>Meus Planos</h1>
+        <p id="planoAtualResumo" class="empresa-subtitle">Carregando plano ativo...</p>
+      </div>
+      <div class="button-row empresa-nav-group">
+        <button class="empresa-nav-btn" onclick="window.location.href='dashboard-empresa.html'">Dashboard</button>
+        <button class="empresa-nav-btn" onclick="window.location.href='perfil-empresa.html'">Meu perfil</button>
+        <button class="empresa-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
+        <button class="empresa-nav-btn" onclick="window.history.back()">Voltar</button>
+      </div>
+    </header>
+
+    <section class="empresa-list-card" aria-label="Planos disponíveis">
+      <div class="empresa-list-head">
+        <h2>Planos disponíveis</h2>
+      </div>
+      <ul id="listaPlanosEmpresa" class="empresa-candidaturas-grid"></ul>
+    </section>
+
+    <section class="empresa-list-card" aria-label="Histórico de mudanças de plano">
+      <div class="empresa-list-head">
+        <h2>Histórico de mudanças de plano</h2>
+      </div>
+      <ul id="historicoPlanosEmpresa" class="empresa-candidaturas-grid"></ul>
+    </section>
+  </main>
+
+  <script type="module" src="meus-planos-empresa.js"></script>
+</body>
+</html>
