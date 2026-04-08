@@ -846,6 +846,7 @@ button:hover {
   padding: 2px 12px;
   text-decoration: none;
   color: #f3f4f6;
+  background-color: var(--bmo-laranja);
 }
 
 .empresa-status-btn {
