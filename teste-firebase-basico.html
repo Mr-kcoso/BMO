@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Teste Firebase Básico</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #4CAF50;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-top: 0;
+        }
+        .log {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            max-height: 500px;
+            overflow-y: auto;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .success {
+            color: #4CAF50;
+        }
+        .error {
+            color: #f44336;
+        }
+        .info {
+            color: #2196F3;
+        }
+        .warning {
+            color: #ff9800;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Teste Firebase Básico</h1>
+        <p>Este teste verifica se Firebase CDN está carregando corretamente.</p>
+        
+        <button onclick="testFirebase()">▶️ Testar Firebase</button>
+        
+        <div class="log" id="log">
+            <div class="log-entry info">Aguardando comando...</div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts em ordem correta -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        const logDiv = document.getElementById('log');
+        
+        function addLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const time = new Date().toLocaleTimeString('pt-BR');
+            entry.textContent = `[${time}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function testFirebase() {
+            logDiv.innerHTML = '';
+            addLog('=== TESTE FIREBASE INICIADO ===', 'info');
+            
+            // 1. Verifica se firebase existe
+            addLog('1️⃣ Verificando se firebase está em window...', 'info');
+            setTimeout(() => {
+                if (typeof firebase !== 'undefined') {
+                    addLog('✓ firebase encontrado em window', 'success');
+                    addLog(`   Tipo: ${typeof firebase}`, 'info');
+                } else {
+                    addLog('✗ firebase NÃO encontrado em window', 'error');
+                    addLog('   Pode ser bloqueio de CDN ou conexão', 'error');
+                    return;
+                }
+
+                // 2. Verifica app.js
+                addLog('2️⃣ Verificando firebase.app...', 'info');
+                setTimeout(() => {
+                    if (firebase.initializeApp) {
+                        addLog('✓ firebase.initializeApp existe', 'success');
+                    } else {
+                        addLog('✗ firebase.initializeApp NÃO existe', 'error');
+                    }
+
+                    // 3. Verifica auth.js
+                    addLog('3️⃣ Verificando firebase.auth...', 'info');
+                    setTimeout(() => {
+                        if (firebase.auth) {
+                            addLog('✓ firebase.auth existe', 'success');
+                            const auth = firebase.auth();
+                            addLog(`   Tipo de auth: ${typeof auth}`, 'info');
+                        } else {
+                            addLog('✗ firebase.auth NÃO existe', 'error');
+                        }
+
+                        // 4. Verifica firestore.js
+                        addLog('4️⃣ Verificando firebase.firestore...', 'info');
+                        setTimeout(() => {
+                            if (firebase.firestore) {
+                                addLog('✓ firebase.firestore existe', 'success');
+                                const db = firebase.firestore();
+                                addLog(`   Tipo de firestore: ${typeof db}`, 'info');
+                            } else {
+                                addLog('✗ firebase.firestore NÃO existe', 'error');
+                            }
+
+                            // 5. Verifica firebase.js (do projeto)
+                            addLog('5️⃣ Verificando firebase.js (nosso arquivo)...', 'info');
+                            setTimeout(() => {
+                                if (firebase.apps && firebase.apps.length > 0) {
+                                    addLog('✓ Firebase App inicializado', 'success');
+                                    const app = firebase.apps[0];
+                                    addLog(`   App Name: ${app.name}`, 'info');
+                                    addLog(`   Project ID: ${app.options.projectId}`, 'info');
+                                } else {
+                                    addLog('⚠️ Firebase não encontrou apps inicializados', 'warning');
+                                }
+
+                                // 6. Verifica autenticação
+                                addLog('6️⃣ Verificando estado de autenticação...', 'info');
+                                setTimeout(() => {
+                                    try {
+                                        const user = firebase.auth().currentUser;
+                                        if (user) {
+                                            addLog(`✓ Usuário autenticado: ${user.email}`, 'success');
+                                        } else {
+                                            addLog('ℹ️ Nenhum usuário autenticado', 'info');
+                                            addLog('   (Isso é normal se não fez login)', 'info');
+                                        }
+                                    } catch (error) {
+                                        addLog(`✗ Erro ao verificar autenticação: ${error.message}`, 'error');
+                                    }
+
+                                    addLog('=== TESTE CONCLUÍDO ===', 'success');
+                                    addLog('Se tudo está verde (✓), Firebase está funcionando!', 'success');
+
+                                }, 500);
+                            }, 500);
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,641 @@
+/**
+ * Estilos do Widget Chatbot BMO
+ * Design moderno, flutuante, com animações suaves
+ */
+
+/* ===== CONFIGURAÇÕES GERAIS ===== */
+
+:root {
+  /* Cores principais (integradas com design.css) */
+  --bmo-primary: #4F46E5;        /* Roxo/Azul */
+  --bmo-primary-light: #6366F1;
+  --bmo-primary-dark: #3730A3;
+  --bmo-secondary: #10B981;      /* Verde */
+  --bmo-accent: #F59E0B;         /* Laranja */
+  
+  /* Cores neutras */
+  --bmo-white: #FFFFFF;
+  --bmo-light-gray: #F3F4F6;
+  --bmo-gray: #E5E7EB;
+  --bmo-dark-gray: #6B7280;
+  --bmo-very-dark: #1F2937;
+  
+  /* Sombras */
+  --bmo-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --bmo-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --bmo-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --bmo-shadow-xl: 0 20px 45px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== CONTAINER PRINCIPAL ===== */
+
+#bmo-chatbot-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 9999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 
+               'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif;
+  --font-primary: 'Roboto', sans-serif;
+}
+
+/* ===== BOTÃO TOGGLE (MINIMIZADO) ===== */
+
+.bmo-chatbot-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--bmo-primary) 0%, var(--bmo-primary-light) 100%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--bmo-shadow-xl);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: none;
+  padding: 0;
+  z-index: 10000;
+}
+
+.bmo-chatbot-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 25px 50px rgba(79, 70, 229, 0.3);
+}
+
+.bmo-chatbot-toggle:active {
+  transform: scale(0.95);
+}
+
+.bmo-chatbot-toggle.active {
+  background: linear-gradient(135deg, var(--bmo-primary-dark) 0%, var(--bmo-primary) 100%);
+  transform: rotate(45deg);
+}
+
+/* Avatar do Toggle */
+.bmo-chatbot-avatar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.bmo-chatbot-avatar svg {
+  width: 45px;
+  height: 45px;
+  transition: transform 0.3s ease;
+}
+
+.bmo-chatbot-toggle:hover .bmo-chatbot-avatar svg {
+  transform: scale(1.15);
+}
+
+.bmo-chatbot-toggle.active .bmo-chatbot-avatar {
+  animation: none;
+  transform: rotate(-45deg);
+}
+
+/* Badge de mensagens não lidas */
+.bmo-unread-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--bmo-accent);
+  color: var(--bmo-white);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: var(--bmo-shadow-md);
+  animation: badge-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 3px solid var(--bmo-white);
+}
+
+#bmo-unread-count {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ===== JANELA DE CHAT ===== */
+
+.bmo-chatbot-window {
+  position: fixed;
+  bottom: 115px;
+  right: 20px;
+  width: 420px;
+  max-height: 600px;
+  background: var(--bmo-white);
+  border-radius: 16px;
+  box-shadow: var(--bmo-shadow-xl);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  z-index: 9999;
+}
+
+/* Header da Janela */
+.bmo-chat-header {
+  background: linear-gradient(135deg, var(--bmo-primary) 0%, var(--bmo-primary-light) 100%);
+  color: var(--bmo-white);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bmo-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.bmo-header-content h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.bmo-header-content p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Botão Fechar */
+.bmo-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: var(--bmo-white);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.bmo-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.bmo-close-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.5;
+}
+
+/* ===== CONTAINER DE MENSAGENS ===== */
+
+.bmo-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bmo-light-gray);
+  background: linear-gradient(180deg, rgba(243, 244, 246, 0.5) 0%, rgba(255, 255, 255, 0.5) 100%);
+}
+
+.bmo-messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bmo-messages-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bmo-messages-container::-webkit-scrollbar-thumb {
+  background: var(--bmo-gray);
+  border-radius: 3px;
+}
+
+.bmo-messages-container::-webkit-scrollbar-thumb:hover {
+  background: var(--bmo-dark-gray);
+}
+
+/* ===== MENSAGENS ===== */
+
+.bmo-message {
+  display: flex;
+  gap: 8px;
+  animation: fadeIn 0.3s ease;
+  opacity: 0;
+}
+
+.bmo-message.show {
+  opacity: 1;
+}
+
+/* Mensagem do Usuário */
+.bmo-message-user {
+  justify-content: flex-end;
+}
+
+.bmo-message-user .bmo-message-text {
+  background: var(--bmo-primary);
+  color: var(--bmo-white);
+  border-radius: 16px 16px 4px 16px;
+  padding: 12px 16px;
+  max-width: 85%;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Mensagem do Bot */
+.bmo-message-bot {
+  justify-content: flex-start;
+}
+
+.bmo-message-bot .bmo-message-text {
+  background: var(--bmo-white);
+  color: var(--bmo-very-dark);
+  border-radius: 16px 16px 16px 4px;
+  padding: 12px 16px;
+  max-width: 85%;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: var(--bmo-shadow-sm);
+  border: 1px solid var(--bmo-gray);
+}
+
+.bmo-message-text strong {
+  font-weight: 600;
+  color: var(--bmo-primary);
+}
+
+.bmo-message-text a {
+  color: var(--bmo-primary);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(79, 70, 229, 0.3);
+}
+
+.bmo-message-text a:hover {
+  border-bottom-color: var(--bmo-primary);
+}
+
+/* Indicador de Carregamento */
+.bmo-loading-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.bmo-loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bmo-primary);
+  animation: bounce 1.4s infinite;
+}
+
+.bmo-loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.bmo-loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+.bmo-loading-dots span:nth-child(3) { animation-delay: 0s; }
+
+/* ===== SUGESTÕES ===== */
+
+.bmo-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  animation: slideInUp 0.4s ease;
+}
+
+.bmo-suggestion-btn {
+  background: var(--bmo-white);
+  border: 2px solid var(--bmo-primary);
+  color: var(--bmo-primary);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.bmo-suggestion-btn:hover {
+  background: var(--bmo-primary);
+  color: var(--bmo-white);
+  transform: translateX(4px);
+  box-shadow: var(--bmo-shadow-md);
+}
+
+/* ===== BADGE DE CONQUISTA ===== */
+
+.bmo-badge {
+  background: linear-gradient(135deg, var(--bmo-secondary) 0%, var(--bmo-secondary) 100%);
+  color: var(--bmo-white);
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin: 8px 0;
+  animation: slideInUp 0.4s ease;
+  opacity: 0;
+}
+
+.bmo-badge.show {
+  opacity: 1;
+}
+
+.bmo-badge-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.bmo-badge-content p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.95;
+}
+
+/* ===== AREA DE INPUT ===== */
+
+.bmo-input-area {
+  padding: 12px;
+  background: var(--bmo-white);
+  border-top: 1px solid var(--bmo-gray);
+}
+
+#bmo-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.bmo-input {
+  flex: 1;
+  border: 1px solid var(--bmo-gray);
+  border-radius: 24px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  outline: none;
+  background: var(--bmo-light-gray);
+}
+
+.bmo-input:focus {
+  border-color: var(--bmo-primary);
+  background: var(--bmo-white);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.bmo-input::placeholder {
+  color: var(--bmo-dark-gray);
+}
+
+.bmo-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Botão Enviar */
+.bmo-send-btn {
+  background: linear-gradient(135deg, var(--bmo-primary) 0%, var(--bmo-primary-light) 100%);
+  border: none;
+  color: var(--bmo-white);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.bmo-send-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: var(--bmo-shadow-md);
+}
+
+.bmo-send-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.bmo-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bmo-send-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
+/* ===== AÇÕES RÁPIDAS ===== */
+
+.bmo-quick-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px 12px 12px;
+  flex-wrap: wrap;
+}
+
+.bmo-quick-btn {
+  background: rgba(79, 70, 229, 0.1);
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  color: var(--bmo-primary);
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.bmo-quick-btn:hover {
+  background: var(--bmo-primary);
+  color: var(--bmo-white);
+  border-color: var(--bmo-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--bmo-shadow-sm);
+}
+
+/* ===== ANIMAÇÕES ===== */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scaleY(1);
+  }
+  40% {
+    transform: scaleY(0.6);
+  }
+}
+
+@keyframes badge-pop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===== RESPONSIVIDADE ===== */
+
+@media (max-width: 480px) {
+  .bmo-chatbot-window {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 100px);
+    bottom: 100px;
+    right: 10px;
+    border-radius: 12px;
+  }
+
+  .bmo-chatbot-toggle {
+    bottom: 20px;
+    right: 16px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .bmo-message-user .bmo-message-text,
+  .bmo-message-bot .bmo-message-text {
+    max-width: 90%;
+  }
+
+  .bmo-quick-actions {
+    flex-direction: column;
+  }
+
+  .bmo-quick-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 1024px) {
+  .bmo-chatbot-window {
+    width: 380px;
+  }
+}
+
+/* ===== TEMAS ESCUROS (SUPORTE FUTURO) ===== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bmo-light-gray: #1F2937;
+    --bmo-gray: #374151;
+    --bmo-white: #111827;
+  }
+
+  .bmo-messages-container {
+    background: linear-gradient(180deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.8) 100%);
+  }
+
+  .bmo-chatbot-header {
+    background: linear-gradient(135deg, var(--bmo-primary-dark) 0%, var(--bmo-primary) 100%);
+  }
+
+  .bmo-message-bot .bmo-message-text {
+    background: #1F2937;
+    color: #F3F4F6;
+    border-color: #374151;
+  }
+
+  .bmo-input-field {
+    background: #1F2937;
+    border-color: #374151;
+    color: #F3F4F6;
+  }
+
+  .bmo-input-field:focus {
+    background: #111827;
+  }
+}
+
+/* ===== ACESSIBILIDADE ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .bmo-chatbot-toggle,
+  .bmo-chatbot-window,
+  .bmo-message,
+  .bmo-suggestions,
+  .bmo-badge,
+  .bmo-input-field,
+  .bmo-send-btn,
+  .bmo-quick-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Focus visível para navegação por teclado */
+.bmo-close-btn:focus,
+.bmo-send-btn:focus,
+.bmo-quick-btn:focus,
+.bmo-suggestion-btn:focus,
+.bmo-input-field:focus {
+  outline: 2px solid var(--bmo-primary);
+  outline-offset: 2px;
+}

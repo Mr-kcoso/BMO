@@ -1,157 +1,148 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Empresa - BMO</title>
-  <link rel="stylesheet" href="design.css">
-  <link rel="icon" href="logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Empresa</title>
+    <link rel="stylesheet" href="design.css">
+    <link rel="stylesheet" href="chatbot.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f93b1d 0%, #ea1e63 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #f93b1d;
+            margin-bottom: 10px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #f93b1d;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .debug-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 13px;
+            border-left: 4px solid #f93b1d;
+        }
+    </style>
 </head>
-<body class="empresa-dashboard-page">
-  <main class="empresa-dashboard">
-    <header class="page-header empresa-topbar">
-      <div>
-        <h1>Dashboard empresa</h1>
-        <p id="resumoCandidaturas" class="empresa-subtitle">Carregando candidaturas...</p>
-      </div>
-      <div class="dashboard-menu-wrapper">
-        <button class="menu-hamburger-btn" type="button" data-menu-trigger="menuOverlayEmpresa" aria-label="Abrir menu" onclick="window.__bmoOpenMenu && window.__bmoOpenMenu('menuOverlayEmpresa')">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
+<body>
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="firebase.js"></script>
 
-
-
-
-
-    <div id="menuOverlayEmpresa" class="dashboard-menu-overlay hidden" role="dialog" aria-modal="true">
-      <div class="dashboard-menu-panel">
-        <div class="dashboard-menu-head">
-          <h2>Menu empresa</h2>
-          <button class="chat-nav-btn" type="button" data-menu-close="menuOverlayEmpresa" aria-label="Fechar menu" onclick="window.__bmoCloseMenu && window.__bmoCloseMenu('menuOverlayEmpresa')">×</button>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Dashboard Empresa</h1>
+            <p>Gerencie seus desafios e conecte-se com os melhores freelancers!</p>
+            <div class="debug-info" id="user-info">
+                Carregando informações da empresa...
+            </div>
         </div>
-        <div class="button-row empresa-nav-group dashboard-menu-actions">
-          <button class="empresa-nav-btn" onclick="window.location.href='perfil-empresa.html'">Meu perfil</button>
-          <button class="empresa-nav-btn" onclick="window.location.href='meus-amigos.html'">Meus amigos</button>
-          <button class="empresa-nav-btn" onclick="window.location.href='busca-perfis.html'">Buscar perfis</button>
-          <button class="empresa-nav-btn" onclick="window.location.href='minhas-equipes.html'">Minhas equipes</button>
-          <button class="empresa-nav-btn" onclick="window.location.href='meus-planos-empresa.html'">Meus planos</button>
-          <button class="empresa-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
+
+        <div class="content-grid">
+            <div class="card">
+                <h3>📋 Meus Desafios</h3>
+                <p>Crie, edite e acompanhe seus desafios publicados. Veja candidaturas e métricas de engajamento.</p>
+            </div>
+
+            <div class="card">
+                <h3>👤 Candidatos</h3>
+                <p>Visualize e gerencie todas as candidaturas recebidas para seus desafios.</p>
+            </div>
+
+            <div class="card">
+                <h3>💰 Planos e Faturamento</h3>
+                <p>Veja seus planos subscritos, histórico de pagamentos e faturas.</p>
+            </div>
+
+            <div class="card">
+                <h3>⭐ Equipe</h3>
+                <p>Gerencie membros da sua equipe, permissões e colaboradores.</p>
+            </div>
+
+            <div class="card">
+                <h3>💬 Mensagens</h3>
+                <p>Comunique-se diretamente com freelancers sobre projetos e oportunidades.</p>
+            </div>
+
+            <div class="card">
+                <h3>📊 Relatórios</h3>
+                <p>Analise dados, estatísticas e performance dos seus desafios e projetos.</p>
+            </div>
         </div>
-      </div>
     </div>
 
-    <section class="empresa-form-card" aria-label="Publicar problema">
-      <div class="empresa-form-head">
-        <h2>Publicar problema</h2>
-        <p class="empresa-msg empresa-msg--helper">Organize os dados da vaga para facilitar o match com freelancers.</p>
-      </div>
+    <!-- Carrega Chatbot Scripts (SEM módulos) -->
+    <script src="chatbot-service-simple.js"></script>
+    <script src="chatbot-simple.js"></script>
 
-      <div class="empresa-field empresa-field--full">
-        <label for="titulo">Título do problema</label>
-        <input id="titulo" placeholder="Ex.: Ajustar bugs no checkout" />
-      </div>
-
-      <div class="empresa-form-grid empresa-form-grid--content">
-        <div class="empresa-field">
-          <label for="descricao">Resumo do problema</label>
-          <textarea id="descricao" class="resizeno" placeholder="Descreva o problema de forma objetiva"></textarea>
-        </div>
-        <div class="empresa-field">
-          <label for="detalhamentoProblema">Detalhamento técnico</label>
-          <textarea id="detalhamentoProblema" class="resizeno empresa-form-full" placeholder="Contexto técnico, stack e critérios de entrega"></textarea>
-        </div>
-      </div>
-
-      <div class="empresa-form-grid empresa-form-grid--options">
-        <div class="empresa-field">
-          <label for="tipoProblema">Tipo</label>
-          <select id="tipoProblema">
-            <option value="software">Software</option>
-            <option value="hardware">Hardware</option>
-            <option value="banco de dados">Banco de dados</option>
-            <option value="front-end">Front-end</option>
-            <option value="back-end">Back-end</option>
-          </select>
-        </div>
-
-        <div class="empresa-field">
-          <label for="nivelProblema">Nível</label>
-          <select id="nivelProblema">
-            <option value="iniciante">Iniciante</option>
-            <option value="intermediario" selected>Intermediário</option>
-          </select>
-        </div>
-
-        <div class="empresa-field">
-          <label for="valorProblema">Valor simulado (R$)</label>
-          <input id="valorProblema" type="number" min="0" step="50" placeholder="Ex.: 1500" />
-        </div>
-
-        <div class="empresa-field">
-          <label for="prazoProblema">Prazo</label>
-          <input id="prazoProblema" type="date" />
-        </div>
-      </div>
-
-      <div class="empresa-form-footer">
-        <div class="empresa-switch-row">
-          <label><input id="remotoProblema" type="checkbox" checked /> Remoto</label>
-          <label><input id="urgenteProblema" type="checkbox" /> Presencial</label>
-        </div>
-
-        <div class="empresa-form-actions">
-          <button id="btnCancelarEdicao" class="empresa-secondary-btn" hidden>Cancelar edição</button>
-          <button id="btnPublicar" class="btn-primary">Publicar problema</button>
-        </div>
-      </div>
-
-      <p class="empresa-msg empresa-msg--helper">Valor é apenas simulação para representar pagamento, sem transação real.</p>
-      <p id="msg" class="empresa-msg"></p>
-    </section>
-
-    <section class="empresa-list-card" aria-label="Problemas publicados">
-      <div class="empresa-list-head">
-        <h2>Problemas publicados</h2>
-      </div>
-
-      <p id="loadingProblemas" class="empresa-loading">Carregando problemas publicados...</p>
-      <ul id="problemasPublicados" class="empresa-candidaturas-grid"></ul>
-      <div id="estadoVazioProblemas" class="empresa-empty hidden">
-        Você ainda não publicou problemas.
-      </div>
-    </section>
-
-    <section class="empresa-list-card" aria-label="Candidaturas recebidas">
-      <div class="empresa-list-head">
-        <h2>Candidaturas recebidas</h2>
-        <div class="empresa-filtros">
-          <input id="buscaCandidaturas" type="search" placeholder="Buscar problema/freelancer" />
-          <select id="filtroStatus">
-            <option value="todos">Todos os status</option>
-            <option value="pendente">Pendente</option>
-            <option value="aceito">Aceito</option>
-            <option value="recusado">Recusado</option>
-          </select>
-          <select id="ordenacaoCandidaturas">
-            <option value="recentes">Mais recentes</option>
-            <option value="antigos">Mais antigas</option>
-            <option value="titulo">Título A-Z</option>
-          </select>
-        </div>
-      </div>
-
-      <p id="loadingCandidaturas" class="empresa-loading">Carregando candidaturas...</p>
-      <ul id="candidaturas" class="empresa-candidaturas-grid"></ul>
-      <div id="estadoVazioCandidaturas" class="empresa-empty hidden">
-        Nenhuma candidatura encontrada no momento.
-      </div>
-    </section>
-  </main>
-
-  <script type="module" src="dashboard-menu.js"></script>
-  <script type="module" src="animation.js"></script>
-  <script type="module" src="empresa.js"></script>
+    <script>
+        // Mostra informações da empresa
+        firebase.auth().onAuthStateChanged((user) => {
+            const userInfo = document.getElementById('user-info');
+            if (user) {
+                userInfo.innerHTML = `
+                    <strong>✓ Autenticado como empresa:</strong><br>
+                    Email: ${user.email}<br>
+                    UID: ${user.uid}<br>
+                    <strong>Chat deveria aparecer aqui 👉 (canto inferior direito)</strong>
+                `;
+            } else {
+                userInfo.innerHTML = `
+                    <strong>❌ Não autenticado</strong><br>
+                    Você precisa fazer login para ver o chat.
+                `;
+            }
+        });
+    </script>
 </body>
 </html>
