@@ -175,30 +175,31 @@ async function carregarChats(user) {
       getDocs(chatsEquipeQuery)
     ]);
 
-    const chats = [];
+    const chatsProjeto = await Promise.all(
+      chatsProjetoSnap.docs.map(async (chatDoc) => {
+        const chat = { id: chatDoc.id, ...chatDoc.data() };
+        const outroId = tipo === "empresa" ? chat.freelancerId : chat.empresaId;
 
-    for (const chatDoc of chatsProjetoSnap.docs) {
+        const [problemaSnap, outroPerfil] = await Promise.all([
+          getDoc(doc(db, "problemas", chat.problemaId)),
+          getUserProfile(outroId)
+        ]);
+
+        return {
+          ...chat,
+          tipoChat: "projeto",
+          tipoLabel: "Chat de projeto",
+          titulo: problemaSnap.exists() ? problemaSnap.data().titulo : "Problema removido",
+          outroNome: outroPerfil?.nome || "Usuário",
+          outroId,
+          temNovasMensagens: getTemNovasMensagens(chat, user.uid)
+        };
+      })
+    );
+
+    const chatsEquipe = chatsEquipeSnap.docs.map((chatDoc) => {
       const chat = { id: chatDoc.id, ...chatDoc.data() };
-
-      const [problemaSnap, outroPerfil] = await Promise.all([
-        getDoc(doc(db, "problemas", chat.problemaId)),
-        getUserProfile(tipo === "empresa" ? chat.freelancerId : chat.empresaId)
-      ]);
-
-      chats.push({
-        ...chat,
-        tipoChat: "projeto",
-        tipoLabel: "Chat de projeto",
-        titulo: problemaSnap.exists() ? problemaSnap.data().titulo : "Problema removido",
-        outroNome: outroPerfil?.nome || "Usuário",
-        outroId: tipo === "empresa" ? chat.freelancerId : chat.empresaId,
-        temNovasMensagens: getTemNovasMensagens(chat, user.uid)
-      });
-    }
-
-    for (const chatDoc of chatsEquipeSnap.docs) {
-      const chat = { id: chatDoc.id, ...chatDoc.data() };
-      chats.push({
+      return {
         ...chat,
         tipoChat: "equipe",
         tipoLabel: "Chat da equipe",
@@ -206,10 +207,10 @@ async function carregarChats(user) {
         outroNome: "Membros da equipe",
         outroId: "",
         temNovasMensagens: getTemNovasMensagens(chat, user.uid)
-      });
-    }
+      };
+    });
 
-    state.chats = chats;
+    state.chats = [...chatsProjeto, ...chatsEquipe];
     renderChats();
   } catch (error) {
     console.error(error);

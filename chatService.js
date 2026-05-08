@@ -7,6 +7,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  limit,
   serverTimestamp,
   setDoc,
   updateDoc
@@ -58,13 +59,15 @@ export async function validarAcessoAoChat(chatId, userId, tipoChat = "projeto") 
   return { autorizado: true, chat };
 }
 
-export function escutarMensagens(chatId, callback, tipoChat = "projeto") {
+export function escutarMensagens(chatId, callback, tipoChat = "projeto", limiteMensagens = 50) {
   const chatCollection = getChatCollection(tipoChat);
   const mensagensRef = collection(db, chatCollection, chatId, "mensagens");
-  const mensagensQuery = query(mensagensRef, orderBy("criadoEm"));
+  const mensagensQuery = query(mensagensRef, orderBy("criadoEm", "desc"), limit(limiteMensagens));
 
   return onSnapshot(mensagensQuery, (snapshot) => {
-    const mensagens = snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
+    const mensagens = snapshot.docs
+      .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+      .reverse();
     callback(mensagens);
   });
 }

@@ -22,6 +22,8 @@ const chatTitulo = document.getElementById("chatTitulo");
 const chatSubtitulo = document.getElementById("chatSubtitulo");
 
 const profileCache = new Map();
+const CACHE_KEY_PREFIX = "bmo_profile_cache";
+const CACHE_EXPIRY_MS = 1000 * 60 * 60;
 const mensagensRenderizadas = new Set();
 
 function formatDate(value) {
@@ -34,9 +36,25 @@ async function getProfileName(userId) {
   if (!userId) return "Usuário";
   if (profileCache.has(userId)) return profileCache.get(userId);
 
+  const cacheKey = `${CACHE_KEY_PREFIX}:${userId}`;
+  const cachedValue = localStorage.getItem(cacheKey);
+  if (cachedValue) {
+    try {
+      const parsed = JSON.parse(cachedValue);
+      if (parsed?.nome && Date.now() - parsed.timestamp < CACHE_EXPIRY_MS) {
+        profileCache.set(userId, parsed.nome);
+        return parsed.nome;
+      }
+      localStorage.removeItem(cacheKey);
+    } catch (error) {
+      localStorage.removeItem(cacheKey);
+    }
+  }
+
   const profile = await getUserProfile(userId);
   const nome = profile?.nome || "Usuário";
   profileCache.set(userId, nome);
+  localStorage.setItem(cacheKey, JSON.stringify({ nome, timestamp: Date.now() }));
   return nome;
 }
 
@@ -46,34 +64,39 @@ if (btnVoltar) {
   });
 }
 
+async function renderMensagem(mensagem, currentUserId) {
+  const nomeAutor = await getProfileName(mensagem.autorId);
+  const isNovaMensagem = mensagem.id && !mensagensRenderizadas.has(mensagem.id);
+  const item = createElement("div", {
+    className:
+      mensagem.autorId === currentUserId
+        ? `mensagem mensagem-propria chat-bubble${isNovaMensagem ? " chat-bubble-enter" : ""}`
+        : `mensagem mensagem-outro chat-bubble${isNovaMensagem ? " chat-bubble-enter" : ""}`
+  });
+
+  const header = createElement("div", { className: "chat-bubble-header" });
+  header.appendChild(createElement("strong", { text: nomeAutor }));
+  header.appendChild(createElement("span", { className: "chat-time", text: formatDate(mensagem.criadoEm) }));
+
+  const conteudo = createElement("p", { className: "chat-text", text: mensagem.texto || "" });
+  item.appendChild(header);
+  item.appendChild(conteudo);
+  mensagensDiv.appendChild(item);
+
+  if (mensagem.id) {
+    mensagensRenderizadas.add(mensagem.id);
+  }
+}
+
 async function renderMensagens(mensagens, currentUserId) {
-  clearElement(mensagensDiv);
-
-  for (const mensagem of mensagens) {
-    const nomeAutor = await getProfileName(mensagem.autorId);
-    const isNovaMensagem = mensagem.id && !mensagensRenderizadas.has(mensagem.id);
-    const item = createElement("div", {
-      className:
-        mensagem.autorId === currentUserId
-          ? `mensagem mensagem-propria chat-bubble${isNovaMensagem ? " chat-bubble-enter" : ""}`
-          : `mensagem mensagem-outro chat-bubble${isNovaMensagem ? " chat-bubble-enter" : ""}`
-    });
-
-    const header = createElement("div", { className: "chat-bubble-header" });
-    header.appendChild(createElement("strong", { text: nomeAutor }));
-    header.appendChild(createElement("span", { className: "chat-time", text: formatDate(mensagem.criadoEm) }));
-
-    const conteudo = createElement("p", { className: "chat-text", text: mensagem.texto || "" });
-
-    item.appendChild(header);
-    item.appendChild(conteudo);
-    mensagensDiv.appendChild(item);
-
-    if (mensagem.id) {
-      mensagensRenderizadas.add(mensagem.id);
-    }
+  if (mensagensRenderizadas.size === 0) {
+    clearElement(mensagensDiv);
   }
 
+  for (const mensagem of mensagens) {
+    if (!mensagem.id || mensagensRenderizadas.has(mensagem.id)) continue;
+    await renderMensagem(mensagem, currentUserId);
+  }
   mensagensDiv.scrollTop = mensagensDiv.scrollHeight;
 }
 
