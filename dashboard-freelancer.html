@@ -1,79 +1,148 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Freelancer - BMO</title>
-  <link rel="stylesheet" href="design.css">
-  <link rel="icon" href="logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Freelancer</title>
+    <link rel="stylesheet" href="design.css">
+    <link rel="stylesheet" href="chatbot.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .debug-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 13px;
+            border-left: 4px solid #667eea;
+        }
+    </style>
 </head>
-<body class="freelancer-dashboard-page">
-  <main class="freelancer-dashboard">
-    <header class="page-header freelancer-topbar">
-      <div>
-        <h1>Problemas disponíveis</h1>
-        <p id="resumoProblemas" class="freelancer-subtitle">Carregando oportunidades...</p>
-      </div>
-      <div class="dashboard-menu-wrapper">
-        <button class="menu-hamburger-btn" type="button" data-menu-trigger="menuOverlayFreelancer" aria-label="Abrir menu" onclick="window.__bmoOpenMenu && window.__bmoOpenMenu('menuOverlayFreelancer')">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
+<body>
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="firebase.js"></script>
 
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Dashboard Freelancer</h1>
+            <p>Bem-vindo ao seu espaço de trabalho!</p>
+            <div class="debug-info" id="user-info">
+                Carregando informações do usuário...
+            </div>
+        </div>
 
-    <div id="menuOverlayFreelancer" class="dashboard-menu-overlay hidden" role="dialog" aria-modal="true">
-      <div class="dashboard-menu-panel">
-        <div class="dashboard-menu-head">
-          <h2>Menu freelancer</h2>
-          <button class="chat-nav-btn" type="button" data-menu-close="menuOverlayFreelancer" aria-label="Fechar menu" onclick="window.__bmoCloseMenu && window.__bmoCloseMenu('menuOverlayFreelancer')">×</button>
+        <div class="content-grid">
+            <div class="card">
+                <h3>📊 Meus Desafios</h3>
+                <p>Acompanhe todos os desafios em que você está participando, visualize o progresso e receba atualizações em tempo real.</p>
+            </div>
+
+            <div class="card">
+                <h3>💼 Candidaturas</h3>
+                <p>Gerenciar suas candidaturas, ver o status e histórico de todos os projetos que você se candidatou.</p>
+            </div>
+
+            <div class="card">
+                <h3>⭐ Selos e Conquistas</h3>
+                <p>Visualize todas as suas medalhas, certificados e reconhecimentos ganhos na plataforma.</p>
+            </div>
+
+            <div class="card">
+                <h3>👥 Rede de Contatos</h3>
+                <p>Conecte-se com outras pessoas, expanda sua rede profissional e colabore com outros freelancers.</p>
+            </div>
+
+            <div class="card">
+                <h3>💬 Mensagens</h3>
+                <p>Comunique-se diretamente com empresas e outros freelancers sobre projetos e oportunidades.</p>
+            </div>
+
+            <div class="card">
+                <h3>⚙️ Configurações</h3>
+                <p>Personalize seu perfil, altere preferências e gerencie suas notificações.</p>
+            </div>
         </div>
-        <div class="button-row freelancer-nav-group dashboard-menu-actions">
-          <button class="freelancer-nav-btn" onclick="window.location.href='perfil-freelancer.html'">Meu perfil</button>
-          <button class="freelancer-nav-btn" onclick="window.location.href='meus-amigos.html'">Meus amigos</button>
-          <button class="freelancer-nav-btn" onclick="window.location.href='busca-perfis.html'">Buscar perfis</button>
-          <button class="freelancer-nav-btn" onclick="window.location.href='minhas-equipes.html'">Minhas equipes</button>
-          <button class="freelancer-nav-btn" onclick="window.location.href='meus-chats.html'">Meus chats</button>
-        </div>
-      </div>
     </div>
 
-    <section class="freelancer-filtros" aria-label="Filtros de problemas">
-      <input id="buscaProblemas" type="search" placeholder="Buscar por palavra-chave" />
-      <select id="filtroCategoria">
-        <option value="todos">Todas as categorias</option>
-      </select>
-      <select id="filtroNivel">
-        <option value="todos">Todos os níveis</option>
-        <option value="iniciante">Iniciante</option>
-        <option value="intermediario">Intermediário</option>
-      </select>
-      <select id="ordenacaoProblemas">
-        <option value="recentes">Mais recentes</option>
-        <option value="antigos">Mais antigos</option>
-        <option value="candidaturas">Mais candidaturas</option>
-        <option value="prazo">Prazo</option>
-      </select>
-    </section>
+    <!-- Carrega Chatbot Scripts (SEM módulos) -->
+    <script src="chatbot-service-simple.js"></script>
+    <script src="chatbot-simple.js"></script>
 
-    <p id="loadingProblemas" class="freelancer-loading">Carregando problemas...</p>
-    <ul id="lista" class="freelancer-grid" aria-live="polite"></ul>
-    <div id="estadoVazio" class="freelancer-empty hidden">Não há problemas disponíveis no momento. Volte em breve.</div>
-  </main>
-
-    <div id="modalDetalhes" class="freelancer-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalDetalhesTitulo">
-      <div class="freelancer-modal-content">
-        <button id="fecharModalDetalhes" class="freelancer-modal-close" aria-label="Fechar detalhes">×</button>
-        <h2 id="modalDetalhesTitulo">Detalhes do problema</h2>
-        <p id="modalDetalhesSubtitulo" class="freelancer-modal-subtitle"></p>
-        <p id="modalDetalhesDescricao" class="freelancer-modal-description"></p>
-        <h3>Detalhamento completo</h3>
-        <p id="modalDetalhesTexto" class="freelancer-modal-detail"></p>
-      </div>
-    </div>
-
-  <script type="module" src="dashboard-menu.js"></script>
-  <script type="module" src="animation.js"></script>
-  <script type="module" src="freelancer.js"></script>
+    <script>
+        // Mostra informações do usuário
+        firebase.auth().onAuthStateChanged((user) => {
+            const userInfo = document.getElementById('user-info');
+            if (user) {
+                userInfo.innerHTML = `
+                    <strong>✓ Autenticado como:</strong><br>
+                    Email: ${user.email}<br>
+                    UID: ${user.uid}<br>
+                    <strong>Chat deveria aparecer aqui 👉 (canto inferior direito)</strong>
+                `;
+            } else {
+                userInfo.innerHTML = `
+                    <strong>❌ Não autenticado</strong><br>
+                    Você precisa fazer login para ver o chat.
+                `;
+            }
+        });
+    </script>
 </body>
 </html>

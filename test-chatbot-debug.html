@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐛 Debug Chatbot BMO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-item {
+            background: #0f172a;
+            border-left: 4px solid #64748b;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .status-value {
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: #10b981;
+            color: white;
+            border-left-color: #10b981;
+        }
+
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+            border-left-color: #f59e0b;
+        }
+
+        .status-error {
+            background: #ef4444;
+            color: white;
+            border-left-color: #ef4444;
+        }
+
+        .log-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #22c55e;
+        }
+
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-time {
+            color: #64748b;
+            margin-right: 8px;
+        }
+
+        .log-info {
+            color: #60a5fa;
+        }
+
+        .log-error {
+            color: #ef4444;
+        }
+
+        .log-success {
+            color: #10b981;
+        }
+
+        .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Status Panel -->
+        <div class="card">
+            <h2><span class="icon">🔍</span> Status do Chatbot</h2>
+            
+            <div class="status-item">
+                <span class="status-label">Firebase</span>
+                <span class="status-value status-pending" id="firebase-status">Verificando...</span>
+            </div>
+
+            <div class="status-item">
+                <span class="status-label">Biblioteca do Serviço</span>
+                <span class="status-value status-pending" id="service-status">Carregando...</span>
+            </div>
+
+            <div class="status-item">
+                <span class="status-label">Widget Chatbot</span>
+                <span class="status-value status-pending" id="widget-status">Carregando...</span>
+            </div>
+
+            <div class="status-item">
+                <span class="status-label">Autenticação</span>
+                <span class="status-value status-pending" id="auth-status">Verificando...</span>
+            </div>
+
+            <div class="status-item">
+                <span class="status-label">DOM Widget</span>
+                <span class="status-value status-pending" id="dom-status">Procurando...</span>
+            </div>
+
+            <button class="action-button" onclick="forceReinitialize()">🔄 Forçar Reinicialização</button>
+        </div>
+
+        <!-- Logs Panel -->
+        <div class="card">
+            <h2><span class="icon">📋</span> Console de Logs</h2>
+            <div class="log-box" id="log-container"></div>
+            <button class="action-button" onclick="clearLogs()">🗑️ Limpar Logs</button>
+        </div>
+    </div>
+
+    <!-- Carrega Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        const logs = [];
+        const MAX_LOGS = 50;
+
+        function logEvent(message, type = 'info') {
+            const time = new Date().toLocaleTimeString('pt-BR');
+            const logEntry = { time, message, type };
+            logs.push(logEntry);
+
+            if (logs.length > MAX_LOGS) {
+                logs.shift();
+            }
+
+            renderLogs();
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function renderLogs() {
+            const logContainer = document.getElementById('log-container');
+            logContainer.innerHTML = logs.map(log => `
+                <div class="log-entry">
+                    <span class="log-time">[${log.time}]</span>
+                    <span class="log-${log.type}">${log.message}</span>
+                </div>
+            `).join('');
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function clearLogs() {
+            logs.length = 0;
+            renderLogs();
+            logEvent('Logs limpos', 'info');
+        }
+
+        function updateStatus(elementId, status) {
+            const element = document.getElementById(elementId);
+            if (status === 'ok') {
+                element.textContent = '✓ OK';
+                element.className = 'status-value status-ok';
+            } else if (status === 'pending') {
+                element.textContent = '⏳ Verificando...';
+                element.className = 'status-value status-pending';
+            } else {
+                element.textContent = '✗ Erro';
+                element.className = 'status-value status-error';
+            }
+        }
+
+        // Verifica Firebase
+        async function checkFirebase() {
+            logEvent('Verificando Firebase...', 'info');
+            try {
+                if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+                    logEvent('✓ Firebase carregado', 'success');
+                    updateStatus('firebase-status', 'ok');
+                    return true;
+                } else {
+                    logEvent('✗ Firebase não encontrado', 'error');
+                    updateStatus('firebase-status', 'error');
+                    return false;
+                }
+            } catch (error) {
+                logEvent(`✗ Erro Firebase: ${error.message}`, 'error');
+                updateStatus('firebase-status', 'error');
+                return false;
+            }
+        }
+
+        // Verifica ChatbotService
+        async function checkService() {
+            logEvent('Verificando ChatbotService...', 'info');
+            try {
+                if (typeof ChatbotService !== 'undefined') {
+                    logEvent('✓ ChatbotService disponível', 'success');
+                    updateStatus('service-status', 'ok');
+                    return true;
+                } else {
+                    logEvent('✗ ChatbotService não encontrado', 'error');
+                    updateStatus('service-status', 'error');
+                    return false;
+                }
+            } catch (error) {
+                logEvent(`✗ Erro ao verificar ChatbotService: ${error.message}`, 'error');
+                updateStatus('service-status', 'error');
+                return false;
+            }
+        }
+
+        // Verifica ChatbotWidget
+        async function checkWidget() {
+            logEvent('Verificando ChatbotWidget...', 'info');
+            try {
+                if (typeof ChatbotWidget !== 'undefined') {
+                    logEvent('✓ ChatbotWidget disponível', 'success');
+                    updateStatus('widget-status', 'ok');
+                    return true;
+                } else {
+                    logEvent('✗ ChatbotWidget não encontrado', 'error');
+                    updateStatus('widget-status', 'error');
+                    return false;
+                }
+            } catch (error) {
+                logEvent(`✗ Erro ao verificar ChatbotWidget: ${error.message}`, 'error');
+                updateStatus('widget-status', 'error');
+                return false;
+            }
+        }
+
+        // Verifica Autenticação
+        function checkAuth() {
+            logEvent('Verificando autenticação...', 'info');
+            try {
+                const user = firebase.auth().currentUser;
+                if (user) {
+                    logEvent(`✓ Usuário autenticado: ${user.email}`, 'success');
+                    updateStatus('auth-status', 'ok');
+                    return true;
+                } else {
+                    logEvent('⚠️ Nenhum usuário autenticado', 'info');
+                    updateStatus('auth-status', 'pending');
+                    return false;
+                }
+            } catch (error) {
+                logEvent(`✗ Erro ao verificar auth: ${error.message}`, 'error');
+                updateStatus('auth-status', 'error');
+                return false;
+            }
+        }
+
+        // Verifica DOM
+        function checkDOM() {
+            logEvent('Verificando elementos DOM...', 'info');
+            try {
+                const container = document.getElementById('bmo-chatbot-container');
+                if (container) {
+                    logEvent('✓ Widget container encontrado no DOM', 'success');
+                    updateStatus('dom-status', 'ok');
+                    return true;
+                } else {
+                    logEvent('✗ Widget container não encontrado', 'error');
+                    updateStatus('dom-status', 'error');
+                    return false;
+                }
+            } catch (error) {
+                logEvent(`✗ Erro ao verificar DOM: ${error.message}`, 'error');
+                updateStatus('dom-status', 'error');
+                return false;
+            }
+        }
+
+        // Verifica tudo
+        async function runDiagnostics() {
+            logEvent('=== Iniciando diagnóstico completo ===', 'info');
+            
+            await new Promise(r => setTimeout(r, 1000));
+            await checkFirebase();
+            
+            await new Promise(r => setTimeout(r, 500));
+            await checkService();
+            
+            await new Promise(r => setTimeout(r, 500));
+            await checkWidget();
+            
+            await new Promise(r => setTimeout(r, 500));
+            checkAuth();
+            
+            await new Promise(r => setTimeout(r, 500));
+            checkDOM();
+
+            logEvent('=== Diagnóstico concluído ===', 'success');
+        }
+
+        function forceReinitialize() {
+            logEvent('🔄 Reinicializando...', 'info');
+            location.reload();
+        }
+
+        // Inicia quando carrega
+        logEvent('Página de debug carregada', 'success');
+        
+        window.addEventListener('load', () => {
+            logEvent('Todos os scripts carregados', 'success');
+            setTimeout(runDiagnostics, 2000);
+        });
+
+        // Verifica periodicamente
+        setInterval(() => {
+            checkAuth();
+            checkDOM();
+        }, 5000);
+    </script>
+
+    <!-- Carrega Chatbot -->
+    <link rel="stylesheet" href="chatbot.css">
+    <script src="chatbot-service-simple.js"></script>
+    <script src="chatbot-simple.js"></script>
+</body>
+</html>

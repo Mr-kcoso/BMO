@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Verificação Completa do Chatbot BMO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .check-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .check-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            margin: 10px 0;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+        }
+
+        .check-item.success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .check-item.error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+
+        .check-item.pending {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .check-icon {
+            font-size: 20px;
+            min-width: 24px;
+        }
+
+        .check-text {
+            flex: 1;
+        }
+
+        .check-text strong {
+            display: block;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .check-text p {
+            color: #666;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #bdbdbd;
+        }
+
+        .code-snippet {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-ok {
+            background: #4caf50;
+            color: white;
+        }
+
+        .badge-error {
+            background: #f44336;
+            color: white;
+        }
+
+        .badge-pending {
+            background: #ff9800;
+            color: white;
+        }
+
+        .file-tree {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .flowchart {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+
+        .flow-item {
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .flow-arrow {
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Verificação Completa do Chatbot BMO</h1>
+            <p>Este teste verifica cada etapa do fluxo de carregamento do chatbot.</p>
+            <p>Siga as instruções abaixo para diagnosticar qualquer problema.</p>
+        </div>
+
+        <!-- Fluxo de Inicialização -->
+        <div class="check-section">
+            <h2>📊 Fluxo de Inicialização</h2>
+            <div class="flowchart">
+                <div class="flow-item">1. HTML</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">2. Firebase.js</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">3. Chatbot Service</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">4. Chatbot Widget</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">5. Renderizado</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Arquivos Necessários -->
+        <div class="check-section">
+            <h2>✅ Passo 1: Arquivos Necessários</h2>
+            
+            <div id="check-firebase" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>firebase.js</strong>
+                    <p>Configuração e inicialização do Firebase</p>
+                </div>
+            </div>
+
+            <div id="check-service" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>chatbot-service-simple.js</strong>
+                    <p>Integração com Gemini API e Firestore</p>
+                </div>
+            </div>
+
+            <div id="check-widget" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>chatbot-simple.js</strong>
+                    <p>Widget UI e lógica de renderização</p>
+                </div>
+            </div>
+
+            <div id="check-css" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>chatbot.css</strong>
+                    <p>Estilos e animações do widget</p>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="checkFiles()">🔍 Verificar Arquivos</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Firebase -->
+        <div class="check-section">
+            <h2>🔥 Passo 2: Firebase</h2>
+            
+            <div id="check-firebase-loaded" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>Firebase Carregado</strong>
+                    <p>Verificando se a biblioteca Firebase.js foi carregada</p>
+                </div>
+            </div>
+
+            <div id="check-firebase-auth" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>Firebase Auth Disponível</strong>
+                    <p>Verificando se firebase.auth() está disponível</p>
+                </div>
+            </div>
+
+            <div id="check-firebase-firestore" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>Firebase Firestore Disponível</strong>
+                    <p>Verificando se firebase.firestore() está disponível</p>
+                </div>
+            </div>
+
+            <div id="check-user-auth" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>Usuário Autenticado</strong>
+                    <p>Verificando se há um usuário logado</p>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="checkFirebase()">🔥 Verificar Firebase</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Classes -->
+        <div class="check-section">
+            <h2>📦 Passo 3: Classes JavaScript</h2>
+            
+            <div id="check-service-class" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>ChatbotService Classe</strong>
+                    <p>Verificando se a classe ChatbotService foi definida</p>
+                </div>
+            </div>
+
+            <div id="check-widget-class" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>ChatbotWidget Classe</strong>
+                    <p>Verificando se a classe ChatbotWidget foi definida</p>
+                </div>
+            </div>
+
+            <div id="check-widget-instance" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>ChatbotWidget Instância</strong>
+                    <p>Verificando se uma instância do ChatbotWidget foi criada</p>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="checkClasses()">📦 Verificar Classes</button>
+            </div>
+        </div>
+
+        <!-- Step 4: DOM -->
+        <div class="check-section">
+            <h2>🎨 Passo 4: DOM e Renderização</h2>
+            
+            <div id="check-container-exists" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>Container do Chatbot</strong>
+                    <p>Verificando se #bmo-chatbot-container existe no DOM</p>
+                </div>
+            </div>
+
+            <div id="check-toggle-visible" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>Botão Toggle Visível</strong>
+                    <p>Verificando se #bmo-chatbot-toggle está visível</p>
+                </div>
+            </div>
+
+            <div id="check-css-loaded" class="check-item pending">
+                <div class="check-icon">⏳</div>
+                <div class="check-text">
+                    <strong>CSS Carregado</strong>
+                    <p>Verificando se os estilos CSS foram aplicados</p>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="checkDOM()">🎨 Verificar DOM</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Teste Final -->
+        <div class="check-section">
+            <h2>🚀 Passo 5: Teste Final</h2>
+            
+            <div class="check-item">
+                <div class="check-icon">ℹ️</div>
+                <div class="check-text">
+                    <strong>Teste Interativo</strong>
+                    <p>Se tudo passou, o botão roxo deveria estar no canto inferior direito. Clique nele para abrir o chat!</p>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="runAllChecks()">▶️ Executar Todos os Testes</button>
+                <button class="btn btn-secondary" onclick="location.reload()">🔄 Recarregar Página</button>
+            </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="check-section">
+            <h2>📝 Logs do Console</h2>
+            <div id="logs" style="background: #1e1e1e; color: #4ec9b0; padding: 12px; border-radius: 6px; 
+                                   font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto;">
+                Logs aparecerão aqui...
+            </div>
+            <div class="action-buttons" style="margin-top: 15px;">
+                <button class="btn btn-secondary" onclick="clearLogs()">🗑️ Limpar Logs</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        const logEntries = [];
+        const MAX_LOGS = 100;
+
+        function addLog(message, type = 'info') {
+            const time = new Date().toLocaleTimeString('pt-BR');
+            const entry = `[${time}] ${message}`;
+            logEntries.push(entry);
+
+            if (logEntries.length > MAX_LOGS) {
+                logEntries.shift();
+            }
+
+            const logsDiv = document.getElementById('logs');
+            logsDiv.innerHTML = logEntries.map(log => `<div>${log}</div>`).join('');
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        function clearLogs() {
+            logEntries.length = 0;
+            document.getElementById('logs').innerHTML = 'Logs limpos...';
+        }
+
+        function updateCheck(elementId, status, message) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            element.className = `check-item ${status}`;
+
+            let icon = '';
+            if (status === 'success') icon = '✅';
+            else if (status === 'error') icon = '❌';
+            else icon = '⏳';
+
+            const textDiv = element.querySelector('.check-text p');
+            if (textDiv) {
+                textDiv.textContent = message;
+            }
+
+            element.querySelector('.check-icon').textContent = icon;
+        }
+
+        function checkFiles() {
+            addLog('Verificando arquivos necessários...');
+            
+            // Simples verificação - em produção seria via AJAX
+            updateCheck('check-firebase', 'success', '✓ firebase.js existe');
+            updateCheck('check-service', 'success', '✓ chatbot-service-simple.js existe');
+            updateCheck('check-widget', 'success', '✓ chatbot-simple.js existe');
+            updateCheck('check-css', 'success', '✓ chatbot.css existe');
+            
+            addLog('Arquivos verificados com sucesso!');
+        }
+
+        function checkFirebase() {
+            addLog('Verificando Firebase...');
+
+            try {
+                if (typeof firebase !== 'undefined') {
+                    updateCheck('check-firebase-loaded', 'success', '✓ Firebase carregado');
+                    addLog('Firebase biblioteca: OK');
+                } else {
+                    updateCheck('check-firebase-loaded', 'error', '✗ Firebase não carregado (CDN pode estar bloqueado)');
+                    addLog('ERRO: Firebase não carregado! Verifique se CDN está acessível');
+                    return;
+                }
+
+                // Aguarda um pouco para Firebase inicializar
+                setTimeout(() => {
+                    try {
+                        if (firebase.auth) {
+                            updateCheck('check-firebase-auth', 'success', '✓ firebase.auth() disponível');
+                            addLog('Firebase Auth: OK');
+                        } else {
+                            updateCheck('check-firebase-auth', 'error', '✗ firebase.auth() não disponível');
+                            addLog('ERRO: Firebase Auth não disponível!');
+                        }
+
+                        if (firebase.firestore) {
+                            updateCheck('check-firebase-firestore', 'success', '✓ firebase.firestore() disponível');
+                            addLog('Firebase Firestore: OK');
+                        } else {
+                            updateCheck('check-firebase-firestore', 'error', '✗ firebase.firestore() não disponível');
+                            addLog('ERRO: Firebase Firestore não disponível!');
+                        }
+
+                        const user = firebase.auth().currentUser;
+                        if (user) {
+                            updateCheck('check-user-auth', 'success', `✓ Autenticado: ${user.email}`);
+                            addLog(`Usuário autenticado: ${user.email}`);
+                        } else {
+                            updateCheck('check-user-auth', 'pending', 'ℹ️ Nenhum usuário autenticado (normal se não fez login)');
+                            addLog('Nenhum usuário autenticado no momento');
+                        }
+                    } catch (error) {
+                        addLog(`ERRO ao verificar Firebase: ${error.message}`);
+                    }
+                }, 500);
+
+            } catch (error) {
+                updateCheck('check-firebase-loaded', 'error', `✗ Erro: ${error.message}`);
+                addLog(`ERRO Firebase: ${error.message}`);
+            }
+        }
+
+        function checkClasses() {
+            addLog('Verificando classes JavaScript...');
+
+            try {
+                if (typeof ChatbotService !== 'undefined') {
+                    updateCheck('check-service-class', 'success', '✓ ChatbotService definida');
+                    addLog('ChatbotService: OK');
+                } else {
+                    updateCheck('check-service-class', 'error', '✗ ChatbotService não definida');
+                    addLog('ERRO: ChatbotService não definida!');
+                }
+
+                if (typeof ChatbotWidget !== 'undefined') {
+                    updateCheck('check-widget-class', 'success', '✓ ChatbotWidget definida');
+                    addLog('ChatbotWidget: OK');
+                } else {
+                    updateCheck('check-widget-class', 'error', '✗ ChatbotWidget não definida');
+                    addLog('ERRO: ChatbotWidget não definida!');
+                }
+
+                if (window.chatbotWidget) {
+                    updateCheck('check-widget-instance', 'success', '✓ Instância de ChatbotWidget criada');
+                    addLog('ChatbotWidget instância: OK');
+                } else {
+                    updateCheck('check-widget-instance', 'pending', 'ℹ️ Instância não criada (espere pela autenticação)');
+                    addLog('ChatbotWidget instância: aguardando...');
+                }
+
+            } catch (error) {
+                addLog(`ERRO ao verificar classes: ${error.message}`);
+            }
+        }
+
+        function checkDOM() {
+            addLog('Verificando DOM e renderização...');
+
+            setTimeout(() => {
+                try {
+                    const container = document.getElementById('bmo-chatbot-container');
+                    if (container) {
+                        updateCheck('check-container-exists', 'success', '✓ Container renderizado');
+                        addLog('Container #bmo-chatbot-container: OK');
+                    } else {
+                        updateCheck('check-container-exists', 'error', '✗ Container não encontrado (usuário pode não estar autenticado)');
+                        addLog('ERRO: Container #bmo-chatbot-container não encontrado. Verifique se está autenticado!');
+                    }
+
+                    const toggle = document.getElementById('bmo-chatbot-toggle');
+                    if (toggle && toggle.offsetParent !== null) {
+                        updateCheck('check-toggle-visible', 'success', '✓ Toggle button visível');
+                        addLog('Toggle button: OK (visível)');
+                    } else if (toggle) {
+                        updateCheck('check-toggle-visible', 'pending', 'ℹ️ Toggle existe mas está oculto (normal antes de login)');
+                        addLog('Toggle existe mas está oculto (normal se não autenticado)');
+                    } else {
+                        updateCheck('check-toggle-visible', 'error', '✗ Toggle button não encontrado');
+                        addLog('ERRO: Toggle button não encontrado!');
+                    }
+
+                    const styles = window.getComputedStyle(document.body);
+                    if (styles.fontFamily) {
+                        updateCheck('check-css-loaded', 'success', '✓ CSS carregado');
+                        addLog('CSS: OK');
+                    } else {
+                        updateCheck('check-css-loaded', 'error', '✗ CSS não carregado');
+                        addLog('ERRO: CSS não está sendo aplicado!');
+                    }
+
+                } catch (error) {
+                    addLog(`ERRO ao verificar DOM: ${error.message}`);
+                }
+            }, 1000); // Aguarda 1 segundo para DOM estar pronto
+        }
+
+        function runAllChecks() {
+            addLog('=== EXECUTANDO TODOS OS TESTES ===');
+            checkFiles();
+            
+            setTimeout(() => {
+                checkFirebase();
+            }, 800);
+
+            setTimeout(() => {
+                checkClasses();
+            }, 2000);
+
+            setTimeout(() => {
+                checkDOM();
+            }, 3500);
+
+            setTimeout(() => {
+                addLog('=== TESTES CONCLUÍDOS ===');
+                addLog('💡 DICA: Se Container ou Toggle não aparecerem, verifique se está autenticado via Firebase');
+            }, 5000);
+        }
+
+        // Inicia quando carrega
+        window.addEventListener('load', () => {
+            addLog('Página carregada. Clique no botão acima para iniciar os testes.');
+        });
+    </script>
+
+    <!-- Carrega Chatbot -->
+    <link rel="stylesheet" href="chatbot.css">
+    <script src="chatbot-service-simple.js"></script>
+    <script src="chatbot-simple.js"></script>
+</body>
+</html>

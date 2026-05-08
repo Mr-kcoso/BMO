@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot BMO - Implementação </title>
+  
+  <!-- Link para CSS do chatbot -->
+  <link rel="stylesheet" href="chatbot.css">
+  
+  <!-- Link para CSS do projeto (para herança de cores) -->
+  <link rel="stylesheet" href="design.css">
+  
+  <style>
+    /* Estilos temporários para demonstração */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .demo-header {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-header h1 {
+      color: #4F46E5;
+      margin: 0 0 10px 0;
+      font-size: 32px;
+    }
+
+    .demo-header p {
+      color: #666;
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .demo-status {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .status-item.active {
+      color: #10B981;
+    }
+
+    .status-item.pending {
+      color: #F59E0B;
+    }
+
+    .status-item.error {
+      color: #EF4444;
+    }
+
+    .status-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .status-item.active .status-icon {
+      background: #10B981;
+      color: white;
+    }
+
+    .status-item.pending .status-icon {
+      background: #F59E0B;
+      color: white;
+    }
+
+    .demo-instructions {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-instructions h2 {
+      color: #4F46E5;
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .demo-instructions ol {
+      margin: 0;
+      padding-left: 20px;
+      color: #333;
+    }
+
+    .demo-instructions li {
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .demo-instructions code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #4F46E5;
+    }
+
+    .codeblock {
+      background: #1f2937;
+      color: #e5e7eb;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 15px 0;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      line-height: 1.5;
+    }
+
+    .codeblock-label {
+      color: #9ca3af;
+      font-size: 12px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-card h3 {
+      color: #4F46E5;
+      margin-top: 0;
+      font-size: 16px;
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .test-btn {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .test-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .test-btn:active {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <!-- Header -->
+    <div class="demo-header">
+      <h1>🤖 Chatbot BMO</h1>
+      <p>Widget inteligente de suporte e onboarding para a plataforma BMO com integração Gemini AI</p>
+    </div>
+
+    <!-- Status -->
+    <div class="demo-status">
+      <h3 style="margin-top: 0; color: #4F46E5;">📊 Status de Integração</h3>
+      <div class="status-item active">
+        <div class="status-icon">✓</div>
+        <span><strong>chatbot-service.js</strong> - Serviço com integração Gemini API</span>
+      </div>
+      <div class="status-item active">
+        <div class="status-icon">✓</div>
+        <span><strong>chatbot.js</strong> - Lógica do widget e gerenciamento de estado</span>
+      </div>
+      <div class="status-item active">
+        <div class="status-icon">✓</div>
+        <span><strong>chatbot.css</strong> - Estilos modernos com animações</span>
+      </div>
+      <div class="status-item active">
+        <div class="status-icon">✓</div>
+        <span><strong>API Gemini</strong> - Configurada e pronta para uso</span>
+      </div>
+    </div>
+
+    <!-- Recursos -->
+    <div class="demo-instructions">
+      <h2>✨ Recursos Implementados</h2>
+      <div class="feature-list">
+        <div class="feature-card">
+          <h3>🎯 Onboarding Guiado</h3>
+          <p>Boas-vindas personalizadas com explicação passo a passo de como usar a plataforma</p>
+        </div>
+        <div class="feature-card">
+          <h3>📚 FAQ Inteligente</h3>
+          <p>Respostas rápidas para perguntas comuns antes de chamar a API</p>
+        </div>
+        <div class="feature-card">
+          <h3>🤖 IA Conversacional</h3>
+          <p>Gemini API integrada para respostas naturais e contextualizadas</p>
+        </div>
+        <div class="feature-card">
+          <h3>🎮 Gamificação</h3>
+          <p>Selos e badges para motivar o usuário durante as interações</p>
+        </div>
+        <div class="feature-card">
+          <h3>💬 Ações Rápidas</h3>
+          <p>Botões de sugestão para navegação rápida entre funcionalidades</p>
+        </div>
+        <div class="feature-card">
+          <h3>📱 Responsivo</h3>
+          <p>Interface flutuante otimizada para desktop, tablet e mobile</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instruções de Integração -->
+    <div class="demo-instructions">
+      <h2>🚀 Como Integrar ao Projeto</h2>
+      
+      <h3 style="color: #4F46E5; margin-top: 30px;">Passo 1: Adicione os Scripts</h3>
+      <p>Adicione ao final do seu <code>index.html</code> (ou arquivo base):</p>
+      <div class="codeblock">
+        <div class="codeblock-label">HTML</div>
+        <pre>&lt;!-- Chatbot BMO --&gt;
+&lt;link rel="stylesheet" href="chatbot.css"&gt;
+&lt;script src="chatbot-service.js"&gt;&lt;/script&gt;
+&lt;script src="chatbot.js"&gt;&lt;/script&gt;</pre>
+      </div>
+
+      <h3 style="color: #4F46E5; margin-top: 30px;">Passo 2: Copie os Arquivos</h3>
+      <ol>
+        <li><code>chatbot-service.js</code> - Serviço de integração com API</li>
+        <li><code>chatbot.js</code> - Lógica do widget</li>
+        <li><code>chatbot.css</code> - Estilos e animações</li>
+      </ol>
+
+      <h3 style="color: #4F46E5; margin-top: 30px;">Passo 3: Configure o Perfil do Usuário</h3>
+      <p>O chatbot carrega automaticamente do localStorage. Certifique-se de que seu <code>auth.js</code> salva os dados do usuário assim:</p>
+      <div class="codeblock">
+        <div class="codeblock-label">JavaScript</div>
+        <pre>// Após login bem-sucedido
+const userData = {
+  nome: "João Silva",
+  email: "joao@example.com",
+  tipo: "freelancer", // ou "empresa"
+  habilidades: ["JavaScript", "React", "Node.js"]
+};
+localStorage.setItem('user', JSON.stringify(userData));</pre>
+      </div>
+
+      <h3 style="color: #4F46E5; margin-top: 30px;">Passo 4: Teste o Widget</h3>
+      <ol>
+        <li>Abra o seu site em navegador</li>
+        <li>Você verá um botão roxo flutuante no canto inferior direito</li>
+        <li>Clique para abrir o chat</li>
+        <li>Digite uma mensagem para testar</li>
+      </ol>
+
+      <h3 style="color: #4F46E5; margin-top: 30px;">🎯 Próximos Passos Sugeridos</h3>
+      <ol>
+        <li><strong>Integrar com Backend</strong> - Conectar com sua API para buscar desafios recomendados</li>
+        <li><strong>Personalizar Cores</strong> - Ajustar as variáveis CSS em <code>chatbot.css</code> para combinar com seu design</li>
+        <li><strong>Analytics</strong> - Adicionar rastreamento de conversas para melhorar suporte</li>
+        <li><strong>Multi-idioma</strong> - Adicionar suporte para inglês e outros idiomas</li>
+        <li><strong>Suporte Humano</strong> - Integrar com sistema de chat de suporte real</li>
+      </ol>
+
+      <h3 style="color: #4F46E5; margin-top: 30px;">⚙️ Configurações Avançadas</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">JavaScript - Manipular widget programaticamente</div>
+        <pre>// Abrir/fechar o chat
+chatbotWidget.toggleChat();
+
+// Enviar mensagem programabilidade
+chatbotWidget.displayMessage("Ol;!", "bot");
+
+// Limpar histórico de conversa
+chatbotService.clearConversation();
+
+// Acessar histórico de mensagens
+const history = chatbotService.getConversationHistory();</pre>
+      </div>
+
+      <h3 style="color: #4F46E5; margin-top: 30px;">🔧 Variáveis CSS Personalizáveis</h3>
+      <p>Edite em <code>chatbot.css</code> para customizar cores:</p>
+      <div class="codeblock">
+        <div class="codeblock-label">CSS</div>
+        <pre>:root {
+  --bmo-primary: #4F46E5;        /* Cor principal */
+  --bmo-secondary: #10B981;      /* Cor secundária */
+  --bmo-accent: #F59E0B;         /* Cor destaque */
+  --bmo-white: #FFFFFF;
+  --bmo-dark-gray: #6B7280;
+}</pre>
+      </div>
+
+      <h3 style="color: #4F46E5; margin-top: 30px;">🐛 Solução de Problemas</h3>
+      <ul>
+        <li><strong>Widget não aparece:</strong> Verifique se os scripts estão sendo carregados (Console > Network)</li>
+        <li><strong>Mensagens não são enviadas:</strong> Verifique a chave da Gemini API em <code>chatbot-service.js</code></li>
+        <li><strong>Estilos não aplicam:</strong> Certifique-se de que <code>chatbot.css</code> está carregado ANTES de outros estilos</li>
+        <li><strong>Perfil não aparece:</strong> Verifique localStorage com: <code>console.log(localStorage.getItem('user'))</code></li>
+      </ul>
+
+      <h3 style="color: #4F46E5; margin-top: 30px;">📚 Estrutura de Dados</h3>
+      <div class="codeblock">
+        <div class="codeblock-label">Estrutura de Mensagem Histórico</div>
+        <pre>// Formato interno de armazenamento
+{
+  role: "user" | "model",
+  parts: [
+    { text: "Conteúdo da mensagem" }
+  ]
+}
+
+// FAQ Database
+{
+  keywords: ["palavra1", "palavra2"],
+  response: "Resposta formatada com markdown"
+}</pre>
+      </div>
+
+      <button class="test-btn" onclick="testChatbot()">🧪 Testar Chat Agora</button>
+    </div>
+  </div>
+
+  <!-- Chatbot Widget (Injetado Automaticamente) -->
+  <script src="chatbot-service.js"></script>
+  <script src="chatbot.js"></script>
+
+  <script>
+    function testChatbot() {
+      if (typeof chatbotWidget !== 'undefined') {
+        // Simula um novo usuário para testes
+        const testUser = {
+          nome: "Visitante Teste",
+          email: "teste@bmo.com.br",
+          tipo: "freelancer",
+          habilidades: ["Design", "JavaScript", "React"]
+        };
+        localStorage.setItem('user', JSON.stringify(testUser));
+        
+        // Abre o chat
+        chatbotWidget.toggleChat();
+        
+        // Mostra mensagem de teste
+        setTimeout(() => {
+          chatbotWidget.displayMessage("Olá! 👋 Bem-vindo ao Chatbot BMO. Como posso ajudá-lo?", "bot");
+        }, 500);
+      } else {
+        alert('Widget ainda não foi inicializado. Aguarde...');
+      }
+    }
+
+    // Log de inicialização
+    console.log('🤖 Chatbot BMO carregado com sucesso!');
+    console.log('💡 Dica: Use testChatbot() para testar o widget');
+  </script>
+</body>
+</html>
