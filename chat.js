@@ -23,6 +23,9 @@ const chatSubtitulo = document.getElementById("chatSubtitulo");
 
 const profileCache = new Map();
 const mensagensRenderizadas = new Set();
+const CACHE_KEY = "bmo_profile_cache_v1";
+const CACHE_EXPIRY = 1000 * 60 * 60;
+const mensagensMap = new Map();
 
 function formatDate(value) {
   const date = typeof value?.toDate === "function" ? value.toDate() : new Date(value || 0);
@@ -34,9 +37,27 @@ async function getProfileName(userId) {
   if (!userId) return "Usuário";
   if (profileCache.has(userId)) return profileCache.get(userId);
 
+  try {
+    const cacheBruto = localStorage.getItem(`${CACHE_KEY}:${userId}`);
+    if (cacheBruto) {
+      const cache = JSON.parse(cacheBruto);
+      if (cache?.nome && Date.now() - cache.timestamp < CACHE_EXPIRY) {
+        profileCache.set(userId, cache.nome);
+        return cache.nome;
+      }
+    }
+  } catch (error) {
+    console.warn("Falha ao ler cache de perfil", error);
+  }
+
   const profile = await getUserProfile(userId);
   const nome = profile?.nome || "Usuário";
   profileCache.set(userId, nome);
+  try {
+    localStorage.setItem(`${CACHE_KEY}:${userId}`, JSON.stringify({ nome, timestamp: Date.now() }));
+  } catch (error) {
+    console.warn("Falha ao persistir cache de perfil", error);
+  }
   return nome;
 }
 
@@ -46,8 +67,14 @@ if (btnVoltar) {
   });
 }
 
-async function renderMensagens(mensagens, currentUserId) {
+async function renderMensagens(currentUserId) {
   clearElement(mensagensDiv);
+
+  const mensagens = [...mensagensMap.values()].sort((a, b) => {
+    const aTime = typeof a.criadoEm?.toDate === "function" ? a.criadoEm.toDate().getTime() : 0;
+    const bTime = typeof b.criadoEm?.toDate === "function" ? b.criadoEm.toDate().getTime() : 0;
+    return aTime - bTime;
+  });
 
   for (const mensagem of mensagens) {
     const nomeAutor = await getProfileName(mensagem.autorId);
@@ -69,9 +96,7 @@ async function renderMensagens(mensagens, currentUserId) {
     item.appendChild(conteudo);
     mensagensDiv.appendChild(item);
 
-    if (mensagem.id) {
-      mensagensRenderizadas.add(mensagem.id);
-    }
+    if (mensagem.id) mensagensRenderizadas.add(mensagem.id);
   }
 
   mensagensDiv.scrollTop = mensagensDiv.scrollHeight;
@@ -120,14 +145,24 @@ async function iniciarChat(user) {
       }
     }
 
-    escutarMensagens(
-      chatId,
-      async (mensagens) => {
-        await renderMensagens(mensagens, user.uid);
+    escutarMensagens(chatId, async (alteracoes) => {
+      let houveMudanca = false;
+      alteracoes.forEach(({ tipo, mensagem }) => {
+        if (!mensagem?.id) return;
+        if (tipo === "removed") {
+          houveMudanca = mensagensMap.delete(mensagem.id) || houveMudanca;
+          mensagensRenderizadas.delete(mensagem.id);
+          return;
+        }
+        mensagensMap.set(mensagem.id, mensagem);
+        houveMudanca = true;
+      });
+
+      if (houveMudanca) {
+        await renderMensagens(user.uid);
         await marcarChatComoLido(chatId, user.uid, tipoChat);
-      },
-      tipoChat
-    );
+      }
+    }, tipoChat);
 
     escutarMetadataChat(chatId, () => {
       marcarChatComoLido(chatId, user.uid, tipoChat);
