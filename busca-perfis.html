@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscar perfis - BMO</title>
+  <link rel="stylesheet" href="design.css">
+  <link rel="icon" href="logo.png" type="image/x-icon">
+</head>
+<body class="perfil-page">
+  <main class="perfil-layout">
+    <header class="page-header perfil-header">
+      <div>
+        <h1>Buscar perfis</h1>
+        <p class="perfil-subtitle">Encontre freelancers e empresas para analisar e enviar pedido de amizade.</p>
+      </div>
+      <div class="button-row">
+        <button class="chats-nav-btn" onclick="window.history.back()">Voltar</button>
+      </div>
+    </header>
+
+    <section class="card perfil-card">
+      <div class="freelancer-filtros" aria-label="Filtros de busca">
+        <input id="buscaPerfis" type="search" placeholder="Buscar por nome, área ou descrição" />
+        <select id="filtroTipoPerfil">
+          <option value="todos">Todos</option>
+          <option value="freelancer">Freelancers</option>
+          <option value="empresa">Empresas</option>
+        </select>
+      </div>
+
+      <p id="resumoBuscaPerfis" class="perfil-subtitle">Carregando perfis...</p>
+      <ul id="listaPerfisBusca" class="empresa-candidaturas-grid" aria-live="polite"></ul>
+      <div id="estadoVazioBusca" class="empresa-empty hidden">Nenhum perfil encontrado.</div>
+    </section>
+  </main>
+
+  <script type="module" src="animation.js"></script>
+  <script type="module" src="busca-perfis.js"></script>
+</body>
+</html>
