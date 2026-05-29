@@ -119,7 +119,7 @@
 .auth-eyebrow,
 .auth-form-kicker {
   margin: 0 0 12px;
-  color: var(--auth-green);
+  color: var(--auth-orange);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0;
@@ -177,16 +177,16 @@
 .auth-scene {
   position: absolute;
   top: 118px;
-  right: 9%;
-  width: 310px;
-  height: 310px;
+  right: 15%;
+  width: 510px;
+  height: 510px;
   perspective: 900px;
   z-index: 1;
 }
 
 .auth-cube {
   position: absolute;
-  inset: 86px;
+  inset: 180px;
   transform-style: preserve-3d;
   animation: authCubeSpin 13s linear infinite;
 }
@@ -199,7 +199,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  background: linear-gradient(135deg, rgba(255, 107, 0, 0.74), rgba(39, 215, 255, 0.38));
+  background: linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
   color: #ffffff;
   font-size: 32px;
   font-weight: 900;
@@ -215,14 +215,14 @@
 
 .auth-orbit {
   position: absolute;
-  inset: 36px;
+  inset: 1px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   transform: rotateX(72deg) rotateZ(22deg);
 }
 
 .auth-orbit-two {
-  inset: 68px;
+  inset: 1px;
   border-color: rgba(255, 107, 0, 0.34);
   transform: rotateX(68deg) rotateZ(-38deg);
 }
@@ -244,7 +244,8 @@
   height: 6px;
   margin-bottom: 10px;
   border-radius: 999px;
-  background: var(--auth-cyan);
+  background: white;
+  box-shadow: 1px 1px 10px 1px white;
 }
 
 .auth-glass-card strong {
@@ -266,7 +267,7 @@
 
 .auth-form-panel {
   align-self: center;
-  padding: 30px;
+  padding: 25px;
   background: rgba(10, 15, 25, 0.92);
 }
 
@@ -389,6 +390,7 @@
 
   .auth-hero-panel {
     min-height: 560px;
+    padding: 28px 28px 0 28px
   }
 
   .auth-form-panel {
