@@ -15,63 +15,76 @@
       <span>Building My Opportunity</span>
     </div>
 
-    <nav class="freelancer-sidebar-nav" aria-label="Navegacao principal">
-      <a class="is-active" href="dashboard-freelancer.html"><span>Inicio</span></a>
-      <a href="#feedProblemas"><span>Explorar problemas</span></a>
-      <a href="#feedProblemas"><span>Projetos</span></a>
-      <a href="#feedProblemas"><span>Candidaturas</span></a>
-      <a href="meus-chats.html"><span>Mensagens</span></a>
-      <a href="#painelSocial"><span>Notificacoes</span></a>
-      <a href="perfil-freelancer.html"><span>Perfil</span></a>
-      <a href="perfil-freelancer.html"><span>Configuracoes</span></a>
-    </nav>
+    <div class="freelancer-nav-section">
+      <p>Principal</p>
+      <nav class="freelancer-sidebar-nav" aria-label="Navegacao principal">
+        <a class="is-active" href="dashboard-freelancer.html"><span class="nav-icon">IN</span><span>Inicio</span></a>
+        <a href="#feedProblemas"><span class="nav-icon">EX</span><span>Explorar problemas</span></a>
+        <a href="#feedProblemas"><span class="nav-icon">PR</span><span>Projetos</span></a>
+        <a href="#feedProblemas"><span class="nav-icon">CA</span><span>Candidaturas</span></a>
+        <a href="meus-chats.html"><span class="nav-icon">MS</span><span>Mensagens</span></a>
+      </nav>
+    </div>
+
+    <div class="freelancer-nav-section">
+      <p>Rede</p>
+      <nav class="freelancer-sidebar-nav" aria-label="Rede profissional">
+        <a href="busca-perfis.html"><span class="nav-icon">BP</span><span>Buscar perfis</span></a>
+        <a href="meus-amigos.html"><span class="nav-icon">CX</span><span>Conexoes</span></a>
+        <a href="minhas-equipes.html"><span class="nav-icon">EQ</span><span>Equipes</span></a>
+        <a href="perfil-freelancer.html"><span class="nav-icon">PF</span><span>Perfil</span></a>
+        <a href="perfil-freelancer.html"><span class="nav-icon">CF</span><span>Configuracoes</span></a>
+      </nav>
+    </div>
 
     <div class="freelancer-sidebar-footer">
-      <div class="freelancer-user-mini">
+      <a class="freelancer-user-mini" href="perfil-freelancer.html">
         <div id="freelancerAvatar" class="freelancer-avatar" aria-hidden="true">B</div>
         <div>
           <strong id="freelancerProfileName">Freelancer BMO</strong>
           <span id="freelancerProfileType">Profissional verificado</span>
         </div>
-      </div>
-      <a class="freelancer-create-btn" href="busca-perfis.html">Criar problema</a>
+      </a>
+      <a class="freelancer-create-btn" href="busca-perfis.html">Nova busca</a>
     </div>
   </aside>
 
   <main class="freelancer-social-shell">
     <section class="freelancer-feed-column" id="feedProblemas">
       <header class="freelancer-feed-header">
-        <div>
+        <div class="freelancer-title-block">
           <p class="freelancer-kicker">Explorar oportunidades</p>
           <h1>Problemas disponiveis</h1>
           <p id="resumoProblemas" class="freelancer-subtitle">Carregando oportunidades...</p>
         </div>
-        <a class="freelancer-profile-shortcut" href="perfil-freelancer.html">Meu perfil</a>
+        <a class="freelancer-top-profile" href="perfil-freelancer.html" aria-label="Abrir meu perfil">
+          <span id="freelancerTopAvatar" aria-hidden="true">B</span>
+        </a>
       </header>
 
       <section class="freelancer-discovery-strip" aria-label="Atalhos do freelancer">
-        <a href="perfil-freelancer.html">Meu perfil</a>
+        <a class="is-active" href="#feedProblemas">Feed</a>
         <a href="#feedProblemas">Explorar</a>
-        <a href="busca-perfis.html">Buscar perfis</a>
-        <a href="meus-amigos.html">Conexoes</a>
+        <a href="#feedProblemas">Candidaturas</a>
+        <a href="busca-perfis.html">Perfis</a>
         <a href="minhas-equipes.html">Equipes</a>
         <a href="meus-chats.html">Chats</a>
       </section>
 
       <section class="freelancer-filtros freelancer-social-filters" aria-label="Filtros de problemas">
-        <input id="buscaProblemas" type="search" placeholder="Buscar por palavra-chave" />
+        <input id="buscaProblemas" type="search" placeholder="Buscar problemas, empresas ou tecnologias" />
         <select id="filtroCategoria">
-          <option value="todos">Todas as categorias</option>
+          <option value="todos">Categorias</option>
         </select>
         <select id="filtroNivel">
-          <option value="todos">Todos os niveis</option>
+          <option value="todos">Niveis</option>
           <option value="iniciante">Iniciante</option>
           <option value="intermediario">Intermediario</option>
         </select>
         <select id="ordenacaoProblemas">
-          <option value="recentes">Mais recentes</option>
-          <option value="antigos">Mais antigos</option>
-          <option value="candidaturas">Mais candidaturas</option>
+          <option value="recentes">Recentes</option>
+          <option value="antigos">Antigos</option>
+          <option value="candidaturas">Candidaturas</option>
           <option value="prazo">Prazo</option>
         </select>
       </section>
@@ -86,7 +99,7 @@
         <div class="freelancer-panel-avatar" aria-hidden="true">B</div>
         <div>
           <strong id="freelancerPanelName">Freelancer BMO</strong>
-          <span>Descubra problemas, equipes e conexoes.</span>
+          <span>Feed profissional de oportunidades.</span>
         </div>
       </section>
 
@@ -97,12 +110,12 @@
         </div>
         <div class="freelancer-recommendation-list">
           <article>
-            <strong>Desenvolvimento Web</strong>
-            <span>Projetos com alta demanda esta semana.</span>
+            <span class="mini-thumb">DW</span>
+            <div><strong>Desenvolvimento Web</strong><small>Alta demanda esta semana</small></div>
           </article>
           <article>
-            <strong>Suporte tecnico</strong>
-            <span>Problemas rapidos para criar reputacao.</span>
+            <span class="mini-thumb">ST</span>
+            <div><strong>Suporte tecnico</strong><small>Problemas rapidos para reputacao</small></div>
           </article>
         </div>
       </section>
@@ -120,14 +133,14 @@
         </div>
       </section>
 
-      <section class="freelancer-panel-card">
+      <section class="freelancer-panel-card compact-panel">
         <div class="freelancer-panel-head">
-          <h2>Pessoas que talvez conheca</h2>
+          <h2>Conexoes sugeridas</h2>
           <span>Networking</span>
         </div>
         <div class="freelancer-people-list">
           <article><span>UX</span><strong>Designers de produto</strong></article>
-          <article><span>DEV</span><strong>Desenvolvedores web</strong></article>
+          <article><span>DV</span><strong>Desenvolvedores web</strong></article>
           <article><span>QA</span><strong>Testadores freelance</strong></article>
         </div>
       </section>
