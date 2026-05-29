@@ -21,6 +21,7 @@ const freelancerProfileName = document.getElementById("freelancerProfileName");
 const freelancerProfileType = document.getElementById("freelancerProfileType");
 const freelancerPanelName = document.getElementById("freelancerPanelName");
 const freelancerAvatar = document.getElementById("freelancerAvatar");
+const freelancerTopAvatar = document.getElementById("freelancerTopAvatar");
 const recommendedCount = document.getElementById("recommendedCount");
 const categoryList = document.getElementById("categoryList");
 
@@ -38,7 +39,7 @@ const state = {
   profile: null
 };
 
-function renderSkeletonCards(total = 4) {
+function renderSkeletonCards(total = 3) {
   clearElement(lista);
 
   for (let index = 0; index < total; index += 1) {
@@ -81,9 +82,7 @@ function getProfileInitial(profile) {
 
 function renderResumo(total) {
   if (!resumoProblemas) return;
-  resumoProblemas.textContent = `${total} problema${total === 1 ? "" : "s"} disponivel${
-    total === 1 ? "" : "is"
-  } no feed`;
+  resumoProblemas.textContent = `${total} problema${total === 1 ? "" : "s"} ativo${total === 1 ? "" : "s"} no feed`;
 }
 
 function preencherCategorias(problemas) {
@@ -92,7 +91,7 @@ function preencherCategorias(problemas) {
   const categorias = [...new Set(problemas.map((problema) => problema.tipo).filter(Boolean))].sort();
   const selecionada = filtroCategoria.value;
 
-  filtroCategoria.innerHTML = "<option value=\"todos\">Todas as categorias</option>";
+  filtroCategoria.innerHTML = "<option value=\"todos\">Categorias</option>";
 
   categorias.forEach((categoria) => {
     const option = document.createElement("option");
@@ -115,6 +114,7 @@ function atualizarPerfilResumo(profile) {
   if (freelancerProfileType) freelancerProfileType.textContent = tipo;
   if (freelancerPanelName) freelancerPanelName.textContent = nome;
   if (freelancerAvatar) freelancerAvatar.textContent = inicial;
+  if (freelancerTopAvatar) freelancerTopAvatar.textContent = inicial;
 
   document.querySelectorAll(".freelancer-panel-avatar").forEach((avatar) => {
     avatar.textContent = inicial;
@@ -149,7 +149,8 @@ function filtrarProblemas(problemas) {
       !termoBusca ||
       problema.titulo?.toLowerCase().includes(termoBusca) ||
       problema.descricao?.toLowerCase().includes(termoBusca) ||
-      problema.tipo?.toLowerCase().includes(termoBusca);
+      problema.tipo?.toLowerCase().includes(termoBusca) ||
+      problema.empresaNome?.toLowerCase().includes(termoBusca);
 
     const matchesCategoria =
       categoriaSelecionada === "todos" || problema.tipo === categoriaSelecionada;
