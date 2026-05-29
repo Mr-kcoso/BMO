@@ -17,6 +17,13 @@ const filtroCategoria = document.getElementById("filtroCategoria");
 const filtroNivel = document.getElementById("filtroNivel");
 const ordenacaoProblemas = document.getElementById("ordenacaoProblemas");
 
+const freelancerProfileName = document.getElementById("freelancerProfileName");
+const freelancerProfileType = document.getElementById("freelancerProfileType");
+const freelancerPanelName = document.getElementById("freelancerPanelName");
+const freelancerAvatar = document.getElementById("freelancerAvatar");
+const recommendedCount = document.getElementById("recommendedCount");
+const categoryList = document.getElementById("categoryList");
+
 const modalDetalhes = document.getElementById("modalDetalhes");
 const fecharModalDetalhes = document.getElementById("fecharModalDetalhes");
 const modalDetalhesTitulo = document.getElementById("modalDetalhesTitulo");
@@ -31,12 +38,12 @@ const state = {
   profile: null
 };
 
-function renderSkeletonCards(total = 6) {
+function renderSkeletonCards(total = 4) {
   clearElement(lista);
 
   for (let index = 0; index < total; index += 1) {
     const card = document.createElement("li");
-    card.className = "freelancer-card freelancer-skeleton";
+    card.className = "freelancer-card freelancer-post freelancer-skeleton";
     card.innerHTML = `
       <div class="freelancer-skeleton-line freelancer-skeleton-title"></div>
       <div class="freelancer-skeleton-line"></div>
@@ -68,11 +75,15 @@ function getDateValue(value) {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
+function getProfileInitial(profile) {
+  return (profile?.nome || profile?.email || "B").trim().charAt(0).toUpperCase() || "B";
+}
+
 function renderResumo(total) {
   if (!resumoProblemas) return;
-  resumoProblemas.textContent = `${total} problema${total === 1 ? "" : "s"} disponível${
+  resumoProblemas.textContent = `${total} problema${total === 1 ? "" : "s"} disponivel${
     total === 1 ? "" : "is"
-  }`;
+  } no feed`;
 }
 
 function preencherCategorias(problemas) {
@@ -93,6 +104,39 @@ function preencherCategorias(problemas) {
   if (categorias.includes(selecionada)) {
     filtroCategoria.value = selecionada;
   }
+}
+
+function atualizarPerfilResumo(profile) {
+  const nome = profile?.nome || "Freelancer BMO";
+  const tipo = profile?.tipo ? `${profile.tipo} verificado` : "Profissional verificado";
+  const inicial = getProfileInitial(profile);
+
+  if (freelancerProfileName) freelancerProfileName.textContent = nome;
+  if (freelancerProfileType) freelancerProfileType.textContent = tipo;
+  if (freelancerPanelName) freelancerPanelName.textContent = nome;
+  if (freelancerAvatar) freelancerAvatar.textContent = inicial;
+
+  document.querySelectorAll(".freelancer-panel-avatar").forEach((avatar) => {
+    avatar.textContent = inicial;
+  });
+}
+
+function atualizarPainelSocial(problemas) {
+  if (recommendedCount) {
+    recommendedCount.textContent = `${problemas.length} ativo${problemas.length === 1 ? "" : "s"}`;
+  }
+
+  if (!categoryList) return;
+
+  const categorias = [...new Set(problemas.map((problema) => problema.tipo).filter(Boolean))].slice(0, 8);
+  if (!categorias.length) return;
+
+  clearElement(categoryList);
+  categorias.forEach((categoria) => {
+    const chip = document.createElement("span");
+    chip.textContent = categoria;
+    categoryList.appendChild(chip);
+  });
 }
 
 function filtrarProblemas(problemas) {
@@ -144,7 +188,7 @@ function fecharDetalhes() {
 
 function onVerDetalhes(problema) {
   if (!modalDetalhes) {
-    showToast(`${problema.titulo}: ${problema.descricao || "Sem descrição"}`, "info");
+    showToast(`${problema.titulo}: ${problema.descricao || "Sem descricao"}`, "info");
     return;
   }
 
@@ -158,7 +202,7 @@ function onVerDetalhes(problema) {
     modalDetalhesSubtitulo.textContent = `${empresaLabel}${valorLabel}`;
   }
   if (modalDetalhesDescricao) {
-    modalDetalhesDescricao.textContent = problema.descricao || "Sem descrição";
+    modalDetalhesDescricao.textContent = problema.descricao || "Sem descricao";
   }
 
   const detalhamento = problema.detalhamento || problema.descricao || "Sem detalhamento adicional.";
@@ -170,7 +214,7 @@ function onVerDetalhes(problema) {
 
 function onVerPerfilEmpresa(problema) {
   if (!problema?.empresaId) {
-    showToast("Perfil da empresa não disponível", "info");
+    showToast("Perfil da empresa nao disponivel", "info");
     return;
   }
 
@@ -213,7 +257,7 @@ function renderLista() {
           renderLista();
           showToast("Candidatura enviada com sucesso", "success");
         } catch (error) {
-          showToast("Não foi possível enviar candidatura", "error");
+          showToast("Nao foi possivel enviar candidatura", "error");
           console.error(error);
           setButtonLoading(button, false);
         }
@@ -243,7 +287,7 @@ async function carregarDashboardFreelancer(user) {
     ]);
 
     if (!profile) {
-      showToast("Dados do usuário não encontrados", "error");
+      showToast("Dados do usuario nao encontrados", "error");
       return;
     }
 
@@ -255,6 +299,8 @@ async function carregarDashboardFreelancer(user) {
     );
 
     preencherCategorias(problemas);
+    atualizarPerfilResumo(profile);
+    atualizarPainelSocial(problemas);
     renderLista();
   } catch (error) {
     console.error(error);
@@ -280,8 +326,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-
 observeAuthenticatedUser(carregarDashboardFreelancer, () => {
-  showToast("Faça login para continuar", "error");
+  showToast("Faca login para continuar", "error");
   window.location.href = "index.html";
 });
