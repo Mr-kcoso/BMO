@@ -48,10 +48,7 @@ function getCompanyInitial(problema) {
 }
 
 function createActionButton(label, className = "freelancer-post-action") {
-  const button = createElement("button", {
-    className,
-    text: label
-  });
+  const button = createElement("button", { className, text: label });
   button.type = "button";
   return button;
 }
@@ -97,7 +94,7 @@ export function renderProblema({
     })
   );
 
-  const moreButton = createActionButton("Ver perfil", "freelancer-post-profile-btn");
+  const moreButton = createActionButton("Perfil", "freelancer-post-profile-btn");
   moreButton.addEventListener("click", () => onVerPerfilEmpresa(problema));
 
   header.appendChild(avatar);
@@ -135,54 +132,58 @@ export function renderProblema({
   body.appendChild(readMore);
   body.appendChild(tagsWrapper);
 
+  const footer = createElement("div", { className: "freelancer-post-footer" });
   const socialActions = createElement("div", { className: "freelancer-post-social-actions" });
   const saveButton = createActionButton("Salvar");
+  saveButton.dataset.icon = "S";
   saveButton.addEventListener("click", () => {
     const saved = saveButton.classList.toggle("is-saved");
     saveButton.textContent = saved ? "Salvo" : "Salvar";
   });
 
   const shareButton = createActionButton("Compartilhar");
+  shareButton.dataset.icon = "C";
   shareButton.addEventListener("click", async () => {
     const shareUrl = getShareUrl(problema);
-    if (navigator.share) {
-      await navigator.share({ title: problema.titulo, text: problema.descricao || "Problema BMO", url: shareUrl });
-      return;
-    }
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: problema.titulo, text: problema.descricao || "Problema BMO", url: shareUrl });
+        return;
+      }
 
-    if (navigator.clipboard) {
-      await navigator.clipboard.writeText(shareUrl);
-      shareButton.textContent = "Link copiado";
-      window.setTimeout(() => {
-        shareButton.textContent = "Compartilhar";
-      }, 1800);
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareUrl);
+        shareButton.textContent = "Copiado";
+        window.setTimeout(() => {
+          shareButton.textContent = "Compartilhar";
+        }, 1600);
+      }
+    } catch (error) {
+      shareButton.textContent = "Compartilhar";
     }
   });
 
   const commentsButton = createActionButton("Comentarios");
+  commentsButton.dataset.icon = "CM";
   commentsButton.addEventListener("click", () => onVerDetalhes(problema));
+
+  const detailButton = createActionButton("Detalhes");
+  detailButton.dataset.icon = "D";
+  detailButton.addEventListener("click", () => onVerDetalhes(problema));
 
   socialActions.appendChild(saveButton);
   socialActions.appendChild(shareButton);
   socialActions.appendChild(commentsButton);
-
-  const detailButton = createActionButton("Ver detalhes");
-  detailButton.addEventListener("click", () => onVerDetalhes(problema));
   socialActions.appendChild(detailButton);
 
-  const footer = createElement("div", { className: "freelancer-post-footer" });
-  const meta = createElement("div", { className: "freelancer-meta" });
-  meta.appendChild(createElement("span", { text: `${problema.totalCandidaturas || 0} candidatura(s)` }));
-  meta.appendChild(createElement("span", { text: problema.remoto === false ? "Presencial" : "Remoto" }));
-
-  const actions = createElement("div", { className: "button-row freelancer-card-actions" });
+  const ctaArea = createElement("div", { className: "freelancer-card-actions" });
 
   if (candidatura) {
     const status = createElement("p", {
       className: "freelancer-status",
-      text: `Status: ${formatStatus(candidatura.status)}`
+      text: formatStatus(candidatura.status)
     });
-    meta.appendChild(status);
+    socialActions.appendChild(status);
 
     if (candidatura.status === STATUS.ACEITO && candidatura.chatId) {
       const chatButton = createElement("button", {
@@ -190,14 +191,14 @@ export function renderProblema({
         text: "Abrir chat"
       });
       chatButton.addEventListener("click", () => onAbrirChat(candidatura.chatId));
-      actions.appendChild(chatButton);
+      ctaArea.appendChild(chatButton);
     } else {
       const aguardando = createElement("button", {
         className: "freelancer-applied-btn freelancer-cta-btn",
-        text: candidatura.status === STATUS.RECUSADO ? "Candidatura recusada" : "Candidatado"
+        text: candidatura.status === STATUS.RECUSADO ? "Recusada" : "Candidatado"
       });
       aguardando.disabled = true;
-      actions.appendChild(aguardando);
+      ctaArea.appendChild(aguardando);
     }
   } else {
     const candidatarButton = createElement("button", {
@@ -205,15 +206,14 @@ export function renderProblema({
       text: "Candidatar-se"
     });
     candidatarButton.addEventListener("click", () => onCandidatar(candidatarButton));
-    actions.appendChild(candidatarButton);
+    ctaArea.appendChild(candidatarButton);
   }
 
-  footer.appendChild(meta);
-  footer.appendChild(actions);
+  footer.appendChild(socialActions);
+  footer.appendChild(ctaArea);
 
   li.appendChild(header);
   li.appendChild(body);
-  li.appendChild(socialActions);
   li.appendChild(footer);
   container.appendChild(li);
 }
