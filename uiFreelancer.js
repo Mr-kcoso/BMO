@@ -48,10 +48,18 @@ function getCompanyInitial(problema) {
 }
 
 function createActionButton(label, className = "freelancer-post-action") {
-  return createElement("button", {
+  const button = createElement("button", {
     className,
     text: label
   });
+  button.type = "button";
+  return button;
+}
+
+function getShareUrl(problema) {
+  const url = new URL(window.location.href);
+  url.hash = `problema-${problema.id}`;
+  return url.toString();
 }
 
 export function renderProblema({
@@ -64,6 +72,7 @@ export function renderProblema({
   onVerPerfilEmpresa
 }) {
   const li = createElement("li", { className: "freelancer-card freelancer-post" });
+  li.id = `problema-${problema.id}`;
 
   const header = createElement("div", { className: "freelancer-post-header" });
   const avatar = createElement("button", {
@@ -75,14 +84,13 @@ export function renderProblema({
   avatar.addEventListener("click", () => onVerPerfilEmpresa(problema));
 
   const headerText = createElement("div", { className: "freelancer-post-company" });
-  headerText.appendChild(
-    createElement("button", {
-      className: "freelancer-company-name",
-      text: problema.empresaNome || "Empresa parceira"
-    })
-  );
-  headerText.querySelector("button").type = "button";
-  headerText.querySelector("button").addEventListener("click", () => onVerPerfilEmpresa(problema));
+  const companyButton = createElement("button", {
+    className: "freelancer-company-name",
+    text: problema.empresaNome || "Empresa parceira"
+  });
+  companyButton.type = "button";
+  companyButton.addEventListener("click", () => onVerPerfilEmpresa(problema));
+  headerText.appendChild(companyButton);
   headerText.appendChild(
     createElement("span", {
       text: `${problema.tipo || "Projeto profissional"} • ${formatDate(problema.criadoEm)}`
@@ -114,11 +122,7 @@ export function renderProblema({
     text: problema.descricao || "Sem descricao"
   });
 
-  const readMore = createElement("button", {
-    className: "freelancer-read-more",
-    text: "Ver mais"
-  });
-  readMore.type = "button";
+  const readMore = createActionButton("Ver mais", "freelancer-read-more");
   readMore.addEventListener("click", () => onVerDetalhes(problema));
 
   const tagsWrapper = createElement("div", { className: "freelancer-tags" });
@@ -132,9 +136,35 @@ export function renderProblema({
   body.appendChild(tagsWrapper);
 
   const socialActions = createElement("div", { className: "freelancer-post-social-actions" });
-  socialActions.appendChild(createActionButton("Salvar"));
-  socialActions.appendChild(createActionButton("Compartilhar"));
-  socialActions.appendChild(createActionButton("Comentarios"));
+  const saveButton = createActionButton("Salvar");
+  saveButton.addEventListener("click", () => {
+    const saved = saveButton.classList.toggle("is-saved");
+    saveButton.textContent = saved ? "Salvo" : "Salvar";
+  });
+
+  const shareButton = createActionButton("Compartilhar");
+  shareButton.addEventListener("click", async () => {
+    const shareUrl = getShareUrl(problema);
+    if (navigator.share) {
+      await navigator.share({ title: problema.titulo, text: problema.descricao || "Problema BMO", url: shareUrl });
+      return;
+    }
+
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(shareUrl);
+      shareButton.textContent = "Link copiado";
+      window.setTimeout(() => {
+        shareButton.textContent = "Compartilhar";
+      }, 1800);
+    }
+  });
+
+  const commentsButton = createActionButton("Comentarios");
+  commentsButton.addEventListener("click", () => onVerDetalhes(problema));
+
+  socialActions.appendChild(saveButton);
+  socialActions.appendChild(shareButton);
+  socialActions.appendChild(commentsButton);
 
   const detailButton = createActionButton("Ver detalhes");
   detailButton.addEventListener("click", () => onVerDetalhes(problema));
