@@ -4,7 +4,23 @@
   --bmo-azul: #3b82f6;
   --bmo-cinza-bg: #f3f4f6;
   --bmo-cinza-borda: #d1d5db;
+--gradient:linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
+
+  --auth-bg: #070a12;
+  --auth-panel: rgba(14, 20, 34, 0.82);
+  --auth-panel-strong: #101827;
+  --auth-line: rgba(148, 163, 184, 0.22);
+  --auth-text: #f8fafc;
+  --auth-muted: #a7b0c0;
+  --auth-orange: #ff6b00;
+  --auth-cyan: #27d7ff;
+  --auth-green: #7ddf9f;
 }
+
+button{
+  background: linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
+}
+
 #section1{
   margin-top: 200px;
   position: fixed;
@@ -101,7 +117,7 @@ button:hover {
 }
 
 .btn-primary {
-  background: var(--bmo-laranja);
+  background: linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
   color: #fff;
   border-color: #374151;
 }
@@ -197,7 +213,7 @@ button:hover {
 }
 
 .btn-submit {
-  background: var(--bmo-laranja);
+  background: linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
   color: #fff;
   margin-top: 12px;
   width: 100%;
@@ -529,7 +545,7 @@ button:hover {
 }
 
 .freelancer-card .btn-primary {
-  background: var(--bmo-laranja);
+  background: linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
 }
 
 .freelancer-empty {
@@ -630,7 +646,7 @@ button:hover {
 
 .empresa-nav-group .empresa-nav-btn:hover {
   transform: translateY(-1px);
-  border-color: rgba(255, 107, 0, 0.45);
+  border-color: linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
   background: #253244;
 }
 
@@ -721,7 +737,7 @@ button:hover {
 
 .empresa-form-actions .btn-primary,
 .empresa-form-actions .empresa-secondary-btn {
-  min-width: 170px;
+  min-width: 190px;
 
 }
 
@@ -865,8 +881,9 @@ button:hover {
   min-height: 44px;
   text-decoration: none;
   color: #e5e7eb;
-  
-  background-color: var(--bmo-laranja);
+  padding: 10px;
+
+  background:linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
 }
 
 .empresa-status-btn {
