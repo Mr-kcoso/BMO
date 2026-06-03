@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Equipe - BMO</title>
+  <link rel="stylesheet" href="design.css">
+  <link rel="stylesheet" href="chat-modern.css">
+  <link rel="icon" href="logo.png" type="image/x-icon">
+</head>
+<body class="chats-page">
+  <main class="chats-dashboard">
+    <header class="page-header chats-topbar">
+      <div>
+        <h1 id="equipeNome">Equipe</h1>
+        <p class="chats-subtitle" id="equipeDescricao">Carregando detalhes da equipe...</p>
+      </div>
+      <div class="button-row">
+        <button class="chats-nav-btn" onclick="window.history.back()">Voltar</button>
+      </div>
+    </header>
+
+    <section class="chats-list-card">
+      <div class="perfil-section" style="align-items: center; padding: 24px 0;">
+        <img id="equipeFoto" class="perfil-avatar" alt="Foto da equipe" src="larva.jpeg">
+      </div>
+
+      <div id="blocoAdmin" class="perfil-section hidden">
+        <h2>Convidar membro</h2>
+        <div class="button-row">
+          <input id="novoMembroId" placeholder="UID do usuário" />
+          <button id="btnAdicionarMembro" class="btn-primary">Enviar convite</button>
+        </div>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Comunicação da equipe</h2>
+        <div class="button-row" style="align-items: center; gap: 14px;">
+          <button id="btnAbrirChatEquipe" class="btn-primary">Abrir chat da equipe</button>
+          <span id="alertaChatEquipe"></span>
+        </div>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Membros</h2>
+        <ul id="listaMembros" class="empresa-candidaturas-grid"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="animation.js"></script>
+  <script type="module" src="equipe.js"></script>
+</body>
+</html>

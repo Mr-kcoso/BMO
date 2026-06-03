@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Freelancer - BMO</title>
+  <link rel="stylesheet" href="design.css">
+  <link rel="stylesheet" href="freelancer-social.css">
+  <link rel="stylesheet" href="freelancer-sidebar.css">
+  <link rel="icon" href="logo.png" type="image/x-icon">
+</head>
+<body class="freelancer-dashboard-page freelancer-social-page">
+  <aside class="freelancer-sidebar" id="freelancerSidebar" aria-label="Menu freelancer">
+    <div class="freelancer-sidebar-brand">
+      <div>
+        <a href="dashboard-freelancer.html" class="freelancer-brand-mark">BMO</a>
+        <span>Building My Opportunity</span>
+      </div>
+      <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="freelancer-nav-section">
+      <p>Principal</p>
+      <nav class="freelancer-sidebar-nav" aria-label="Navegacao principal">
+        <a class="is-active" href="dashboard-freelancer.html" title="Inicio"><span>Inicio</span></a>
+        <a href="#feedProblemas" title="Projetos"><span>Projetos</span></a>
+        <a href="meus-chats.html" title="Mensagens"><span>Mensagens</span></a>
+      </nav>
+    </div>
+
+    <div class="freelancer-nav-section">
+      <p>Rede</p>
+      <nav class="freelancer-sidebar-nav" aria-label="Rede profissional">
+        <a href="minhas-equipes.html" title="Equipes"><span>Equipes</span></a>
+        <a href="perfil-freelancer.html" title="Configuracoes"><span>Configuracoes</span></a>
+      </nav>
+    </div>
+
+    <div class="freelancer-sidebar-footer">
+      <a class="freelancer-user-mini" href="perfil-freelancer.html" title="Perfil do freelancer">
+        <div id="freelancerAvatar" class="freelancer-avatar" aria-hidden="true">B</div>
+        <div>
+          <strong id="freelancerProfileName">Freelancer BMO</strong>
+          <span id="freelancerProfileType">Profissional verificado</span>
+        </div>
+      </a>
+      <a class="freelancer-create-btn" href="busca-perfis.html">Nova busca</a>
+    </div>
+  </aside>
+
+  <main class="freelancer-social-shell">
+    <section class="freelancer-feed-column" id="feedProblemas">
+      <header class="freelancer-feed-header">
+        <div class="freelancer-title-block">
+          <p class="freelancer-kicker">Explorar oportunidades</p>
+          <h1>Problemas disponiveis</h1>
+          <p id="resumoProblemas" class="freelancer-subtitle">Carregando oportunidades...</p>
+        </div>
+        <a class="freelancer-top-profile" href="perfil-freelancer.html" aria-label="Abrir meu perfil">
+          <span id="freelancerTopAvatar" aria-hidden="true">B</span>
+        </a>
+      </header>
+
+      <section class="freelancer-filtros freelancer-social-filters" aria-label="Filtros de problemas">
+        <input id="buscaProblemas" type="search" placeholder="Buscar problemas, empresas ou tecnologias" />
+        <select id="filtroCategoria">
+          <option value="todos">Categorias</option>
+        </select>
+        <select id="filtroNivel">
+          <option value="todos">Niveis</option>
+          <option value="iniciante">Iniciante</option>
+          <option value="intermediario">Intermediario</option>
+        </select>
+        <select id="ordenacaoProblemas">
+          <option value="recentes">Recentes</option>
+          <option value="antigos">Antigos</option>
+          <option value="candidaturas">Candidaturas</option>
+          <option value="prazo">Prazo</option>
+        </select>
+      </section>
+
+      <p id="loadingProblemas" class="freelancer-loading">Carregando problemas...</p>
+      <ul id="lista" class="freelancer-grid freelancer-social-feed" aria-live="polite"></ul>
+      <div id="estadoVazio" class="freelancer-empty hidden">Nao ha problemas disponiveis no momento. Volte em breve.</div>
+    </section>
+
+    <aside class="freelancer-right-panel" id="painelSocial" aria-label="Painel de recomendacoes">
+      <section class="freelancer-panel-card freelancer-profile-card">
+        <div class="freelancer-panel-avatar" aria-hidden="true">B</div>
+        <div>
+          <strong id="freelancerPanelName">Freelancer BMO</strong>
+          <span>Feed profissional de oportunidades.</span>
+        </div>
+      </section>
+
+      <section class="freelancer-panel-card">
+        <div class="freelancer-panel-head">
+          <h2>Projetos recomendados</h2>
+          <span id="recommendedCount">0 ativos</span>
+        </div>
+        <div class="freelancer-recommendation-list">
+          <article>
+            <span class="mini-thumb">DW</span>
+            <div><strong>Desenvolvimento Web</strong><small>Alta demanda esta semana</small></div>
+          </article>
+          <article>
+            <span class="mini-thumb">ST</span>
+            <div><strong>Suporte tecnico</strong><small>Problemas rapidos para reputacao</small></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="freelancer-panel-card">
+        <div class="freelancer-panel-head">
+          <h2>Categorias populares</h2>
+          <span>Tendencias</span>
+        </div>
+        <div id="categoryList" class="freelancer-trend-list">
+          <span>Front-end</span>
+          <span>React</span>
+          <span>Remoto</span>
+          <span>Hardware</span>
+        </div>
+      </section>
+
+      <section class="freelancer-panel-card compact-panel">
+        <div class="freelancer-panel-head">
+          <h2>Conexoes sugeridas</h2>
+          <span>Networking</span>
+        </div>
+        <div class="freelancer-people-list">
+          <article><span>UX</span><strong>Designers de produto</strong></article>
+          <article><span>DV</span><strong>Desenvolvedores web</strong></article>
+          <article><span>QA</span><strong>Testadores freelance</strong></article>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <nav class="freelancer-bottom-nav" aria-label="Navegacao mobile">
+    <a class="is-active" href="dashboard-freelancer.html">Inicio</a>
+    <a href="#feedProblemas">Projetos</a>
+    <a href="meus-chats.html">Chats</a>
+    <a href="minhas-equipes.html">Equipes</a>
+  </nav>
+
+  <div id="modalDetalhes" class="freelancer-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalDetalhesTitulo">
+    <div class="freelancer-modal-content">
+      <button id="fecharModalDetalhes" class="freelancer-modal-close" aria-label="Fechar detalhes">x</button>
+      <h2 id="modalDetalhesTitulo">Detalhes do problema</h2>
+      <p id="modalDetalhesSubtitulo" class="freelancer-modal-subtitle"></p>
+      <p id="modalDetalhesDescricao" class="freelancer-modal-description"></p>
+      <h3>Detalhamento completo</h3>
+      <p id="modalDetalhesTexto" class="freelancer-modal-detail"></p>
+    </div>
+  </div>
+
+  <script type="module" src="animation.js"></script>
+  <script type="module" src="freelancer.js"></script>
+  <script type="module" src="freelancer-sidebar.js"></script>
+</body>
+</html>
