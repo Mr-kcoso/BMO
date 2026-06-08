@@ -1,0 +1,529 @@
+/* =============================================
+   perfil-publico.css — BMO Perfil Publico
+   Padrao visual identico ao dashboard
+   ============================================= */
+
+/* --- Pagina base --- */
+.perfil-publico-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 107, 0, 0.08), transparent 30%),
+    linear-gradient(180deg, #0a0d13 0%, var(--social-bg) 38%, #07090d 100%);
+  color: var(--social-text);
+}
+
+.perfil-publico-page *,
+.perfil-publico-page *::before,
+.perfil-publico-page *::after {
+  box-sizing: border-box;
+}
+
+/* --- Shell --- */
+.perfil-publico-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* --- Main --- */
+.perfil-publico-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* =============================================
+   TOPBAR
+   ============================================= */
+.perfil-publico-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 22px 32px;
+  border-bottom: 1px solid var(--social-line);
+}
+
+.perfil-publico-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.perfil-publico-kicker {
+  margin: 0 0 4px;
+  color: #ff9b52;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+#perfilPublicoTitulo {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(20px, 2.6vw, 28px);
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#perfilPublicoSubtitulo {
+  margin: 4px 0 0;
+  color: var(--social-muted);
+  font-size: 13px;
+}
+
+.perfil-publico-topbar-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/* Botao Voltar */
+.pp-btn-secondary {
+  min-height: 38px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--social-text-soft);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+.pp-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.085);
+  border-color: rgba(255, 107, 0, 0.28);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Botao Meus amigos */
+.pp-btn-primary {
+  min-height: 38px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: transparent;
+  border: 1px solid var(--social-orange);
+  color: var(--social-orange);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.pp-btn-primary:hover {
+  background: var(--social-orange);
+  color: #120b05;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(255, 107, 0, 0.28);
+}
+
+/* =============================================
+   CONTEUDO
+   ============================================= */
+.perfil-publico-content {
+  flex: 1;
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* =============================================
+   COLUNA ESQUERDA: HERO CARD
+   ============================================= */
+.perfil-publico-hero-card {
+  padding: 28px 22px;
+  border: 1px solid var(--social-line);
+  border-radius: 18px;
+  background: rgba(20, 24, 33, 0.86);
+  box-shadow: var(--social-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.perfil-publico-hero-card::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255, 107, 0, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Avatar com anel gradiente */
+.pp-avatar-ring {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.pp-avatar-ring::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b00, #ffc46b);
+  z-index: 0;
+}
+
+#perfilPublicoFoto {
+  position: relative;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #1e293b;
+  border: 3px solid var(--social-bg);
+  display: block;
+}
+
+/* Badge de tipo */
+#perfilPublicoTipo {
+  display: inline-flex;
+  align-items: center;
+  background: var(--social-orange-soft);
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  color: #ffb06c;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 4px 13px;
+  border-radius: 999px;
+  letter-spacing: 0;
+}
+
+/* Nome */
+#perfilPublicoNome {
+  margin: 0;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* UID */
+#perfilPublicoUid {
+  margin: 0;
+  color: #4b5563;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+}
+
+/* Acao de amizade */
+#perfilPublicoAmizadeAcao {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Botao "Adicionar amigo" gerado pelo JS */
+#perfilPublicoAmizadeAcao .chats-nav-btn {
+  min-height: 38px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: var(--social-orange);
+  border: 0;
+  color: #120b05;
+  font-size: 13px;
+  font-weight: 900;
+  margin: 0;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(255, 107, 0, 0.24);
+  transition: filter 160ms ease, transform 160ms ease;
+}
+
+#perfilPublicoAmizadeAcao .chats-nav-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+/* Texto de status de amizade */
+#perfilPublicoAmizadeAcao .perfil-publico-text {
+  margin: 0;
+  color: var(--social-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* =============================================
+   COLUNA DIREITA: SECOES DE INFORMACAO
+   ============================================= */
+.perfil-publico-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Card de secao */
+.pp-section-card {
+  padding: 0;
+  border: 1px solid var(--social-line);
+  border-radius: 17px;
+  background: rgba(20, 24, 33, 0.86);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.pp-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--social-line);
+}
+
+.pp-section-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.055);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 900;
+  color: #ffb06c;
+}
+
+.pp-section-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.pp-section-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Texto de informacao */
+.perfil-publico-text {
+  margin: 0;
+  color: var(--social-text-soft);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Bio (texto maior e mais destacado) */
+#perfilPublicoBio {
+  color: var(--social-text-soft);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* Itens de dados profissionais */
+.pp-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pp-info-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 11px;
+  background: var(--social-card-soft);
+  border: 1px solid var(--social-line);
+}
+
+.pp-info-item p {
+  margin: 0;
+  color: var(--social-text-soft);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* Oculta caixas de info quando o JS deixa o paragrafo vazio */
+.pp-info-item:has(p:empty) {
+  display: none;
+}
+
+/* Links externos */
+#perfilPublicoLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Links gerados pelo JS */
+.chats-nav-btn.perfil-publico-link,
+#perfilPublicoLinks .chats-nav-btn {
+  min-height: 36px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--social-text-soft);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.chats-nav-btn.perfil-publico-link:hover,
+#perfilPublicoLinks .chats-nav-btn:hover {
+  background: var(--social-orange-soft);
+  border-color: rgba(255, 107, 0, 0.35);
+  color: #ffb06c;
+  transform: translateY(-1px);
+}
+
+/* =============================================
+   NAV MOBILE
+   ============================================= */
+.pp-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--social-sidebar) 96%, transparent);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--social-line);
+  z-index: 100;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  justify-content: space-around;
+}
+
+.pp-bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--social-muted);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 8px;
+  transition: color 160ms ease;
+}
+
+.pp-bottom-nav a.is-active,
+.pp-bottom-nav a:hover {
+  color: #ff9b52;
+}
+
+/* =============================================
+   RESPONSIVO
+   ============================================= */
+@media (max-width: 1180px) {
+  .perfil-publico-main {
+    margin-left: 84px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .perfil-publico-content {
+    grid-template-columns: 1fr;
+  }
+
+  .perfil-publico-hero-card {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .pp-avatar-ring {
+    flex-shrink: 0;
+  }
+
+  #perfilPublicoAmizadeAcao {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .perfil-publico-main {
+    margin-left: 0;
+  }
+
+  .pp-bottom-nav {
+    display: flex;
+  }
+
+  .perfil-publico-content {
+    padding: 20px 16px 80px;
+  }
+
+  .perfil-publico-topbar {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .perfil-publico-hero-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  #perfilPublicoAmizadeAcao {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  #perfilPublicoTitulo {
+    font-size: 18px;
+  }
+
+  .perfil-publico-topbar-actions {
+    width: 100%;
+  }
+
+  .pp-btn-secondary,
+  .pp-btn-primary {
+    flex: 1;
+    justify-content: center;
+  }
+}
