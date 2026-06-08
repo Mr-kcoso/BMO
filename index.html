@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BMO - Conecte talento a desafios reais</title>
-  <link rel="stylesheet" href="../styles/design.css">
-  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="BMO/styles/design.css">
+  <link rel="icon" href="BMO/assets/fotos/logo.png" type="image/x-icon">
 </head>
 
 <body class="landing-page">
@@ -18,7 +18,7 @@
         <span></span><span></span><span></span>
       </button>
       <nav class="landing-nav" id="landingNav" aria-label="Menu principal">
-        <a href="sobre.html">Sobre</a>
+        <a href="BMO/pages/sobre.html">Sobre</a>
         <a href="#como-funciona">Como funciona</a>
       </nav>
     </div>
@@ -30,11 +30,11 @@
         <div>
           <h1>Construa sua oportunidade. Conecte-se com empresas e desafios reais.</h1>
           <p>Participe de projetos, mostre suas habilidades e cresça na sua carreira.</p>
-          <a class="landing-cta" href="register.html">Entrar ou cadastrar</a>
+          <a class="landing-cta" href="BMO/pages/register.html">Entrar ou cadastrar</a>
         </div>
         <div class="landing-hero-visual" aria-hidden="true">
           <video id="video1" disablePictureInPicture autoplay muted>
-            <source src="../assets/videos/bmo_liga.mp4" type="video/mp4">
+            <source src="BMO/assets/videos/bmo_liga.mp4" type="video/mp4">
             Seu navegador não suporta o elemento de vídeo.
           </video>
         </div>
@@ -70,14 +70,14 @@
         <div class="landing-parceiros-grid">
           <article class="landing-parceiro-card">
             <div class="landing-parceiro-logo-box">
-              <img src="../assets/fotos/054a41f3-04b6-4264-8ec6-0835fd8169d6.jpg" alt="Logo parceira"
+              <img src="BMO/assets/fotos/054a41f3-04b6-4264-8ec6-0835fd8169d6.jpg" alt="Logo parceira"
                 class="landing-parceiro-logo">
             </div>
             <a id="xabalanga" href="https://www.youtube.com/@Xabalanga">xabalanga_games</a>
           </article>
           <article class="landing-parceiro-card">
             <div class="landing-parceiro-logo-box">
-              <img src="../assets/fotos/3f3a2025-a46e-4644-91d1-80b6ae1c3538.jpg" alt="Logo parceira"
+              <img src="BMO/assets/fotos/3f3a2025-a46e-4644-91d1-80b6ae1c3538.jpg" alt="Logo parceira"
                 class="landing-parceiro-logo">
             </div>
             <p>xabalanga_educação</p>
@@ -89,25 +89,25 @@
     <section class="landing-final-cta" id="pre-cadastro">
       <div class="landing-container">
         <h2>Sua carreira começa aqui. Junte-se à comunidade agora.</h2>
-        <a class="landing-cta landing-cta-light" href="register.html">Entrar ou cadastrar</a>
+        <a class="landing-cta landing-cta-light" href="BMO/pages/register.html">Entrar ou cadastrar</a>
       </div>
     </section>
   </main>
 
   <footer class="landing-footer">
     <div class="landing-container landing-footer-inner" id="container-home">
-      <a href="termosdeuso.html">Termos de uso</a>
-      <a href="politica.html" id="home-a">Política de privacidade</a>
-      <a href="contato.html"><img src="../assets/fotos/insta.png" class="insta" width="63px" height="40px"></a>
-      <a href="contato.html"><img src="../assets/fotos/whats.png" width="63px" height="42px"></a>
+      <a href="BMO/pages/termosdeuso.html">Termos de uso</a>
+      <a href="BMO/pages/politica.html" id="home-a">Política de privacidade</a>
+      <a href="BMO/pages/contato.html"><img src="BMO/assets/fotos/insta.png" class="insta" width="63px" height="40px"></a>
+      <a href="BMO/pages/contato.html"><img src="BMO/assets/fotos/whats.png" width="63px" height="42px"></a>
     </div>
   </footer>
-  <script type="module" src="../scripts/animation.js"></script>
+  <script type="module" src="BMO/scripts/animation.js"></script>
 </body>
 <script>
   const video = document.getElementById('video1');
   video.addEventListener("ended", function () {
-    video.src = "../assets/videos/bmo_idle.mp4";
+    video.src = "BMO/assets/videos/bmo_idle.mp4";
     video.loop = true;
     video.play();
     video.load();
