@@ -698,6 +698,6 @@ observeAuthenticatedUser(
   (user) => carregarCandidaturasEmpresa(user),
   () => {
     showToast("Faça login para acessar o dashboard", "error");
-    window.location.href = "index.html";
+    window.location.href = "../../index.html";
   }
 );
