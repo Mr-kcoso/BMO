@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMO - Entrar ou cadastrar</title>
+  <link rel="stylesheet" href="../styles/design.css">
+  <link rel="stylesheet" href="../styles/auth-modern.css">
+  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+</head>
+
+<body class="auth-page">
+  <main class="auth-shell">
+    <section class="auth-hero-panel" aria-label="BMO">
+      <nav class="auth-topbar" aria-label="Navegacao de autenticacao">
+        <a class="auth-brand" href="index.html" aria-label="Voltar para a pagina inicial">BMO</a>
+        <a class="auth-back-link" href="index.html">Voltar</a>
+      </nav>
+
+      <div class="auth-scene" aria-hidden="true">
+        <div class="auth-orbit auth-orbit-one"></div>
+        <div class="auth-orbit auth-orbit-two"></div>
+        <div class="auth-cube auth-cube-main">
+          <span class="cube-face cube-front"></span>
+          <span class="cube-face cube-back"></span>
+          <span class="cube-face cube-right"></span>
+          <span class="cube-face cube-left"></span>
+          <span class="cube-face cube-top"></span>
+          <span class="cube-face cube-bottom"></span>
+        </div>
+        <div class="auth-glass-card auth-glass-card-one">
+          <span></span>
+          <strong>Futuro</strong>
+        </div>
+        <div class="auth-glass-card auth-glass-card-two">
+          <span></span>
+          <strong>Inovação</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-form-panel" aria-labelledby="authTitle">
+      <div class="auth-card-head">
+        <p class="auth-form-kicker">Acesso BMO</p>
+        <h2 id="authTitle">Entrar ou cadastrar</h2>
+        <p>Use sua conta para continuar na plataforma.</p>
+      </div>
+
+      <div class="tabs auth-tabs" role="tablist" aria-label="Autenticacao">
+        <button id="tabLogin" class="tab-button active" type="button" role="tab" aria-selected="true">Entrar</button>
+        <button id="tabCadastro" class="tab-button" type="button" role="tab" aria-selected="false">Cadastrar</button>
+      </div>
+
+      <form id="loginForm" class="auth-form" autocomplete="on">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+
+        <label for="loginPassword">Senha</label>
+        <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+
+        <button type="submit" class="btn-submit">Entrar</button>
+      </form>
+
+      <form id="cadastroForm" class="auth-form hidden" autocomplete="on">
+        <label for="tipo">Tipo de conta</label>
+        <select id="tipo" required>
+          <option value="">Selecione...</option>
+          <option value="freelancer">Freelancer</option>
+          <option value="empresa">Empresa</option>
+        </select>
+
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" placeholder="Seu nome" required>
+
+        <label for="cadastroEmail">Email</label>
+        <input type="email" id="cadastroEmail" placeholder="seu@email.com" required>
+
+        <label for="cadastroPassword">Senha</label>
+        <input type="password" id="cadastroPassword" placeholder="Crie uma senha segura" required>
+
+        <button type="submit" class="btn-submit">Cadastrar</button>
+      </form>
+
+      <p id="msg" class="auth-message" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script type="module" src="../scripts/auth.js"></script>
+</body>
+
+</html>
