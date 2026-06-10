@@ -1,119 +1,78 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+import { db } from "./firebase.js";
+import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BMO - Conecte talento a desafios reais</title>
-  <link rel="stylesheet" href="BMO/styles/design.css">
-  <link rel="icon" href="BMO/assets/fotos/logo.png" type="image/x-icon">
-</head>
+const CLOUDINARY_CLOUD_NAME = "dom598ut1";
+const CLOUDINARY_UPLOAD_PRESET = "bmo_unsigned_upload";
 
-<body class="landing-page">
-  <header class="landing-header" id="topo">
-    <div class="landing-container landing-header-inner">
-      <a class="landing-logo" href="index.html">BMO</a>
-      <button class="landing-menu-toggle" type="button" aria-expanded="false" aria-controls="landingNav"
-        aria-label="Abrir menu principal">
-        <span></span><span></span><span></span>
-      </button>
-      <nav class="landing-nav" id="landingNav" aria-label="Menu principal">
-        <a href="BMO/pages/sobre.html">Sobre</a>
-        <a href="#como-funciona">Como funciona</a>
-      </nav>
-    </div>
-  </header>
+function gerarUidUsuario(userId) {
+  const prefixo = String(userId || "").slice(0, 6).toUpperCase();
+  const aleatorio = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `BMO-${prefixo}-${aleatorio}`;
+}
 
-  <main>
-    <section class="landing-hero" id="sobre">
-      <div class="landing-container landing-hero-grid">
-        <div>
-          <h1>Construa sua oportunidade. Conecte-se com empresas e desafios reais.</h1>
-          <p>Participe de projetos, mostre suas habilidades e cresça na sua carreira.</p>
-          <a class="landing-cta" href="BMO/pages/register.html">Entrar ou cadastrar</a>
-        </div>
-        <div class="landing-hero-visual" aria-hidden="true">
-          <video id="video1" disablePictureInPicture autoplay muted>
-            <source src="BMO/assets/videos/bmo_liga.mp4" type="video/mp4">
-            Seu navegador não suporta o elemento de vídeo.
-          </video>
-        </div>
-      </div>
-    </section>
+export async function getPerfil(userId) {
+  const refDoc = doc(db, "usuarios", userId);
+  const snap = await getDoc(refDoc);
+  if (!snap.exists()) return null;
+  return snap.data();
+}
 
-    <section class="landing-beneficios" id="como-funciona">
-      <div class="landing-container">
-        <h2>Como funciona</h2>
-        <div class="landing-beneficios-grid">
-          <article class="landing-beneficio-item">
-            <span class="landing-icon">●</span>
-            <h3>Encontre desafios</h3>
-            <p>Explore problemas publicados por empresas parceiras.</p>
-          </article>
-          <article class="landing-beneficio-item">
-            <span class="landing-icon">●</span>
-            <h3>Mostre seu talento</h3>
-            <p>Candidate-se e destaque suas habilidades.</p>
-          </article>
-          <article class="landing-beneficio-item">
-            <span class="landing-icon">●</span>
-            <h3>Cresça profissionalmente</h3>
-            <p>Construa sua reputação e conquiste novas oportunidades.</p>
-          </article>
-        </div>
-      </div>
-    </section>
+export async function garantirUidUsuario(userId) {
+  const refDoc = doc(db, "usuarios", userId);
+  const snap = await getDoc(refDoc);
 
-    <section class="landing-parceiros" id="parceiros">
-      <div class="landing-container">
-        <h2>Empresas parceiras</h2>
-        <div class="landing-parceiros-grid">
-          <article class="landing-parceiro-card">
-            <div class="landing-parceiro-logo-box">
-              <img src="BMO/assets/fotos/054a41f3-04b6-4264-8ec6-0835fd8169d6.jpg" alt="Logo parceira"
-                class="landing-parceiro-logo">
-            </div>
-            <a id="xabalanga" href="https://www.youtube.com/@Xabalanga">xabalanga_games</a>
-          </article>
-          <article class="landing-parceiro-card">
-            <div class="landing-parceiro-logo-box">
-              <img src="BMO/assets/fotos/3f3a2025-a46e-4644-91d1-80b6ae1c3538.jpg" alt="Logo parceira"
-                class="landing-parceiro-logo">
-            </div>
-            <p>xabalanga_educação</p>
-          </article>
-        </div>
-      </div>
-    </section>
+  if (!snap.exists()) return null;
 
-    <section class="landing-final-cta" id="pre-cadastro">
-      <div class="landing-container">
-        <h2>Sua carreira começa aqui. Junte-se à comunidade agora.</h2>
-        <a class="landing-cta landing-cta-light" href="BMO/pages/register.html">Entrar ou cadastrar</a>
-      </div>
-    </section>
-  </main>
+  const dados = snap.data();
+  if (dados.uidUsuario) {
+    return dados.uidUsuario;
+  }
 
-  <footer class="landing-footer">
-    <div class="landing-container landing-footer-inner" id="container-home">
-      <a href="BMO/pages/termosdeuso.html">Termos de uso</a>
-      <a href="BMO/pages/politica.html" id="home-a">Política de privacidade</a>
-      <a href="BMO/pages/contato.html"><img src="BMO/assets/fotos/insta.png" class="insta" width="63px" height="40px"></a>
-      <a href="BMO/pages/contato.html"><img src="BMO/assets/fotos/whats.png" width="63px" height="42px"></a>
-    </div>
-  </footer>
-  <script type="module" src="BMO/scripts/animation.js"></script>
-</body>
-<script>
-  const video = document.getElementById('video1');
-  video.addEventListener("ended", function () {
-    video.src = "BMO/assets/videos/bmo_idle.mp4";
-    video.loop = true;
-    video.play();
-    video.load();
-    video.controls = false;
-    video.poster = false;
+  const uidGerado = gerarUidUsuario(userId);
+  await setDoc(
+    refDoc,
+    {
+      uidUsuario: uidGerado,
+      atualizadoEm: serverTimestamp()
+    },
+    { merge: true }
+  );
+
+  return uidGerado;
+}
+
+export async function salvarPerfil(userId, dados) {
+  const refDoc = doc(db, "usuarios", userId);
+  await setDoc(
+    refDoc,
+    {
+      ...dados,
+      atualizadoEm: serverTimestamp()
+    },
+    { merge: true }
+  );
+}
+
+export async function uploadImagemCloudinary(file) {
+  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData
   });
-</script>
 
-</html>
+  const data = await response.json();
+
+  if (!response.ok) {
+    const erro = new Error(data.error?.message || "Erro no upload da imagem");
+    erro.code = "cloudinary/upload-error";
+    erro.details = data;
+    throw erro;
+  }
+
+  return data.secure_url;
+}
