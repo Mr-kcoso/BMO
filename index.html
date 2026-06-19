@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMO - Conecte talento a desafios reais</title>
+  <link rel="stylesheet" href="BMO/styles/design.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="icon" href="BMO/assets/fotos/logo.png" type="image/x-icon">
+</head>
+
+<body class="landing-page">
+  <header class="landing-header" id="topo">
+    <div class="landing-container landing-header-inner">
+      <a class="landing-logo" href="index.html">BMO</a>
+      <button class="landing-menu-toggle" type="button" aria-expanded="false" aria-controls="landingNav"
+        aria-label="Abrir menu principal">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="landing-nav" id="landingNav" aria-label="Menu principal">
+        <a href="BMO/pages/sobre.html">Sobre</a>
+        <a href="#como-funciona">Como funciona</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="landing-hero" id="sobre">
+      <div class="landing-container landing-hero-grid">
+        <div>
+          <h1>Construa sua oportunidade. Conecte-se com empresas e desafios reais.</h1>
+          <p>Participe de projetos, mostre suas habilidades e cresça na sua carreira.</p>
+          <a class="landing-cta" href="BMO/pages/register.html">Entrar ou cadastrar</a>
+        </div>
+        <div class="landing-hero-visual" aria-hidden="true">
+          <video id="video1" disablePictureInPicture autoplay muted>
+            <source src="BMO/assets/videos/bmo_liga.mp4" type="video/mp4">
+            Seu navegador não suporta o elemento de vídeo.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-beneficios" id="como-funciona">
+      <div class="landing-container">
+        <h2>Como funciona</h2>
+        <div class="landing-beneficios-grid">
+          <article class="landing-beneficio-item">
+            <span class="landing-icon">●</span>
+            <h3>Encontre desafios</h3>
+            <p>Explore problemas publicados por empresas parceiras.</p>
+          </article>
+          <article class="landing-beneficio-item">
+            <span class="landing-icon">●</span>
+            <h3>Mostre seu talento</h3>
+            <p>Candidate-se e destaque suas habilidades.</p>
+          </article>
+          <article class="landing-beneficio-item">
+            <span class="landing-icon">●</span>
+            <h3>Cresça profissionalmente</h3>
+            <p>Construa sua reputação e conquiste novas oportunidades.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-parceiros" id="parceiros">
+      <div class="landing-container">
+        <h2>Empresas parceiras</h2>
+        <div class="landing-parceiros-grid">
+          <article class="landing-parceiro-card">
+            <div class="landing-parceiro-logo-box">
+              <img src="BMO/assets/fotos/054a41f3-04b6-4264-8ec6-0835fd8169d6.jpg" alt="Logo parceira"
+                class="landing-parceiro-logo">
+            </div>
+            <a id="xabalanga" href="https://www.youtube.com/@Xabalanga">xabalanga_games</a>
+          </article>
+          <article class="landing-parceiro-card">
+            <div class="landing-parceiro-logo-box">
+              <img src="BMO/assets/fotos/3f3a2025-a46e-4644-91d1-80b6ae1c3538.jpg" alt="Logo parceira"
+                class="landing-parceiro-logo">
+            </div>
+            <p>xabalanga_educação</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-final-cta" id="pre-cadastro">
+      <div class="landing-container">
+        <h2>Sua carreira começa aqui. Junte-se à comunidade agora.</h2>
+        <a class="landing-cta landing-cta-light" href="BMO/pages/register.html">Entrar ou cadastrar</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="landing-footer">
+    <div class="landing-container landing-footer-inner">
+      <div class="footer-links">
+        <a href="BMO/pages/termosdeuso.html" title="Leia nossos Termos de uso">Termos de uso</a>
+        <a href="BMO/pages/politica.html" title="Leia nossa Política de privacidade">Política de privacidade</a>
+      </div>
+      <ul class="social-list" aria-label="Redes sociais">
+        <li><a href="https://www.facebook.com/industriaego" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+        <li><a href="https://www.instagram.com/industriaego" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+        <li><a href="https://www.linkedin.com/company/industriaego" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a></li>
+        <li><a href="https://wa.me/551112345678" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></li>
+        <li><a href="https:/www.github.com/BMO" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a></li>
+      </ul>
+    </div>
+  </footer>
+  <script type="module" src="BMO/scripts/animation.js"></script>
+</body>
+<script>
+  const video = document.getElementById('video1');
+  video.addEventListener("ended", function () {
+    video.src = "BMO/assets/videos/bmo_idle.mp4";
+    video.loop = true;
+    video.play();
+    video.load();
+    video.controls = false;
+    video.poster = false;
+  });
+</script>
+
+</html>

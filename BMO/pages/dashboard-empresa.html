@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Empresa - BMO</title>
+  <link rel="stylesheet" href="../styles/design.css">
+  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMO - Dashboard Empresa</title>
+  <link rel="stylesheet" href="../styles/dashboard-empresa.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.1.0/iconfont/tabler-icons.min.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>BMO</h1>
+      <p>Building My Opportunity</p>
+    </div>
+
+    <nav class="nav-group">
+      <span class="nav-label">Principal</span>
+      <a href="#" class="nav-item active">
+        <i class="ti ti-home"></i> Inicio
+      </a>
+      <a href="#" class="nav-item">
+        <i class="ti ti-briefcase"></i> Meus problemas
+      </a>
+      <a href="#" class="nav-item">
+        <i class="ti ti-message-circle"></i> Mensagens
+      </a>
+    </nav>
+
+    <nav class="nav-group">
+      <span class="nav-label">Rede</span>
+      <a href="#" class="nav-item">
+        <i class="ti ti-bookmark"></i> Freelancers salvos
+      </a>
+      <a href="#" class="nav-item">
+        <i class="ti ti-search"></i> Buscar freelancers
+      </a>
+      <a href="#" class="nav-item">
+        <i class="ti ti-users-group"></i> Equipes
+      </a>
+      <a href="#" class="nav-item">
+        <i class="ti ti-settings"></i> Configuracoes
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="profile-mini">
+        <div class="avatar avatar-orange">E</div>
+        <div>
+          <strong>Empresa Exemplo</strong>
+          <span>Conta verificada</span>
+        </div>
+      </div>
+      <button class="btn-primary btn-block">
+        <i class="ti ti-plus"></i> Publicar problema
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===== CONTEUDO CENTRAL ===== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <div>
+        <span class="eyebrow">Painel da empresa</span>
+        <h2>Dashboard empresa</h2>
+        <p class="subtitle">5 candidaturas recebidas</p>
+      </div>
+      <div class="avatar avatar-orange avatar-lg">E</div>
+    </header>
+
+    <!-- Perfil resumido -->
+    <section class="card profile-card">
+      <div class="profile-icon">
+        <i class="ti ti-building"></i>
+      </div>
+      <div>
+        <h3>Empresa Exemplo</h3>
+        <p class="muted">Perfil da empresa e resumo rapido.</p>
+        <p class="muted-soft">Missao, localizacao e numero de colaboradores aparecem aqui.</p>
+      </div>
+      <button class="btn-secondary btn-edit-profile">
+        <i class="ti ti-edit"></i> Editar perfil
+      </button>
+    </section>
+
+    <!-- Metricas -->
+    <section class="metrics-block">
+      <h4>Metricas principais</h4>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-value">3</span>
+          <span class="metric-label">Problemas abertos</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-value">2</span>
+          <span class="metric-label">Contratacoes ativas</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-value">5</span>
+          <span class="metric-label">Candidaturas pendentes</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-value">68%</span>
+          <span class="metric-label">Taxa de resposta</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Formulario de publicacao -->
+    <section class="card form-card">
+      <div class="form-header">
+        <h3>Publicar problema</h3>
+        <p class="muted">Organize os dados da vaga para facilitar o match com freelancers.</p>
+      </div>
+
+      <form class="problem-form">
+        <div class="field full">
+          <label for="titulo">Titulo do problema</label>
+          <input type="text" id="titulo" placeholder="Ex.: Ajustar bugs no checkout">
+        </div>
+
+        <div class="field">
+          <label for="resumo">Resumo do problema</label>
+          <textarea id="resumo" placeholder="Descreva o problema de forma objetiva"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="detalhe">Detalhamento tecnico</label>
+          <textarea id="detalhe" placeholder="Contexto tecnico, stack e criterios de entrega"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="tipo">Tipo</label>
+          <select id="tipo">
+            <option>Software</option>
+            <option>Hardware</option>
+            <option>Front-end</option>
+            <option>Banco de dados</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="nivel">Nivel</label>
+          <select id="nivel">
+            <option>Iniciante</option>
+            <option selected>Intermediario</option>
+            <option>Avancado</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="modalidade">Modalidade</label>
+          <select id="modalidade">
+            <option selected>Remoto</option>
+            <option>Hibrido</option>
+            <option>Presencial</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="valor">Valor (R$)</label>
+          <input type="text" id="valor" placeholder="Ex.: 450,00">
+        </div>
+
+        <div class="field full">
+          <label for="tags">Tags / tecnologias</label>
+          <input type="text" id="tags" placeholder="Ex.: react, node, sql">
+        </div>
+
+        <div class="form-actions full">
+          <button type="button" class="btn-secondary">Salvar rascunho</button>
+          <button type="submit" class="btn-primary">
+            <i class="ti ti-send"></i> Publicar problema
+          </button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- ===== PAINEL DIREITO ===== -->
+  <aside class="right-panel">
+
+    <div class="profile-mini panel-profile">
+      <div class="avatar avatar-orange">E</div>
+      <div>
+        <strong>Empresa Exemplo</strong>
+        <span>Feed profissional de oportunidades.</span>
+      </div>
+    </div>
+
+    <section class="panel-block">
+      <div class="panel-block-header">
+        <h4>Candidatos recomendados</h4>
+        <span class="tag-soft">5 novos</span>
+      </div>
+
+      <div class="panel-item">
+        <div class="panel-item-icon icon-purple"><i class="ti ti-code"></i></div>
+        <div>
+          <strong>Desenvolvedor backend</strong>
+          <span>3 candidatos compativeis</span>
+        </div>
+      </div>
+
+      <div class="panel-item">
+        <div class="panel-item-icon icon-teal"><i class="ti ti-headset"></i></div>
+        <div>
+          <strong>Suporte tecnico</strong>
+          <span>Resposta rapida esperada</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-block">
+      <div class="panel-block-header">
+        <h4>Categorias mais postadas</h4>
+        <span class="tag-soft">Tendencias</span>
+      </div>
+      <div class="chip-row">
+        <span class="chip">software</span>
+        <span class="chip">hardware</span>
+        <span class="chip">front-end</span>
+        <span class="chip">banco de dados</span>
+      </div>
+    </section>
+
+    <section class="panel-block">
+      <div class="panel-block-header">
+        <h4>Dicas para contratar</h4>
+      </div>
+      <div class="tip-card">
+        <i class="ti ti-bulb"></i>
+        <p>Descricoes objetivas com stack definida recebem ate 3x mais candidaturas qualificadas.</p>
+      </div>
+    </section>
+
+  </aside>
+
+</div>
+
+</body>
+</html>
