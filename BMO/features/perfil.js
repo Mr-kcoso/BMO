@@ -47,7 +47,11 @@ function setTipoFields(tipo) {
 function preencherFormulario(perfil, authUser, uidUsuario) {
   if (nomeInput) nomeInput.value = perfil?.nome || "";
   if (emailInput) emailInput.value = perfil?.email || authUser.email || "";
-  if (uidInput) uidInput.value = uidUsuario || perfil?.uidUsuario || authUser.uid || "";
+
+  // Mostra o UID REAL do Firebase, usado pelo sistema de equipes
+  if (uidInput) uidInput.value = authUser.uid || "";
+
+  if (bioInput) bioInput.value = perfil?.bio || "";
 
   if (bioInput) bioInput.value = perfil?.bio || "";
   if (habilidadesInput) {
