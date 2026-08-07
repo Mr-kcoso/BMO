@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Encontre freelancers e empresas na plataforma BMO. Pesquise perfis por nome, area ou tipo de conta e expanda sua rede profissional.">
+  <title>Buscar Perfis - BMO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../styles/design.css">
+  <link rel="stylesheet" href="../styles/freelancer-social.css">
+  <link rel="stylesheet" href="../styles/freelancer-sidebar.css">
+  <link rel="stylesheet" href="../styles/busca-perfis.css">
+  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+</head>
+
+<body class="busca-page freelancer-social-page">
+  <div class="busca-shell">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="freelancer-sidebar" id="freelancerSidebar" aria-label="Menu principal">
+      <div class="freelancer-sidebar-brand">
+        <div>
+          <a href="dashboard-freelancer.html" class="freelancer-brand-mark">BMO</a>
+          <span>Building My Opportunity</span>
+        </div>
+        <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="freelancer-nav-section">
+        <p>Principal</p>
+        <nav class="freelancer-sidebar-nav" aria-label="Navegacao principal">
+          <a href="dashboard-freelancer.html" title="Inicio">
+            <span>Inicio</span>
+          </a>
+          <a href="dashboard-freelancer.html#feedProblemas" title="Projetos">
+            <span>Projetos</span>
+          </a>
+          <a href="meus-chats.html" title="Mensagens">
+            <span>Mensagens</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="freelancer-nav-section">
+        <p>Rede</p>
+        <nav class="freelancer-sidebar-nav" aria-label="Rede profissional">
+          <a href="busca-perfis.html" class="is-active" title="Buscar perfis">
+            <span>Buscar Perfis</span>
+          </a>
+          <a href="minhas-equipes.html" title="Equipes">
+            <span>Equipes</span>
+          </a>
+          <a href="Configuracao-freelancer.html" title="Configuracoes">
+            <span>Configuracoes</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="freelancer-sidebar-footer">
+        <a class="freelancer-user-mini" href="perfil-freelancer.html" title="Meu perfil">
+          <div id="freelancerAvatar" class="freelancer-avatar" aria-hidden="true">B</div>
+          <div>
+            <strong id="freelancerProfileName">Freelancer BMO</strong>
+            <span id="freelancerProfileType">Profissional verificado</span>
+          </div>
+        </a>
+        <a class="freelancer-create-btn" href="perfil-freelancer.html">Meu perfil</a>
+      </div>
+    </aside>
+
+    <!-- ==================== AREA PRINCIPAL ==================== -->
+    <main class="busca-main">
+
+      <!-- Topbar -->
+      <header class="busca-topbar" aria-label="Cabecalho da busca de perfis">
+        <div class="busca-title-block">
+          <p class="busca-kicker">Networking profissional</p>
+          <h1>Buscar Perfis</h1>
+        </div>
+        <div class="busca-topbar-actions">
+          <button class="busca-btn-secondary" type="button" onclick="window.history.back()" id="btnVoltar">
+            Voltar
+          </button>
+        </div>
+      </header>
+
+      <!-- Conteudo -->
+      <div class="busca-content">
+
+        <!-- Filtros -->
+        <div class="busca-filtros-card" role="search" aria-label="Filtros de busca de perfis">
+          <input id="buscaPerfis" type="search" placeholder="Buscar por nome, area ou descricao"
+            aria-label="Buscar perfis">
+          <select id="filtroTipoPerfil" aria-label="Filtrar por tipo de perfil">
+            <option value="todos">Todos</option>
+            <option value="freelancer">Freelancers</option>
+            <option value="empresa">Empresas</option>
+          </select>
+        </div>
+
+        <!-- Resumo de resultados -->
+        <p id="resumoBuscaPerfis" class="busca-resumo" aria-live="polite">Carregando perfis...</p>
+
+        <!-- Lista de perfis -->
+        <ul id="listaPerfisBusca" class="empresa-candidaturas-grid" aria-live="polite"
+          aria-label="Lista de perfis encontrados"></ul>
+
+        <!-- Estado vazio -->
+        <div id="estadoVazioBusca" class="empresa-empty hidden" role="status">
+          Nenhum perfil encontrado. Tente outros termos de busca.
+        </div>
+
+      </div><!-- /busca-content -->
+    </main>
+  </div><!-- /busca-shell -->
+
+  <!-- NAV MOBILE -->
+  <nav class="busca-bottom-nav" aria-label="Navegacao mobile">
+    <a href="dashboard-freelancer.html">Inicio</a>
+    <a href="dashboard-freelancer.html#feedProblemas">Projetos</a>
+    <a href="meus-chats.html">Chats</a>
+    <a href="busca-perfis.html" class="is-active">Buscar</a>
+  </nav>
+
+  <script type="module" src="../scripts/animation.js"></script>
+  <script type="module" src="../scripts/freelancer-sidebar.js"></script>
+  <script type="module" src="../features/busca-perfis.js"></script>
+</body>
+
+</html>

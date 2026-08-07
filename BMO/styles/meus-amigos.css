@@ -1,0 +1,424 @@
+/* =============================================
+   meus-amigos.css — BMO Meus Amigos
+   Padrao visual identico ao dashboard
+   ============================================= */
+
+/* --- Pagina base --- */
+.amigos-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 107, 0, 0.08), transparent 30%),
+    linear-gradient(180deg, #0a0d13 0%, var(--social-bg) 38%, #07090d 100%);
+  color: var(--social-text);
+}
+
+.amigos-page *,
+.amigos-page *::before,
+.amigos-page *::after {
+  box-sizing: border-box;
+}
+
+/* --- Shell --- */
+.amigos-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* --- Main --- */
+.amigos-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* =============================================
+   TOPBAR
+   ============================================= */
+.amigos-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 22px 32px;
+  border-bottom: 1px solid var(--social-line);
+}
+
+.amigos-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.amigos-kicker {
+  margin: 0 0 4px;
+  color: #ff9b52;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.amigos-topbar h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.amigos-topbar-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Botao Voltar */
+.amigos-btn-secondary {
+  min-height: 38px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--social-text-soft);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+
+.amigos-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.085);
+  border-color: rgba(255, 107, 0, 0.28);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Botao Buscar Perfis */
+.amigos-btn-primary {
+  min-height: 38px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: transparent;
+  border: 1px solid var(--social-orange);
+  color: var(--social-orange);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.amigos-btn-primary:hover {
+  background: var(--social-orange);
+  color: #120b05;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(255, 107, 0, 0.28);
+}
+
+/* =============================================
+   CONTEUDO
+   ============================================= */
+.amigos-content {
+  flex: 1;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =============================================
+   SECOES (glass cards)
+   ============================================= */
+.amigos-section-card {
+  border: 1px solid var(--social-line);
+  border-radius: 17px;
+  background: rgba(20, 24, 33, 0.86);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.amigos-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--social-line);
+}
+
+.amigos-section-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.amigos-section-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.055);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 900;
+  color: #ffb06c;
+}
+
+.amigos-section-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Badge contador */
+.amigos-count-badge {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--social-orange-soft);
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  color: #ffb06c;
+  font-size: 11px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amigos-section-body {
+  padding: 18px 22px;
+}
+
+/* =============================================
+   GRID DE CARDS DE AMIGOS/SOLICITACOES
+   ============================================= */
+.amigos-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+/* Card individual */
+.empresa-candidatura-card {
+  padding: 18px;
+  border: 1px solid var(--social-line);
+  border-radius: 15px;
+  background: var(--social-card-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.empresa-candidatura-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--social-line-strong);
+  background: var(--social-card-hover);
+}
+
+/* Avatar */
+.empresa-candidatura-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 107, 0, 0.35);
+  background: #1e293b;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Conteudo */
+.empresa-candidatura-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.empresa-candidatura-content h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.empresa-candidatura-meta {
+  margin: 0;
+  color: var(--social-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* Linha de botoes dentro do card */
+.empresa-candidatura-content .button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* Botao Ver perfil */
+.empresa-secondary-btn {
+  min-height: 34px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--social-text-soft);
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.empresa-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 107, 0, 0.3);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Botao Aceitar / Chat (btn-primary) */
+.empresa-candidatura-content .btn-primary {
+  min-height: 34px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: var(--social-orange);
+  border: 0;
+  color: #120b05;
+  font-size: 12px;
+  font-weight: 900;
+  margin: 0;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 107, 0, 0.2);
+  transition: filter 160ms ease, transform 160ms ease;
+}
+
+.empresa-candidatura-content .btn-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+/* Estado vazio */
+.empresa-empty {
+  padding: 20px;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  background: rgba(20, 24, 33, 0.5);
+  color: var(--social-muted);
+  font-size: 13px;
+  text-align: center;
+  list-style: none;
+}
+
+/* =============================================
+   NAV MOBILE
+   ============================================= */
+.amigos-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--social-sidebar) 96%, transparent);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--social-line);
+  z-index: 100;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  justify-content: space-around;
+}
+
+.amigos-bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--social-muted);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 8px;
+  transition: color 160ms ease;
+}
+
+.amigos-bottom-nav a.is-active,
+.amigos-bottom-nav a:hover {
+  color: #ff9b52;
+}
+
+/* =============================================
+   RESPONSIVO
+   ============================================= */
+@media (max-width: 1180px) {
+  .amigos-main {
+    margin-left: 84px;
+  }
+}
+
+@media (max-width: 900px) {
+  .amigos-main {
+    margin-left: 0;
+  }
+
+  .amigos-bottom-nav {
+    display: flex;
+  }
+
+  .amigos-content {
+    padding: 20px 16px 80px;
+  }
+
+  .amigos-topbar {
+    padding: 16px;
+  }
+
+  .amigos-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .amigos-topbar h1 {
+    font-size: 20px;
+  }
+
+  .amigos-topbar-actions {
+    width: 100%;
+  }
+
+  .amigos-btn-secondary,
+  .amigos-btn-primary {
+    flex: 1;
+    justify-content: center;
+  }
+}
