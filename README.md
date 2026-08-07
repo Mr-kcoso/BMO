@@ -188,3 +188,7 @@ Por utilizar módulos Javascript ES6 nativos, as páginas HTML devem ser servida
 
 ## 📚 Documentação Adicional
 Para navegar na árvore técnica completa, consulte o **[Sumário Geral da Documentação Técnica (index.md)](file:///c:/Users/Windows/Downloads/BMO/Bmo-feat/md/index.md)**.
+
+
+
+https://marcosricardoo718-1786099899073.atlassian.net/jira/software/projects/KAN/boards/1?filter=assignee+IN+%28empty%2C+712020%3Ad7521548-3ed8-47aa-8f95-0baa9a6897ea%29&groupBy=none&atlOrigin=eyJpIjoiZTg4M2FlMzM3Y2QyNDgzZjk2YmNlNWJhYTEzY2E4NWUiLCJwIjoiaiJ9
