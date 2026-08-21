@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Gerencie suas conexoes na plataforma BMO. Veja solicitacoes pendentes e sua lista de amigos profissionais.">
+  <title>Meus Amigos - BMO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../styles/design.css">
+  <link rel="stylesheet" href="../styles/freelancer-social.css">
+  <link rel="stylesheet" href="../styles/freelancer-sidebar.css">
+  <link rel="stylesheet" href="../styles/meus-amigos.css">
+  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+</head>
+
+<body class="amigos-page freelancer-social-page">
+  <div class="amigos-shell">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="freelancer-sidebar" id="freelancerSidebar" aria-label="Menu principal">
+      <div class="freelancer-sidebar-brand">
+        <div>
+          <a href="dashboard-freelancer.html" class="freelancer-brand-mark">BMO</a>
+          <span>Building My Opportunity</span>
+        </div>
+        <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="freelancer-nav-section">
+        <p>Principal</p>
+        <nav class="freelancer-sidebar-nav" aria-label="Navegacao principal">
+          <a href="dashboard-freelancer.html" title="Inicio">
+            <span>Inicio</span>
+          </a>
+          <a href="dashboard-freelancer.html#feedProblemas" title="Projetos">
+            <span>Projetos</span>
+          </a>
+          <a href="meus-chats.html" title="Mensagens">
+            <span>Mensagens</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="freelancer-nav-section">
+        <p>Rede</p>
+        <nav class="freelancer-sidebar-nav" aria-label="Rede profissional">
+          <a href="meus-amigos.html" class="is-active" title="Meus amigos">
+            <span>Meus Amigos</span>
+          </a>
+          <a href="busca-perfis.html" title="Buscar perfis">
+            <span>Buscar Perfis</span>
+          </a>
+          <a href="minhas-equipes.html" title="Equipes">
+            <span>Equipes</span>
+          </a>
+          <a href="Configuracao-freelancer.html" title="Configuracoes">
+            <span>Configuracoes</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="freelancer-sidebar-footer">
+        <a class="freelancer-user-mini" href="perfil-freelancer.html" title="Meu perfil">
+          <div id="freelancerAvatar" class="freelancer-avatar" aria-hidden="true">B</div>
+          <div>
+            <strong id="freelancerProfileName">Freelancer BMO</strong>
+            <span id="freelancerProfileType">Profissional verificado</span>
+          </div>
+        </a>
+        <a class="freelancer-create-btn" href="busca-perfis.html">Buscar perfis</a>
+      </div>
+    </aside>
+
+    <!-- ==================== AREA PRINCIPAL ==================== -->
+    <main class="amigos-main">
+
+      <!-- Topbar -->
+      <header class="amigos-topbar" aria-label="Cabecalho de meus amigos">
+        <div class="amigos-title-block">
+          <p class="amigos-kicker">Rede de conexoes</p>
+          <h1>Meus Amigos</h1>
+        </div>
+        <div class="amigos-topbar-actions">
+          <button class="amigos-btn-secondary" type="button" onclick="window.history.back()" id="btnVoltar">
+            Voltar
+          </button>
+          <button class="amigos-btn-primary" type="button" onclick="window.location.href='busca-perfis.html'"
+            id="btnBuscarPerfis">
+            Buscar Perfis
+          </button>
+        </div>
+      </header>
+
+      <!-- Conteudo -->
+      <div class="amigos-content">
+
+        <!-- Secao: Solicitacoes pendentes -->
+        <section class="amigos-section-card" aria-labelledby="secSolicitacoes">
+          <div class="amigos-section-header">
+            <div class="amigos-section-title-group">
+              <div class="amigos-section-icon" aria-hidden="true">SP</div>
+              <h2 class="amigos-section-title" id="secSolicitacoes">Solicitacoes pendentes</h2>
+            </div>
+          </div>
+          <div class="amigos-section-body">
+            <ul id="listaSolicitacoes" class="amigos-grid" aria-live="polite"
+              aria-label="Lista de solicitacoes de amizade"></ul>
+          </div>
+        </section>
+
+        <!-- Secao: Amigos -->
+        <section class="amigos-section-card" aria-labelledby="secAmigos">
+          <div class="amigos-section-header">
+            <div class="amigos-section-title-group">
+              <div class="amigos-section-icon" aria-hidden="true">Am</div>
+              <h2 class="amigos-section-title" id="secAmigos">Amigos</h2>
+            </div>
+          </div>
+          <div class="amigos-section-body">
+            <ul id="listaAmigos" class="amigos-grid" aria-live="polite" aria-label="Lista de amigos"></ul>
+          </div>
+        </section>
+
+      </div><!-- /amigos-content -->
+    </main>
+  </div><!-- /amigos-shell -->
+
+  <!-- NAV MOBILE -->
+  <nav class="amigos-bottom-nav" aria-label="Navegacao mobile">
+    <a href="dashboard-freelancer.html">Inicio</a>
+    <a href="meus-chats.html">Chats</a>
+    <a href="meus-amigos.html" class="is-active">Amigos</a>
+    <a href="busca-perfis.html">Buscar</a>
+  </nav>
+
+  <script type="module" src="../scripts/animation.js"></script>
+  <script type="module" src="../scripts/freelancer-sidebar.js"></script>
+  <script type="module" src="../features/meus-amigos.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+.empresa-freelancers-page .busca-filtros-card { grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(130px, .6fr)); }
+.empresa-freelancers-page .empresa-candidatura-card { min-height: 230px; }
+.empresa-freelancer-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0; }
+.empresa-freelancer-tags span { padding: 4px 8px; border: 1px solid var(--social-line); border-radius: 999px; background: var(--social-orange-soft); color: #ffb16f; font-size: 11px; font-weight: 700; }
+.empresa-dialog { width: min(92vw, 440px); padding: 0; border: 1px solid var(--social-line-strong); border-radius: 16px; background: var(--social-card); color: var(--social-text); box-shadow: var(--social-shadow); }
+.empresa-dialog::backdrop { background: rgba(0, 0, 0, .7); backdrop-filter: blur(3px); }
+.empresa-dialog-content { padding: 20px; }.empresa-dialog h2 { margin: 0; font-size: 18px; }.empresa-dialog p { color: var(--social-text-soft); font-size: 13px; }
+.empresa-dialog select { width: 100%; margin-top: 14px; padding: 11px; border: 1px solid var(--social-line-strong); border-radius: 10px; background: var(--social-bg-soft); color: var(--social-text); }
+.empresa-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+@media (max-width: 900px) { .empresa-freelancers-page .busca-filtros-card { grid-template-columns: 1fr 1fr; }.empresa-freelancers-page .busca-filtros-card input { grid-column: 1 / -1; } }
+@media (max-width: 480px) { .empresa-freelancers-page .busca-filtros-card { grid-template-columns: 1fr; }.empresa-freelancers-page .busca-filtros-card input { grid-column: auto; } }

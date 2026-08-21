@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Empresa - BMO</title>
+  <link rel="stylesheet" href="../styles/design.css">
+  <link rel="stylesheet" href="../styles/freelancer-social.css">
+  <link rel="stylesheet" href="../styles/freelancer-sidebar.css">
+  <link rel="stylesheet" href="../styles/dashboard-empresa.css">
+  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+</head>
+<body class="freelancer-dashboard-page freelancer-social-page empresa-dashboard-page">
+  <aside class="freelancer-sidebar" id="freelancerSidebar" aria-label="Menu da empresa">
+    <div class="freelancer-sidebar-brand">
+      <div>
+        <a href="dashboard-empresa.html" class="freelancer-brand-mark">BMO</a>
+        <span>Building My Opportunity</span>
+      </div>
+      <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Recolher menu" aria-expanded="true"><span></span><span></span><span></span></button>
+    </div>
+    <div class="freelancer-nav-section">
+      <p>Principal</p>
+      <nav class="freelancer-sidebar-nav" aria-label="Navegação principal">
+        <a class="is-active" href="dashboard-empresa.html" title="Início"><span>Início</span></a>
+        <a href="#projetosPublicados" title="Projetos publicados"><span>Projetos publicados</span></a>
+        <a href="meus-chats.html" title="Mensagens"><span>Mensagens</span></a>
+      </nav>
+    </div>
+    <div class="freelancer-nav-section">
+      <p>Rede</p>
+      <nav class="freelancer-sidebar-nav" aria-label="Rede profissional">
+        <a href="freelancers-salvos.html" title="Freelancers salvos"><span>Freelancers salvos</span></a>
+        <a href="busca-perfil-Empresa.html" title="Buscar freelancers"><span>Buscar freelancers</span></a>
+        <a href="minhas-equipes.html" title="Equipes"><span>Equipes</span></a>
+        <a href="configuracao-empresa.html" title="Configurações"><span>Configurações</span></a>
+      </nav>
+    </div>
+    <div class="freelancer-sidebar-footer">
+      <a class="freelancer-user-mini" href="perfil-empresa.html" title="Perfil da empresa">
+        <div id="empresaAvatar" class="freelancer-avatar" aria-hidden="true">E</div>
+        <div><strong id="empresaProfileName">Empresa BMO</strong><span>Conta empresarial</span></div>
+      </a>
+      <a class="freelancer-create-btn" href="#publicarProblema">Publicar projeto</a>
+    </div>
+  </aside>
+
+  <main class="freelancer-social-shell empresa-social-shell">
+    <section class="freelancer-feed-column empresa-feed-column">
+      <header class="freelancer-feed-header">
+        <div class="freelancer-title-block">
+          <p class="freelancer-kicker">Painel da empresa</p>
+          <h1>Gestão de projetos</h1>
+          <p id="resumoCandidaturas" class="freelancer-subtitle">Carregando propostas recebidas...</p>
+        </div>
+        <a class="freelancer-top-profile" href="perfil-empresa.html" aria-label="Abrir perfil da empresa"><span id="empresaTopAvatar" aria-hidden="true">E</span></a>
+      </header>
+
+      <section class="empresa-metrics" aria-label="Métricas principais">
+        <article><strong id="metricProjetos">0</strong><span>Projetos publicados</span></article>
+        <article><strong id="metricPropostas">0</strong><span>Propostas recebidas</span></article>
+        <article><strong id="metricContratacoes">0</strong><span>Contratações em andamento</span></article>
+        <article><strong id="metricAvaliacoes">—</strong><span>Avaliações dos freelancers</span></article>
+      </section>
+
+      <section id="publicarProblema" class="empresa-section-card">
+        <div class="empresa-section-head"><div><h2>Publicar projeto</h2><p>Defina sua demanda para encontrar o freelancer ideal.</p></div><button id="btnCancelarEdicao" class="empresa-secondary-btn" type="button" hidden>Cancelar edição</button></div>
+        <form id="formProblema" class="empresa-problem-form">
+          <label class="empresa-field empresa-field-wide">Título do projeto<input id="titulo" type="text" placeholder="Ex.: Ajustar bugs no checkout" required></label>
+          <label class="empresa-field">Resumo do projeto<textarea id="descricao" placeholder="Descreva o projeto de forma objetiva" required></textarea></label>
+          <label class="empresa-field">Detalhamento técnico<textarea id="detalhamentoProblema" placeholder="Contexto técnico, stack e critérios de entrega"></textarea></label>
+          <label class="empresa-field">Categoria<select id="tipoProblema"><option value="software">Software</option><option value="hardware">Hardware</option><option value="frontend">Front-end</option><option value="banco de dados">Banco de dados</option></select></label>
+          <label class="empresa-field">Nível<select id="nivelProblema"><option value="iniciante">Iniciante</option><option value="intermediario" selected>Intermediário</option></select></label>
+          <label class="empresa-field">Prazo<input id="prazoProblema" type="date"></label>
+          <label class="empresa-field">Valor estimado (R$)<input id="valorProblema" type="number" min="0" step="0.01" placeholder="Ex.: 450,00"></label>
+          <div class="empresa-options empresa-field-wide"><label><input id="remotoProblema" type="checkbox" checked> Trabalho remoto</label><label><input id="urgenteProblema" type="checkbox"> Demanda urgente</label></div>
+          <div class="empresa-form-actions empresa-field-wide"><button id="btnPublicar" class="btn-primary" type="button">Publicar projeto</button></div>
+        </form>
+        <p id="msg" class="empresa-form-message" aria-live="polite"></p>
+      </section>
+
+      <section id="projetosPublicados" class="empresa-list-section">
+        <div class="empresa-section-head"><div><p class="freelancer-kicker">Projetos publicados</p><h2>Suas oportunidades abertas</h2></div></div>
+        <p id="loadingProblemas" class="freelancer-loading">Carregando projetos...</p>
+        <ul id="problemasPublicados" class="empresa-card-list" aria-live="polite"></ul>
+        <div id="estadoVazioProblemas" class="freelancer-empty hidden">Você ainda não publicou nenhum projeto.</div>
+      </section>
+
+      <section class="empresa-list-section" aria-labelledby="propostasTitulo">
+        <div class="empresa-section-head empresa-candidaturas-head"><div><p class="freelancer-kicker">Propostas recebidas</p><h2 id="propostasTitulo">Avalie seus candidatos</h2></div></div>
+        <div class="freelancer-filtros freelancer-social-filters empresa-filters"><input id="buscaCandidaturas" type="search" placeholder="Buscar projeto ou freelancer"><select id="filtroStatus"><option value="todos">Todos os status</option><option value="pendente">Pendentes</option><option value="aceito">Aceitas</option><option value="recusado">Recusadas</option></select><select id="ordenacaoCandidaturas"><option value="recentes">Mais recentes</option><option value="antigos">Mais antigas</option><option value="titulo">Por projeto</option></select></div>
+        <p id="loadingCandidaturas" class="freelancer-loading">Carregando propostas...</p>
+        <ul id="candidaturas" class="empresa-card-list" aria-live="polite"></ul>
+        <div id="estadoVazioCandidaturas" class="freelancer-empty hidden">Nenhuma proposta encontrada.</div>
+      </section>
+    </section>
+
+    <aside class="freelancer-right-panel" aria-label="Painel de recomendações">
+      <section class="freelancer-panel-card freelancer-profile-card"><div class="freelancer-panel-avatar" id="empresaPanelAvatar" aria-hidden="true">E</div><div><strong id="empresaPanelName">Empresa BMO</strong><span>Gestão profissional de oportunidades.</span></div></section>
+      <section class="freelancer-panel-card"><div class="freelancer-panel-head"><h2>Freelancers recomendados</h2><span>Em destaque</span></div><div class="freelancer-recommendation-list"><article><span class="mini-thumb">BE</span><div><strong>Especialistas back-end</strong><small>Perfis compatíveis com suas vagas</small></div></article><article><span class="mini-thumb">UX</span><div><strong>Designers de produto</strong><small>Disponíveis para novos projetos</small></div></article></div></section>
+      <section class="freelancer-panel-card"><div class="freelancer-panel-head"><h2>Categorias mais postadas</h2><span>Tendências</span></div><div class="freelancer-trend-list"><span>Front-end</span><span>React</span><span>Remoto</span><span>Hardware</span></div></section>
+      <section class="freelancer-panel-card compact-panel"><div class="freelancer-panel-head"><h2>Dicas para contratar</h2><span>Melhores práticas</span></div><p class="empresa-tip">Descrições objetivas com stack definida atraem candidaturas mais qualificadas.</p></section>
+    </aside>
+  </main>
+
+  <nav class="freelancer-bottom-nav" aria-label="Navegação mobile"><a class="is-active" href="dashboard-empresa.html">Início</a><a href="#projetosPublicados">Projetos</a><a href="meus-chats.html">Chats</a><a href="busca-perfis.html">Perfis</a></nav>
+  <script type="module" src="../scripts/animation.js"></script>
+  <script type="module" src="../scripts/freelancer-sidebar.js"></script>
+  <script type="module" src="../scripts/empresa.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil Empresa - BMO</title>
+  <link rel="stylesheet" href="../styles/design.css">
+  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+</head>
+
+<body class="perfil-page" data-perfil-tipo="empresa">
+  <main class="perfil-layout">
+    <header class="page-header perfil-header">
+      <div>
+        <h1>Perfil da empresa</h1>
+        <p class="perfil-subtitle">Apresente sua marca para atrair os freelancers mais alinhados.</p>
+      </div>
+      <button class="empresa-nav-btn" onclick="window.history.back()">Voltar</button>
+    </header>
+
+    <section class="card perfil-card">
+      <div class="perfil-hero">
+        <div class="perfil-avatar-wrapper">
+          <img id="previewFoto" class="perfil-avatar" alt="Foto da empresa">
+        </div>
+        <div class="perfil-tag-area">
+          <span class="perfil-tag">Empresa</span>
+          <p>Mostre sua identidade institucional e facilite a conexão com talentos.</p>
+        </div>
+      </div>
+
+      <div class="perfil-section">
+        <h2>Informações gerais</h2>
+        <div class="perfil-grid">
+          <div class="perfil-field-full">
+            <label for="fotoPerfil">Imagem principal</label>
+            <input id="fotoPerfil" type="file" accept="image/*">
+          </div>
+          <div>
+            <label for="nomePerfil">Nome da empresa</label>
+            <input id="nomePerfil" type="text" placeholder="Nome da empresa">
+          </div>
+          <div>
+            <label for="emailPerfil">Email</label>
+            <input id="emailPerfil" type="email" placeholder="Seu email" disabled>
+          </div>
+          <div>
+            <label for="uidPerfil">UID da conta</label>
+            <input id="uidPerfil" type="text" disabled>
+          </div>
+        </div>
+      </div>
+
+      <div id="empresaCampos" class="perfil-section perfil-section-highlight">
+        <h2>Dados institucionais</h2>
+        <label for="logoEmpresa">Logo institucional</label>
+        <input id="logoEmpresa" type="file" accept="image/*">
+
+        <label for="descricaoInstitucional">Descrição institucional</label>
+        <textarea id="descricaoInstitucional" class="resizeno" maxlength="1600"
+          placeholder="Descreva o posicionamento da empresa"></textarea>
+
+        <label for="localizacaoEmpresa">Localização</label>
+        <input id="localizacaoEmpresa" type="text" placeholder="Cidade/Estado">
+
+        <label for="siteEmpresa">Site</label>
+        <input id="siteEmpresa" type="url" placeholder="https://suaempresa.com">
+
+        <label for="linkedinPerfil">LinkedIn</label>
+        <input id="linkedinPerfil" type="url" placeholder="https://www.linkedin.com/company/sua-empresa">
+
+        <label for="githubPerfil">GitHub</label>
+        <input id="githubPerfil" type="url" placeholder="https://github.com/sua-empresa">
+      </div>
+
+      <button id="btnSalvarPerfil" class="btn-primary">Salvar perfil</button>
+    </section>
+  </main>
+
+  <script type="module" src="../scripts/animation.js"></script>
+  <script type="module" src="../features/perfil.js"></script>
+</body>
+
+</html>
