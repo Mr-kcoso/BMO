@@ -4,7 +4,9 @@ import {
   convidarMembroEquipe,
   getEquipe,
   getRoleMembroEquipe,
+  listarConvitesRecebidos,
   listarMembrosEquipe,
+  alterarRoleMembroEquipe,
   removerMembroEquipe,
   sairDaEquipe,
   excluirEquipe
@@ -26,10 +28,16 @@ const alertaChatEquipe = document.getElementById("alertaChatEquipe");
 const blocoAcoesEquipe = document.getElementById("blocoAcoesEquipe");
 const btnSairEquipe = document.getElementById("btnSairEquipe");
 const btnExcluirEquipe = document.getElementById("btnExcluirEquipe");
+const totalMembros = document.getElementById("totalMembros");
+const totalAdmins = document.getElementById("totalAdmins");
+const totalConvitesPendentes = document.getElementById("totalConvitesPendentes");
+const buscaMembros = document.getElementById("buscaMembros");
+const convitesAdminHint = document.getElementById("convitesAdminHint");
 
 let currentUser = null;
 let currentUserRole = null;
 let currentEquipe = null;
+let membrosAtuais = [];
 
 function getDateValue(value) {
   if (!value) return 0;
@@ -74,6 +82,30 @@ async function expulsarMembro(button, membroId) {
   }
 }
 
+async function alterarRoleMembro(button, membroId, role) {
+  if (currentUserRole !== "admin") {
+    showToast("Apenas administradores podem alterar papéis", "error");
+    return;
+  }
+
+  if (membroId === currentEquipe?.criadorId) {
+    showToast("O criador não pode ter o papel alterado", "error");
+    return;
+  }
+
+  try {
+    setButtonLoading(button, true, role === "admin" ? "Promovendo..." : "Rebaixando...");
+    await alterarRoleMembroEquipe(equipeId, membroId, role);
+    showToast(role === "admin" ? "Membro promovido a admin" : "Admin rebaixado a membro", "success");
+    await renderMembros();
+  } catch (error) {
+    console.error(error);
+    showToast(error?.message || "Não foi possível alterar o papel", "error");
+  } finally {
+    setButtonLoading(button, false);
+  }
+}
+
 async function sairEquipe() {
   const confirmar = window.confirm("Tem certeza que deseja sair desta equipe? Você perderá o acesso aos seus membros e ao chat da equipe.");
   if (!confirmar) return;
@@ -108,18 +140,24 @@ async function excluirEquipeAtual() {
 
 async function renderMembros() {
   const membros = await listarMembrosEquipe(equipeId);
+  membrosAtuais = membros;
+  atualizarEstatisticas(membros);
+  const perfis = await Promise.all(membros.map((membro) => getUserProfile(membro.userId)));
   listaMembros.innerHTML = "";
 
-  if (!membros.length) {
+  const termo = (buscaMembros?.value || "").trim().toLowerCase();
+  const membrosVisiveis = membros
+    .map((membro, index) => ({ membro, perfil: perfis[index] }))
+    .filter(({ membro, perfil }) =>
+      !termo || membro.userId.toLowerCase().includes(termo) || perfil?.nome?.toLowerCase().includes(termo)
+    );
+
+  if (!membrosVisiveis.length) {
     listaMembros.appendChild(createElement("li", { className: "empresa-empty", text: "Equipe sem membros." }));
     return [];
   }
 
-  // Pre-fetch all user profiles in parallel
-  const perfis = await Promise.all(membros.map((membro) => getUserProfile(membro.userId)));
-
-  membros.forEach((membro, index) => {
-    const perfil = perfis[index];
+  membrosVisiveis.forEach(({ membro, perfil }) => {
 
     const item = createElement("li", { className: "empresa-candidatura-card" });
     const avatar = createElement("img");
@@ -128,14 +166,29 @@ async function renderMembros() {
     avatar.className = "empresa-candidatura-avatar";
 
     const content = createElement("div", { className: "empresa-candidatura-content" });
+    item.classList.add(`equipe-role-${membro.role === "admin" ? "admin" : "membro"}`);
     content.appendChild(createElement("h3", { text: perfil?.nome || membro.userId }));
     content.appendChild(createElement("p", { className: "empresa-candidatura-meta", text: `UID: ${membro.userId}` }));
-    content.appendChild(createElement("p", { className: "empresa-candidatura-meta", text: `Role: ${membro.role}` }));
+    const papel = membro.userId === currentEquipe?.criadorId ? "Criador" : membro.role === "admin" ? "Administrador" : "Membro";
+    content.appendChild(createElement("span", { className: `equipe-role-badge equipe-role-badge-${membro.role}`, text: papel }));
 
     if (currentUserRole === "admin" && membro.userId !== currentUser.uid) {
-      const btnExpulsar = createElement("button", { className: "empresa-secondary-btn", text: "Expulsar membro" });
-      btnExpulsar.addEventListener("click", () => expulsarMembro(btnExpulsar, membro.userId));
-      content.appendChild(btnExpulsar);
+      const podeAlterarRole = membro.userId !== currentEquipe?.criadorId;
+      if (podeAlterarRole) {
+        const novoRole = membro.role === "admin" ? "membro" : "admin";
+        const btnRole = createElement("button", {
+          className: "empresa-secondary-btn",
+          text: novoRole === "admin" ? "Promover a admin" : "Rebaixar a membro"
+        });
+        btnRole.addEventListener("click", () => alterarRoleMembro(btnRole, membro.userId, novoRole));
+        content.appendChild(btnRole);
+      }
+
+      if (membro.role !== "admin") {
+        const btnExpulsar = createElement("button", { className: "empresa-secondary-btn", text: "Expulsar membro" });
+        btnExpulsar.addEventListener("click", () => expulsarMembro(btnExpulsar, membro.userId));
+        content.appendChild(btnExpulsar);
+      }
     }
 
     item.appendChild(avatar);
@@ -144,6 +197,20 @@ async function renderMembros() {
   });
 
   return membros.map((membro) => membro.userId);
+}
+
+function atualizarEstatisticas(membros) {
+  if (totalMembros) totalMembros.textContent = membros.length;
+  if (totalAdmins) totalAdmins.textContent = membros.filter((membro) => membro.role === "admin").length;
+}
+
+async function atualizarConvitesPendentes() {
+  const convites = await listarConvitesRecebidos(currentUser.uid);
+  if (totalConvitesPendentes) {
+    totalConvitesPendentes.textContent = convites.filter(
+      (convite) => convite.equipeId === equipeId && convite.status === "pendente"
+    ).length;
+  }
 }
 
 async function configurarChatEquipe(participantes) {
@@ -186,12 +253,16 @@ async function carregarEquipe() {
     return;
   }
 
-  blocoAdmin.classList.toggle("hidden", currentUserRole !== "admin");
+  const usuarioAdmin = currentUserRole === "admin";
+  blocoAdmin.classList.toggle("hidden", !usuarioAdmin);
+  blocoAdmin.hidden = !usuarioAdmin;
+  if (convitesAdminHint) convitesAdminHint.hidden = usuarioAdmin;
   blocoAcoesEquipe?.classList.remove("hidden");
   btnSairEquipe?.classList.toggle("hidden", currentUserRole === "admin");
   btnExcluirEquipe?.classList.toggle("hidden", currentUserRole !== "admin");
 
   const participantes = await renderMembros();
+  await atualizarConvitesPendentes();
 
   try {
     await configurarChatEquipe(participantes);
@@ -207,10 +278,17 @@ btnAbrirChatEquipe?.addEventListener("click", () => {
   window.location.href = `chat.html?chatId=${equipeId}&tipo=equipe`;
 });
 
+buscaMembros?.addEventListener("input", () => renderMembros());
+
 btnSairEquipe?.addEventListener("click", sairEquipe);
 btnExcluirEquipe?.addEventListener("click", excluirEquipeAtual);
 
 btnAdicionarMembro.addEventListener("click", async () => {
+  if (currentUserRole !== "admin") {
+    showToast("Apenas administradores podem convidar membros", "error");
+    return;
+  }
+
   const novoMembroId = inputNovoMembroId.value.trim();
 
   if (!novoMembroId) {

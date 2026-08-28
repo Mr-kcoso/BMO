@@ -1,0 +1,222 @@
+.minhas-equipes-hub {
+  gap: 0;
+}
+
+.minhas-equipes-intro {
+  padding: 28px 0 22px;
+}
+
+.minhas-equipes-intro h2 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+.minhas-equipes-intro p {
+  max-width: 580px;
+  margin: 0;
+  color: var(--chat-text-muted);
+  line-height: 1.6;
+}
+
+.equipe-kicker {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #ff9a55;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.minhas-equipes-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0 0 24px;
+}
+
+.minhas-equipes-stat {
+  min-height: 80px;
+  padding: 16px;
+  border: 1px solid var(--chat-panel-border);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(255, 107, 0, .13), rgba(255, 255, 255, .03));
+}
+
+.minhas-equipes-stat span {
+  color: var(--chat-text-muted);
+  font-size: 12px;
+}
+
+.minhas-equipes-stat strong {
+  display: block;
+  margin-top: 8px;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.minhas-equipes-section {
+  padding: 22px 0;
+  border-top: 1px solid var(--chat-panel-border);
+}
+
+.minhas-equipes-section summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 800;
+  list-style: none;
+}
+
+.minhas-equipes-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.minhas-equipes-section summary::after {
+  color: #ff9a55;
+  content: "+";
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.minhas-equipes-section[open] summary::after {
+  content: "-";
+}
+
+.minhas-equipes-section summary span {
+  margin-left: auto;
+  color: var(--chat-text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.minhas-equipes-create,
+.minhas-equipes-list-section > *,
+.minhas-equipes-section > .chats-subtitle,
+.minhas-equipes-section > ul {
+  margin-top: 18px;
+}
+
+.minhas-equipes-create-copy h2,
+.minhas-equipes-section-heading h2 {
+  margin: 0 0 6px;
+  color: #fff;
+}
+
+.minhas-equipes-create-copy p,
+.minhas-equipes-section-heading p {
+  margin: 0 0 16px;
+  color: var(--chat-text-muted);
+  font-size: 13px;
+}
+
+.minhas-equipes-create .empresa-form-grid label {
+  display: grid;
+  gap: 6px;
+  color: var(--chat-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.minhas-equipes-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.minhas-equipes-search {
+  width: min(280px, 100%);
+  margin: 0;
+  padding: 11px 14px;
+  border: 1px solid var(--chat-panel-border);
+  border-radius: 10px;
+  background: var(--chat-input-bg);
+  color: var(--chat-text);
+  outline: none;
+}
+
+.minhas-equipes-search:focus {
+  border-color: rgba(255, 107, 0, .65);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, .12);
+}
+
+.minhas-equipes-card {
+  align-items: flex-start;
+}
+
+.minhas-equipes-avatar {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  border: 2px solid rgba(255, 107, 0, .55);
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.minhas-equipes-role {
+  display: inline-flex;
+  align-self: flex-start;
+  width: fit-content;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.minhas-equipes-role-admin {
+  background: rgba(255, 107, 0, .15);
+  color: #ffad70;
+}
+
+.minhas-equipes-role-membro {
+  background: rgba(39, 215, 255, .1);
+  color: #79e6ff;
+}
+
+.minhas-equipes-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.minhas-equipes-actions .btn-primary,
+.minhas-equipes-actions .empresa-secondary-btn {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .minhas-equipes-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .minhas-equipes-section summary {
+    flex-wrap: wrap;
+  }
+
+  .minhas-equipes-section summary span {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .minhas-equipes-section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .minhas-equipes-search {
+    width: 100%;
+  }
+
+  .minhas-equipes-card {
+    flex-direction: column;
+  }
+}

@@ -11,6 +11,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
   where,
   writeBatch
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -84,14 +85,36 @@ export async function listarEquipesDoUsuario(userId) {
     return equipes.filter(Boolean);
   } catch (error) {
     try {
-      const equipesCriadasQuery = query(collection(db, "equipes"), where("criadorId", "==", userId));
-      const equipesCriadasSnap = await getDocs(equipesCriadasQuery);
+      const [equipesCriadasSnap, convitesAceitosSnap] = await Promise.all([
+        getDocs(query(collection(db, "equipes"), where("criadorId", "==", userId))),
+        getDocs(query(
+          collection(db, "convitesEquipe"),
+          where("convidadoId", "==", userId),
+          where("status", "==", "aceito")
+        ))
+      ]);
 
-      return equipesCriadasSnap.docs.map((docSnap) => ({
+      const equipesAceitas = await Promise.all(
+        convitesAceitosSnap.docs.map(async (conviteDoc) => {
+          const convite = conviteDoc.data();
+          const equipeSnap = await getDoc(doc(db, "equipes", convite.equipeId));
+          if (!equipeSnap.exists()) return null;
+          return {
+            id: equipeSnap.id,
+            ...equipeSnap.data(),
+            role: "membro"
+          };
+        })
+      );
+
+      const equipesCriadas = equipesCriadasSnap.docs.map((docSnap) => ({
         id: docSnap.id,
         ...docSnap.data(),
         role: "admin"
       }));
+
+      return [...equipesCriadas, ...equipesAceitas.filter(Boolean)]
+        .filter((equipe, index, equipes) => equipes.findIndex((item) => item.id === equipe.id) === index);
     } catch (fallbackError) {
       console.error("Falha ao listar equipes no principal e fallback", error, fallbackError);
       return [];
@@ -133,6 +156,15 @@ export async function adicionarMembroEquipe(equipeId, userId, role = "membro") {
     },
     { merge: true }
   );
+}
+
+export async function alterarRoleMembroEquipe(equipeId, userId, role) {
+  if (!equipeId || !userId || !["admin", "membro"].includes(role)) {
+    throw new Error("Dados inválidos para alteração de papel");
+  }
+
+  const membroRef = doc(db, "equipes", equipeId, "membros", userId);
+  await updateDoc(membroRef, { role });
 }
 
 
