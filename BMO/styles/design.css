@@ -2397,3 +2397,19 @@ body.landing-menu-open {
   text-align: left;
   width: 450px;
 }
+
+/* Ações destrutivas específicas das equipes */
+.equipe-acoes {
+  align-items: center;
+}
+
+.equipe-danger-btn {
+  background: #b91c1c;
+  color: #fff;
+  border-color: #991b1b;
+}
+
+.equipe-danger-btn:hover {
+  background: #991b1b;
+}
+

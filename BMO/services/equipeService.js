@@ -136,9 +136,89 @@ export async function adicionarMembroEquipe(equipeId, userId, role = "membro") {
 }
 
 
+async function atualizarParticipantesChatEquipe(equipeId, userIdParaRemover) {
+  const chatRef = doc(db, "chatsEquipe", equipeId);
+  const chatSnap = await getDoc(chatRef);
+
+  if (!chatSnap.exists()) return;
+
+  const dados = chatSnap.data();
+  const participantes = Array.isArray(dados.participants) ? dados.participants : [];
+  const novosParticipantes = participantes.filter((id) => id !== userIdParaRemover);
+
+  if (novosParticipantes.length === participantes.length) return;
+
+  await setDoc(chatRef, { participants: novosParticipantes }, { merge: true });
+}
+
 export async function removerMembroEquipe(equipeId, userId) {
   const membroRef = doc(db, "equipes", equipeId, "membros", userId);
+  const membroSnap = await getDoc(membroRef);
+
+  if (!membroSnap.exists()) {
+    throw new Error("Membro não encontrado na equipe");
+  }
+
+  if (membroSnap.data().role === "admin") {
+    throw new Error("O administrador não pode ser removido da equipe");
+  }
+
+  await atualizarParticipantesChatEquipe(equipeId, userId);
   await deleteDoc(membroRef);
+}
+
+export async function sairDaEquipe(equipeId, userId) {
+  const membroRef = doc(db, "equipes", equipeId, "membros", userId);
+  const membroSnap = await getDoc(membroRef);
+
+  if (!membroSnap.exists()) {
+    throw new Error("Você não faz parte desta equipe");
+  }
+
+  if (membroSnap.data().role === "admin") {
+    throw new Error("O administrador não pode sair da equipe. Exclua a equipe ou transfira a administração primeiro.");
+  }
+
+  await atualizarParticipantesChatEquipe(equipeId, userId);
+  await deleteDoc(membroRef);
+}
+
+async function excluirDocumentosEmLotes(refs) {
+  const TAMANHO_LOTE = 450;
+
+  for (let i = 0; i < refs.length; i += TAMANHO_LOTE) {
+    const lote = writeBatch(db);
+    refs.slice(i, i + TAMANHO_LOTE).forEach((ref) => lote.delete(ref));
+    await lote.commit();
+  }
+}
+
+export async function excluirEquipe(equipeId) {
+  if (!equipeId) {
+    throw new Error("Equipe inválida");
+  }
+
+  const membrosSnap = await getDocs(collection(db, "equipes", equipeId, "membros"));
+  const mensagensSnap = await getDocs(collection(db, "chatsEquipe", equipeId, "mensagens"));
+  const chatRef = doc(db, "chatsEquipe", equipeId);
+  const chatSnap = await getDoc(chatRef);
+
+  const convitesQuery = query(
+    collection(db, "convitesEquipe"),
+    where("equipeId", "==", equipeId)
+  );
+  const convitesSnap = await getDocs(convitesQuery);
+
+  const refs = [
+    ...membrosSnap.docs.map((docSnap) => docSnap.ref),
+    ...mensagensSnap.docs.map((docSnap) => docSnap.ref),
+    ...convitesSnap.docs.map((docSnap) => docSnap.ref)
+  ];
+
+  if (chatSnap.exists()) refs.push(chatRef);
+  refs.push(doc(db, "equipes", equipeId));
+
+  await excluirDocumentosEmLotes(refs);
 }
 
 export async function convidarMembroEquipe(equipeId, convidadoId, convidadoPorId) {

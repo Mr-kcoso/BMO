@@ -5,7 +5,9 @@ import {
   getEquipe,
   getRoleMembroEquipe,
   listarMembrosEquipe,
-  removerMembroEquipe
+  removerMembroEquipe,
+  sairDaEquipe,
+  excluirEquipe
 } from "../services/equipeService.js";
 import { createElement, setButtonLoading, showToast } from "./utils.js";
 
@@ -21,6 +23,9 @@ const btnAdicionarMembro = document.getElementById("btnAdicionarMembro");
 const listaMembros = document.getElementById("listaMembros");
 const btnAbrirChatEquipe = document.getElementById("btnAbrirChatEquipe");
 const alertaChatEquipe = document.getElementById("alertaChatEquipe");
+const blocoAcoesEquipe = document.getElementById("blocoAcoesEquipe");
+const btnSairEquipe = document.getElementById("btnSairEquipe");
+const btnExcluirEquipe = document.getElementById("btnExcluirEquipe");
 
 let currentUser = null;
 let currentUserRole = null;
@@ -53,6 +58,9 @@ async function expulsarMembro(button, membroId) {
     return;
   }
 
+  const confirmar = window.confirm("Tem certeza que deseja expulsar este membro da equipe?");
+  if (!confirmar) return;
+
   try {
     setButtonLoading(button, true, "Removendo...");
     await removerMembroEquipe(equipeId, membroId);
@@ -63,6 +71,38 @@ async function expulsarMembro(button, membroId) {
     showToast(error?.message || "Não foi possível remover membro", "error");
   } finally {
     setButtonLoading(button, false);
+  }
+}
+
+async function sairEquipe() {
+  const confirmar = window.confirm("Tem certeza que deseja sair desta equipe? Você perderá o acesso aos seus membros e ao chat da equipe.");
+  if (!confirmar) return;
+
+  try {
+    setButtonLoading(btnSairEquipe, true, "Saindo...");
+    await sairDaEquipe(equipeId, currentUser.uid);
+    showToast("Você saiu da equipe", "success");
+    window.location.href = "minhas-equipes.html";
+  } catch (error) {
+    console.error(error);
+    showToast(error?.message || "Não foi possível sair da equipe", "error");
+    setButtonLoading(btnSairEquipe, false);
+  }
+}
+
+async function excluirEquipeAtual() {
+  const confirmar = window.confirm("Tem certeza que deseja excluir esta equipe? Esta ação removerá a equipe, seus membros, convites e o histórico do chat e não poderá ser desfeita.");
+  if (!confirmar) return;
+
+  try {
+    setButtonLoading(btnExcluirEquipe, true, "Excluindo...");
+    await excluirEquipe(equipeId);
+    showToast("Equipe excluída com sucesso", "success");
+    window.location.href = "minhas-equipes.html";
+  } catch (error) {
+    console.error(error);
+    showToast(error?.message || "Não foi possível excluir a equipe", "error");
+    setButtonLoading(btnExcluirEquipe, false);
   }
 }
 
@@ -139,7 +179,17 @@ async function carregarEquipe() {
   equipeFoto.src = equipe.fotoEquipe || "../assets/fotos/larva.jpeg";
 
   currentUserRole = await getRoleMembroEquipe(equipeId, currentUser.uid);
+
+  if (!currentUserRole) {
+    showToast("Você não faz parte desta equipe", "error");
+    window.location.href = "minhas-equipes.html";
+    return;
+  }
+
   blocoAdmin.classList.toggle("hidden", currentUserRole !== "admin");
+  blocoAcoesEquipe?.classList.remove("hidden");
+  btnSairEquipe?.classList.toggle("hidden", currentUserRole === "admin");
+  btnExcluirEquipe?.classList.toggle("hidden", currentUserRole !== "admin");
 
   const participantes = await renderMembros();
 
@@ -156,6 +206,9 @@ async function carregarEquipe() {
 btnAbrirChatEquipe?.addEventListener("click", () => {
   window.location.href = `chat.html?chatId=${equipeId}&tipo=equipe`;
 });
+
+btnSairEquipe?.addEventListener("click", sairEquipe);
+btnExcluirEquipe?.addEventListener("click", excluirEquipeAtual);
 
 btnAdicionarMembro.addEventListener("click", async () => {
   const novoMembroId = inputNovoMembroId.value.trim();

@@ -80,12 +80,18 @@ service cloud.firestore {
             && get(/databases/$(database)/documents/equipes/$(equipeId)).data.criadorId == request.auth.uid
             && request.resource.data.role == "admin");
 
-        allow update, delete: if isTeamAdmin(equipeId);
+        allow update: if isTeamAdmin(equipeId);
+        allow delete: if isTeamAdmin(equipeId)
+          || (isSignedIn()
+            && request.auth.uid == userId
+            && get(/databases/$(database)/documents/equipes/$(equipeId)/membros/$(userId)).data.role != "admin");
       }
     }
 
     match /convitesEquipe/{conviteId} {
-      allow read: if isSignedIn() && resource.data.convidadoId == request.auth.uid;
+      allow read: if isSignedIn()
+        && (resource.data.convidadoId == request.auth.uid
+          || isTeamAdmin(resource.data.equipeId));
 
       allow create: if isSignedIn()
         && request.resource.data.convidadoPorId == request.auth.uid
@@ -99,7 +105,7 @@ service cloud.firestore {
         && request.resource.data.equipeId == resource.data.equipeId
         && request.resource.data.status in ["aceito", "recusado"];
 
-      allow delete: if false;
+      allow delete: if isTeamAdmin(resource.data.equipeId);
     }
 
     match /chats/{chatId} {
@@ -129,7 +135,10 @@ service cloud.firestore {
     }
 
     match /chatsEquipe/{chatId} {
-      allow read, update: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow update: if isSignedIn()
+        && (request.auth.uid in resource.data.participants || isTeamAdmin(chatId));
+      allow delete: if isTeamAdmin(chatId);
 
       allow create: if isSignedIn()
         && request.resource.data.equipeId == chatId
@@ -139,8 +148,7 @@ service cloud.firestore {
         allow read, create: if isSignedIn()
           && exists(/databases/$(database)/documents/chatsEquipe/$(chatId))
           && request.auth.uid in get(/databases/$(database)/documents/chatsEquipe/$(chatId)).data.participants;
+        allow delete: if isTeamAdmin(chatId);
       }
-    }
-
   }
 }
