@@ -7,6 +7,7 @@
   <title>Equipe - BMO</title>
   <link rel="stylesheet" href="../styles/design.css">
   <link rel="stylesheet" href="../styles/chat-modern.css">
+  <link rel="stylesheet" href="../styles/equipe-hub.css">
   <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
 </head>
 
@@ -15,46 +16,65 @@
     <header class="page-header chats-topbar">
       <div>
         <h1 id="equipeNome">Equipe</h1>
-        <p class="chats-subtitle" id="equipeDescricao">Carregando detalhes da equipe...</p>
       </div>
       <div class="button-row">
         <button class="chats-nav-btn" onclick="window.history.back()">Voltar</button>
       </div>
     </header>
 
-    <section class="chats-list-card">
-      <div class="perfil-section" style="align-items: center; padding: 24px 0;">
+    <section class="chats-list-card equipe-hub">
+      <div class="equipe-hero">
         <img id="equipeFoto" class="perfil-avatar" alt="Foto da equipe" src="../assets/fotos/larva.jpeg">
+        <div>
+          <span class="equipe-kicker">Hub da equipe</span>
+        <p class="chats-subtitle" id="equipeDescricao">Carregando detalhes da equipe...</p>
+        </div>
       </div>
 
-      <div id="blocoAdmin" class="perfil-section hidden">
-        <h2>Convidar membro</h2>
+      <div class="equipe-stats" aria-label="Resumo da equipe">
+        <div class="equipe-stat"><span>Membros</span><strong id="totalMembros">0</strong></div>
+        <div class="equipe-stat"><span>Admins ativos</span><strong id="totalAdmins">0</strong></div>
+        <div class="equipe-stat"><span>Convites pendentes</span><strong id="totalConvitesPendentes">0</strong></div>
+      </div>
+
+      <details id="secaoConvites" class="equipe-section" open>
+        <summary>Convites <span class="equipe-summary-note">Gestão de acesso</span></summary>
+        <div id="blocoAdmin" class="equipe-admin-panel hidden" hidden>
+          <h2>Convidar membro</h2> <br>
         <div class="button-row">
           <input id="novoMembroId" placeholder="UID do usuário" />
           <button id="btnAdicionarMembro" class="btn-primary">Enviar convite</button>
         </div>
-      </div>
+        </div>
+        <p id="convitesAdminHint" class="equipe-muted">Apenas administradores podem enviar convites.</p>
+      </details>
 
-      <div class="perfil-section">
-        <h2>Comunicação da equipe</h2>
+      <details class="equipe-section" open>
+        <summary>Comunicação <span class="equipe-summary-note">Conversa da equipe</span></summary>
         <div class="button-row" style="align-items: center; gap: 14px;">
           <button id="btnAbrirChatEquipe" class="btn-primary">Abrir chat da equipe</button>
           <span id="alertaChatEquipe"></span>
         </div>
-      </div>
+      </details>
 
-      <div id="blocoAcoesEquipe" class="perfil-section hidden">
-        <h2>Configurações da equipe</h2>
+      <details id="blocoAcoesEquipe" class="equipe-section hidden">
+        <summary>Configurações <span class="equipe-summary-note">Ações da equipe</span></summary>
         <div class="button-row equipe-acoes">
           <button id="btnSairEquipe" class="empresa-secondary-btn">Sair da equipe</button>
           <button id="btnExcluirEquipe" class="equipe-danger-btn hidden">Excluir equipe</button>
         </div>
-      </div>
+      </details>
 
-      <div class="perfil-section">
-        <h2>Membros</h2>
+      <section class="equipe-section equipe-members-section">
+        <div class="equipe-section-heading">
+          <div>
+            <h2>Membros</h2>
+            <p class="equipe-muted">Gerencie acesso e responsabilidades.</p>
+          </div>
+          <input id="buscaMembros" class="equipe-search" type="search" placeholder="Buscar por nome ou UID" aria-label="Buscar membros">
+        </div>
         <ul id="listaMembros" class="empresa-candidaturas-grid"></ul>
-      </div>
+      </section>
     </section>
   </main>
 

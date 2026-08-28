@@ -116,7 +116,7 @@ async function carregarPerfilPublico(usuarioLogado) {
   setText(subtitulo, "Use estes dados para validar experiência, disponibilidade e fit.");
   setText(tipo, tipoPerfil);
   setText(nome, perfil.nome || "Usuário");
-  setText(uidPublico, `UID: ${perfil.uidUsuario || userId}`);
+  setText(uidPublico, `UID: ${userId}`);
 
   if (foto) {
     foto.src = perfil.fotoURL || perfil.logoURL || "../assets/fotos/larva.jpeg";

@@ -7,6 +7,7 @@
   <title>Minhas equipes - BMO</title>
   <link rel="stylesheet" href="../styles/design.css">
   <link rel="stylesheet" href="../styles/chat-modern.css">
+  <link rel="stylesheet" href="../styles/minhas-equipes.css">
   <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
 </head>
 
@@ -22,27 +23,51 @@
       </div>
     </header>
 
-    <section class="chats-list-card">
-      <div class="perfil-section">
-        <h2>Criar equipe</h2>
+    <section class="chats-list-card minhas-equipes-hub">
+      <div class="minhas-equipes-intro">
+        <span class="equipe-kicker">Espaço de colaboração</span>
+        <h2>Suas equipes, em movimento</h2>
+        <p>Crie um grupo, acompanhe acessos e mantenha as pessoas certas por perto.</p>
+      </div>
+
+      <div class="minhas-equipes-stats" aria-label="Resumo das equipes">
+        <div class="minhas-equipes-stat"><span>Equipes</span><strong id="totalEquipes">0</strong></div>
+        <div class="minhas-equipes-stat"><span>Membros conectados</span><strong id="totalMembros">0</strong></div>
+        <div class="minhas-equipes-stat"><span>Convites pendentes</span><strong id="totalConvites">0</strong></div>
+      </div>
+
+      <details class="minhas-equipes-section" open>
+        <summary>Criar equipe <span>Comece um novo espaço</span></summary>
+        <div class="minhas-equipes-create">
+          <div class="minhas-equipes-create-copy">
+            <h2>Monte seu próximo time</h2>
+            <p>Defina um nome, contexto e uma imagem para deixar a equipe reconhecível.</p>
+          </div>
         <div class="empresa-form-grid">
-          <input id="equipeNome" placeholder="Nome da equipe" />
-          <textarea id="equipeDescricao" class="resizeno" placeholder="Descrição"></textarea>
-          <input id="equipeFoto" type="file" accept="image/*" />
+          <label>Nome da equipe<input id="equipeNome" placeholder="Ex.: Produto e Design" /></label>
+          <label>Descrição<textarea id="equipeDescricao" class="resizeno" placeholder="Qual é o foco deste time?"></textarea></label>
+          <label>Avatar ou logo<input id="equipeFoto" type="file" accept="image/*" /></label> <br>
         </div>
         <button id="btnCriarEquipe" class="btn-primary">Criar equipe</button>
-      </div>
+        </div>
+      </details>
 
-      <div class="perfil-section">
-        <h2>Lista de equipes</h2>
+      <section class="minhas-equipes-section minhas-equipes-list-section">
+        <div class="minhas-equipes-section-heading">
+          <div>
+            <h2>Lista de equipes</h2>
+            <p>Abra um espaço, consulte seus membros ou saia de uma equipe.</p>
+          </div>
+          <input id="buscaEquipes" class="minhas-equipes-search" type="search" placeholder="Buscar por nome ou UID" aria-label="Buscar equipes">
+        </div>
         <ul id="listaEquipes" class="empresa-candidaturas-grid"></ul>
-      </div>
+      </section>
 
-      <div class="perfil-section">
-        <h2>Solicitações de equipe</h2>
+      <details class="minhas-equipes-section" open>
+        <summary>Solicitações de equipe <span>Pendentes e recusadas</span></summary>
         <div id="convitesResumo" class="chats-subtitle">Acompanhe os convites pendentes e respondidos.</div>
         <ul id="listaConvites" class="empresa-candidaturas-grid"></ul>
-      </div>
+      </details>
     </section>
   </main>
 

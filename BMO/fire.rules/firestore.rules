@@ -15,9 +15,83 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/equipes/$(teamId)/membros/$(request.auth.uid)).data.role == "admin";
     }
 
+    function hasAcceptedTeamInvite(teamId, userId) {
+      return isSignedIn()
+        && getAfter(/databases/$(database)/documents/convitesEquipe/$(teamId + "_" + userId)).data.convidadoId == userId
+        && getAfter(/databases/$(database)/documents/convitesEquipe/$(teamId + "_" + userId)).data.equipeId == teamId
+        && getAfter(/databases/$(database)/documents/convitesEquipe/$(teamId + "_" + userId)).data.status == "aceito";
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isCandidaturaParticipant() {
+      return isSignedIn()
+        && (
+          resource.data.empresaId == request.auth.uid
+          || resource.data.freelancerId == request.auth.uid
+        );
+    }
+
+    function isValidUserProfileCreate(userId) {
+      return isOwner(userId)
+        && request.resource.data.keys().hasOnly([
+          'nome',
+          'email',
+          'tipo',
+          'uidUsuario',
+          'fotoURL',
+          'logoURL',
+          'linkedin',
+          'github',
+          'criadoEm',
+          'atualizadoEm',
+          'bio',
+          'habilidades',
+          'areaAtuacao',
+          'disponibilidade',
+          'descricaoInstitucional',
+          'localizacao',
+          'site'
+        ])
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() > 0
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.tipo in ['freelancer', 'empresa']
+        && request.resource.data.criadoEm == request.time
+        && (!('uid' in request.resource.data) || request.resource.data.uid == userId);
+    }
+
+    function isValidUserProfileUpdate(userId) {
+      return isOwner(userId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'nome',
+          'email',
+          'uidUsuario',
+          'fotoURL',
+          'logoURL',
+          'linkedin',
+          'github',
+          'atualizadoEm',
+          'bio',
+          'habilidades',
+          'areaAtuacao',
+          'disponibilidade',
+          'descricaoInstitucional',
+          'localizacao',
+          'site'
+        ])
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.tipo == resource.data.tipo
+        && request.resource.data.criadoEm == resource.data.criadoEm
+        && (!('uid' in request.resource.data) || request.resource.data.uid == resource.data.uid);
+    }
+
     match /usuarios/{userId} {
       allow read: if isSignedIn();
-      allow create, update: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isValidUserProfileCreate(userId);
+      allow update: if isValidUserProfileUpdate(userId);
       allow delete: if false;
     }
 
@@ -55,13 +129,18 @@ service cloud.firestore {
 
       allow create: if isSignedIn()
         && request.resource.data.freelancerId == request.auth.uid
-        && request.resource.data.status == "pendente";
+        && request.resource.data.empresaId != request.auth.uid
+        && request.resource.data.status == "pendente"
+        && request.resource.data.problemaId is string
+        && request.resource.data.empresaId is string
+        && request.resource.data.freelancerId is string;
 
-      allow update: if isSignedIn()
-        && (
-          resource.data.empresaId == request.auth.uid
-          || resource.data.freelancerId == request.auth.uid
-        );
+      allow update: if isCandidaturaParticipant()
+        && request.resource.data.empresaId == resource.data.empresaId
+        && request.resource.data.freelancerId == resource.data.freelancerId
+        && request.resource.data.problemaId == resource.data.problemaId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "chatId"])
+        && request.resource.data.status in ["pendente", "aceito", "recusado", "concluido", "cancelado"];
 
       allow delete: if false;
     }
@@ -77,10 +156,17 @@ service cloud.firestore {
         allow create: if isTeamAdmin(equipeId)
           || (isSignedIn()
             && request.auth.uid == userId
-            && get(/databases/$(database)/documents/equipes/$(equipeId)).data.criadorId == request.auth.uid
+            && request.resource.data.role == "membro"
+            && hasAcceptedTeamInvite(equipeId, userId))
+          || (isSignedIn()
+            && request.auth.uid == userId
+            && getAfter(/databases/$(database)/documents/equipes/$(equipeId)).data.criadorId == request.auth.uid
             && request.resource.data.role == "admin");
 
-        allow update: if isTeamAdmin(equipeId);
+        allow update: if isTeamAdmin(equipeId)
+          && userId != get(/databases/$(database)/documents/equipes/$(equipeId)).data.criadorId
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["role"])
+          && request.resource.data.role in ["admin", "membro"];
         allow delete: if isTeamAdmin(equipeId)
           || (isSignedIn()
             && request.auth.uid == userId
@@ -93,8 +179,9 @@ service cloud.firestore {
         && (resource.data.convidadoId == request.auth.uid
           || isTeamAdmin(resource.data.equipeId));
 
-      allow create: if isSignedIn()
+      allow create: if isTeamAdmin(request.resource.data.equipeId)
         && request.resource.data.convidadoPorId == request.auth.uid
+        && request.resource.data.convidadoId != request.auth.uid
         && request.resource.data.status == "pendente";
 
       allow update: if isSignedIn()
@@ -135,20 +222,31 @@ service cloud.firestore {
     }
 
     match /chatsEquipe/{chatId} {
-      allow read: if isSignedIn() && request.auth.uid in resource.data.participants;
-      allow update: if isSignedIn()
-        && (request.auth.uid in resource.data.participants || isTeamAdmin(chatId));
+      allow read: if isTeamMember(chatId);
+      allow update: if isTeamMember(chatId)
+        && request.resource.data.equipeId == resource.data.equipeId
+        && request.resource.data.tipo == resource.data.tipo
+        && request.resource.data.criadoEm == resource.data.criadoEm
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "equipeNome",
+          "participants",
+          "ultimaMensagem",
+          "ultimaMensagemAutorId",
+          "ultimaMensagemEm",
+          "ultimoAcessoPor"
+        ])
+        && ((request.resource.data.participants == resource.data.participants) || isTeamAdmin(chatId));
       allow delete: if isTeamAdmin(chatId);
 
       allow create: if isSignedIn()
         && request.resource.data.equipeId == chatId
-        && request.auth.uid in request.resource.data.participants;
+        && isTeamMember(chatId);
 
       match /mensagens/{mensagemId} {
-        allow read, create: if isSignedIn()
-          && exists(/databases/$(database)/documents/chatsEquipe/$(chatId))
-          && request.auth.uid in get(/databases/$(database)/documents/chatsEquipe/$(chatId)).data.participants;
+        allow read: if isTeamMember(chatId);
+        allow create: if isTeamMember(chatId);
         allow delete: if isTeamAdmin(chatId);
       }
+    }
   }
 }
