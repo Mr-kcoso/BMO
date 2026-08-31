@@ -11,7 +11,6 @@ const busca = document.getElementById("buscaFreelancers");
 const tecnologia = document.getElementById("filtroTecnologia");
 const localizacao = document.getElementById("filtroLocalizacao");
 const experiencia = document.getElementById("filtroExperiencia");
-const disponibilidade = document.getElementById("filtroDisponibilidade");
 const dialog = document.getElementById("modalConvite");
 const projetosSelect = document.getElementById("projetoConvite");
 const nomeConvite = document.getElementById("nomeFreelancerConvite");
@@ -23,12 +22,11 @@ function atendeFiltro(perfil) {
   const tech = normalizar(tecnologia?.value);
   const lugar = normalizar(localizacao?.value);
   const nivel = normalizar(experiencia?.value);
-  const agenda = normalizar(disponibilidade?.value);
   const campos = [perfil.nome, perfil.areaAtuacao, perfil.bio, perfil.localizacao, perfil.experiencia, perfil.disponibilidade, ...tagsDoPerfil(perfil)].map(normalizar).join(" ");
-  return (!termo || campos.includes(termo)) && (!tech || tagsDoPerfil(perfil).some((tag) => normalizar(tag).includes(tech)) || normalizar(perfil.areaAtuacao).includes(tech)) && (!lugar || normalizar(perfil.localizacao).includes(lugar)) && (!nivel || normalizar(perfil.experiencia).includes(nivel)) && (!agenda || normalizar(perfil.disponibilidade).includes(agenda));
+  return (!termo || campos.includes(termo)) && (!tech || tagsDoPerfil(perfil).some((tag) => normalizar(tag).includes(tech)) || normalizar(perfil.areaAtuacao).includes(tech)) && (!lugar || normalizar(perfil.localizacao).includes(lugar)) && (!nivel || normalizar(perfil.experiencia).includes(nivel));
 }
 function atualizarResumo(total) { if (resumo) resumo.textContent = `${total} freelancer${total === 1 ? "" : "s"} encontrado${total === 1 ? "" : "s"}`; }
-function verPerfil(id) { window.location.href = `../perfil-publico.html?userId=${id}`; }
+function verPerfil(id) { window.location.href = `perfil-publico.html?userId=${id}`; }
 
 function abrirConvite(perfil) {
   if (!state.projetos.length) { showToast("Publique um projeto antes de enviar um convite", "info"); return; }
@@ -74,7 +72,7 @@ async function carregar() {
   const nome = empresa?.nome || "Empresa BMO"; document.querySelectorAll("[data-empresa-nome]").forEach((el) => { el.textContent = nome; }); document.querySelectorAll("[data-empresa-inicial]").forEach((el) => { el.textContent = nome.charAt(0).toUpperCase(); });
   render();
 }
-[busca, tecnologia, localizacao, experiencia, disponibilidade].forEach((campo) => { campo?.addEventListener("input", render); campo?.addEventListener("change", render); });
+[busca, tecnologia, localizacao, experiencia].forEach((campo) => { campo?.addEventListener("input", render); campo?.addEventListener("change", render); });
 document.getElementById("cancelarConvite")?.addEventListener("click", () => dialog.close());
 document.getElementById("confirmarConvite")?.addEventListener("click", async () => { try { const projeto = state.projetos.find((item) => item.id === projetosSelect.value); await convidarFreelancerParaProjeto({ empresaId: state.user.uid, freelancerId: state.freelancerSelecionado.id, projeto }); dialog.close(); showToast("Convite enviado", "success"); } catch (error) { console.error(error); showToast("Não foi possível enviar o convite", "error"); } });
-observeAuthenticatedUser(async (user) => { state.user = user; try { await carregar(); } catch (error) { console.error(error); showToast("Não foi possível carregar freelancers", "error"); } }, () => { window.location.href = "../../../index.html"; });
+observeAuthenticatedUser(async (user) => { state.user = user; try { await carregar(); } catch (error) { console.error(error); showToast("Não foi possível carregar freelancers", "error"); } }, () => { window.location.href = "../../index.html"; });

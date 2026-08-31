@@ -47,9 +47,15 @@ function getCompanyInitial(problema) {
   return (problema.empresaNome || "BMO").trim().charAt(0).toUpperCase() || "B";
 }
 
-function createActionButton(label, className = "freelancer-post-action") {
-  const button = createElement("button", { className, text: label });
+function createActionButton(label, iconClass, className = "freelancer-post-action") {
+  const button = createElement("button", { className });
   button.type = "button";
+  if (iconClass) {
+    const icon = createElement("i", { className: `fa-solid ${iconClass}` });
+    icon.setAttribute("aria-hidden", "true");
+    button.appendChild(icon);
+  }
+  button.appendChild(createElement("span", { text: label }));
   return button;
 }
 
@@ -63,6 +69,8 @@ export function renderProblema({
   container,
   problema,
   candidatura,
+  salvo = false,
+  onToggleSalvar,
   onCandidatar,
   onAbrirChat,
   onVerDetalhes,
@@ -94,7 +102,7 @@ export function renderProblema({
     })
   );
 
-  const moreButton = createActionButton("Perfil", "freelancer-post-profile-btn");
+  const moreButton = createActionButton("Perfil", null, "freelancer-post-profile-btn");
   moreButton.addEventListener("click", () => onVerPerfilEmpresa(problema));
 
   header.appendChild(avatar);
@@ -119,9 +127,6 @@ export function renderProblema({
     text: problema.descricao || "Sem descricao"
   });
 
-  const readMore = createActionButton("Ver mais", "freelancer-read-more");
-  readMore.addEventListener("click", () => onVerDetalhes(problema));
-
   const tagsWrapper = createElement("div", { className: "freelancer-tags" });
   getTags(problema).forEach((tag) => {
     tagsWrapper.appendChild(createElement("span", { className: "freelancer-tag", text: tag }));
@@ -129,20 +134,19 @@ export function renderProblema({
 
   body.appendChild(titleRow);
   body.appendChild(descricao);
-  body.appendChild(readMore);
   body.appendChild(tagsWrapper);
 
   const footer = createElement("div", { className: "freelancer-post-footer" });
   const socialActions = createElement("div", { className: "freelancer-post-social-actions" });
-  const saveButton = createActionButton("Salvar");
-  saveButton.dataset.icon = "S";
+  const saveButton = createActionButton("Salvar", "fa-bookmark");
+  saveButton.classList.toggle("is-saved", salvo);
+  saveButton.querySelector("span").textContent = salvo ? "Salvo" : "Salvar";
   saveButton.addEventListener("click", () => {
-    const saved = saveButton.classList.toggle("is-saved");
-    saveButton.textContent = saved ? "Salvo" : "Salvar";
+    const saved = !saveButton.classList.contains("is-saved");
+    onToggleSalvar?.(problema, saved);
   });
 
-  const shareButton = createActionButton("Compartilhar");
-  shareButton.dataset.icon = "C";
+  const shareButton = createActionButton("Compartilhar", "fa-share-nodes");
   shareButton.addEventListener("click", async () => {
     const shareUrl = getShareUrl(problema);
     try {
@@ -153,22 +157,20 @@ export function renderProblema({
 
       if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
-        shareButton.textContent = "Copiado";
+        shareButton.querySelector("span").textContent = "Copiado";
         window.setTimeout(() => {
-          shareButton.textContent = "Compartilhar";
+          shareButton.querySelector("span").textContent = "Compartilhar";
         }, 1600);
       }
     } catch (error) {
-      shareButton.textContent = "Compartilhar";
+      shareButton.querySelector("span").textContent = "Compartilhar";
     }
   });
 
-  const commentsButton = createActionButton("Comentarios");
-  commentsButton.dataset.icon = "CM";
+  const commentsButton = createActionButton("Comentarios", "fa-comments");
   commentsButton.addEventListener("click", () => onVerDetalhes(problema));
 
-  const detailButton = createActionButton("Detalhes");
-  detailButton.dataset.icon = "D";
+  const detailButton = createActionButton("Detalhes", "fa-list-check");
   detailButton.addEventListener("click", () => onVerDetalhes(problema));
 
   socialActions.appendChild(saveButton);

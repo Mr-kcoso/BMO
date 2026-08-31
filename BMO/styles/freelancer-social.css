@@ -117,17 +117,28 @@
   background: transparent;
 }
 
-.nav-icon {
-  width: 25px;
-  height: 25px;
+.nav-icon,
+.freelancer-nav-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.055);
   color: #aeb8c8;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
+  line-height: 1;
+  text-align: center;
+}
+
+/* O glifo do Font Awesome tem alinhamento de baseline proprio; este ajuste
+   o reposiciona no centro optico do bloco escuro. */
+.freelancer-nav-icon::before {
+  position: relative;
+  top: 10px;
 }
 
 .freelancer-sidebar-nav a:hover {
@@ -146,7 +157,9 @@
 }
 
 .freelancer-sidebar-nav a.is-active .nav-icon,
-.freelancer-sidebar-nav a:hover .nav-icon {
+.freelancer-sidebar-nav a.is-active .freelancer-nav-icon,
+.freelancer-sidebar-nav a:hover .nav-icon,
+.freelancer-sidebar-nav a:hover .freelancer-nav-icon {
   background: var(--social-orange-soft);
   color: #ffb16f;
 }
@@ -556,8 +569,7 @@
   gap: 6px;
 }
 
-.freelancer-post-action::before {
-  content: attr(data-icon);
+.freelancer-post-action i {
   min-width: 18px;
   height: 18px;
   display: inline-flex;
@@ -622,18 +634,18 @@
 
 .freelancer-right-panel {
   position: sticky;
-  top: 24px;
+  top: 12px;
   width: 320px;
   display: grid;
   gap: 12px;
 }
 
 .freelancer-panel-card {
-  padding: 14px;
+  padding: 12px;
   border: 1px solid var(--social-line);
-  border-radius: 17px;
-  background: rgba(20, 24, 33, 0.86);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  border-radius: 18px;
+  background: #11161e;
+  box-shadow: none;
 }
 
 .freelancer-profile-card {
@@ -676,21 +688,49 @@
 }
 
 .freelancer-recommendation-list article,
-.freelancer-people-list article {
+.freelancer-people-list article,
+.freelancer-panel-item,
+.freelancer-people-list a {
+  width: 100%;
   min-width: 0;
-  padding: 9px;
+  min-height: 65px;
+  padding: 10px;
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: 42px minmax(0, 1fr);
   gap: 9px;
   align-items: center;
+  border: 1px solid transparent;
   border-radius: 13px;
-  background: rgba(255, 255, 255, 0.04);
+  background: #1b2029;
+}
+
+.freelancer-panel-item {
+  border: 1px solid transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.freelancer-panel-item:hover,
+.freelancer-panel-item:focus-visible,
+.freelancer-people-list a:hover,
+.freelancer-people-list a:focus-visible {
+  border-color: rgba(255, 107, 0, 0.4);
+  background: #222832;
+  outline: none;
+}
+
+.freelancer-people-list a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .mini-thumb,
-.freelancer-people-list article > span {
-  width: 34px;
-  height: 34px;
+.freelancer-people-list article > span,
+.freelancer-people-list a > span {
+  width: 42px;
+  height: 42px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -701,17 +741,42 @@
   font-weight: 900;
 }
 
+.freelancer-panel-item .mini-thumb,
+.freelancer-people-list a > span {
+  display: inline-flex;
+}
+
 .freelancer-trend-list {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.freelancer-trend-list span {
-  padding: 6px 8px;
+.freelancer-trend-list span,
+.freelancer-trend-list button {
+  padding: 8px 10px;
+  border: 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.055);
+  background: #1b2029;
   color: #cfd6e1;
+  font: inherit;
+  font-size: 12px;
+}
+
+.freelancer-trend-list button {
+  cursor: pointer;
+}
+
+.freelancer-trend-list button:hover,
+.freelancer-trend-list button:focus-visible {
+  background: rgba(255, 107, 0, 0.16);
+  color: #ffb16f;
+  outline: none;
+}
+
+.freelancer-panel-empty {
+  margin: 0;
+  color: var(--social-muted);
   font-size: 12px;
 }
 
@@ -791,7 +856,10 @@
   }
 
   .freelancer-right-panel {
-    display: none;
+    position: static;
+    width: min(100%, 820px);
+    margin: 0 auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -805,6 +873,13 @@
     margin: 0 auto;
     padding: 16px 0 86px;
     display: block;
+  }
+
+  .freelancer-right-panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 20px;
   }
 
   .freelancer-feed-header {

@@ -88,7 +88,7 @@ Para trocar a conta, ajuste o cloud name e o upload preset nesses serviços e co
 | --- | --- |
 | Acesso e institucional | `sobre.html`, `register.html`, `contato.html`, `politica.html`, `termosdeuso.html` |
 | Perfis | `perfil.html`, `perfil-freelancer.html`, `perfil-empresa.html`, `perfil-publico.html`, `configuracao-empresa.html`, `Configuracao-freelancer.html` |
-| Freelancer | `dashboard-freelancer.html`, `problemas-freelancer.html`, `busca-perfis.html`, `busca-perfil-Empresa.html`, `meus-amigos.html`, `minhas-equipes.html`, `equipe.html`, `freelancers-salvos.html` |
+| Freelancer | `dashboard-freelancer.html`, `projetos.html`, `problemas-freelancer.html`, `busca-perfis.html`, `busca-perfil-Empresa.html`, `meus-amigos.html`, `minhas-equipes.html`, `equipe.html`, `freelancers-salvos.html` |
 | Empresa | `dashboard-empresa.html`, `dashboard.html`, `meus-planos-empresa.html` |
 | Comunicação | `meus-chats.html`, `chat.html` |
 

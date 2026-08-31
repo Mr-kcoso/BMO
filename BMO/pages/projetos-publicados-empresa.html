@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projeto/Propostas - BMO</title>
+  <link rel="stylesheet" href="../styles/design.css">
+  <link rel="stylesheet" href="../styles/freelancer-social.css">
+  <link rel="stylesheet" href="../styles/freelancer-sidebar.css">
+  <link rel="stylesheet" href="../styles/dashboard-empresa.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+</head>
+<body class="freelancer-dashboard-page freelancer-social-page empresa-dashboard-page">
+  <aside class="freelancer-sidebar" id="freelancerSidebar" aria-label="Menu da empresa">
+    <div class="freelancer-sidebar-brand">
+      <div><a href="dashboard-empresa.html" class="freelancer-brand-mark">BMO</a><span>Building My Opportunity</span></div>
+      <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Recolher menu" aria-expanded="true"><span></span><span></span><span></span></button>
+    </div>
+    <div class="freelancer-nav-section"><p>Principal</p><nav class="freelancer-sidebar-nav" aria-label="Navegação principal">
+      <a href="dashboard-empresa.html" title="Início"><span>Início</span></a>
+      <a class="is-active" href="projetos-publicados-empresa.html" title="Projeto/Propostas"><span>Projeto/Propostas</span></a>
+      <a href="meus-chats.html" title="Mensagens"><span>Mensagens</span></a>
+    </nav></div>
+    <div class="freelancer-nav-section"><p>Rede</p><nav class="freelancer-sidebar-nav" aria-label="Rede profissional">
+      <a href="freelancers-salvos.html" title="Freelancers salvos"><span>Freelancers salvos</span></a>
+      <a href="busca-perfil-Empresa.html" title="Buscar freelancers"><span>Buscar freelancers</span></a>
+      <a href="minhas-equipes.html" title="Equipes"><span>Equipes</span></a>
+      <a href="configuracao-empresa.html" title="Configurações"><span>Configurações</span></a>
+    </nav></div>
+    <div class="freelancer-sidebar-footer">
+      <a class="freelancer-user-mini" href="perfil-empresa.html" title="Perfil da empresa"><div class="freelancer-avatar" data-empresa-inicial aria-hidden="true">E</div><div><strong data-empresa-nome>Empresa BMO</strong><span>Conta empresarial</span></div></a>
+      <a class="freelancer-create-btn" href="dashboard-empresa.html">Publicar projeto</a>
+    </div>
+  </aside>
+
+  <main class="freelancer-social-shell empresa-social-shell">
+    <section class="freelancer-feed-column empresa-feed-column">
+      <header class="freelancer-feed-header">
+        <div class="freelancer-title-block"><p class="freelancer-kicker">Gestão de oportunidades</p><h1>Projeto/Propostas</h1><p id="resumoCandidaturas" class="freelancer-subtitle">Carregando propostas...</p></div>
+        <a class="freelancer-top-profile" href="perfil-empresa.html" aria-label="Abrir perfil da empresa"><span data-empresa-inicial aria-hidden="true">E</span></a>
+      </header>
+      <section id="projetosPublicados" class="empresa-list-section" aria-labelledby="tituloListaProjetos">
+        <div class="empresa-section-head"><div><p class="freelancer-kicker">Projeto</p><h2 id="tituloListaProjetos">Projetos publicados</h2><p>Acompanhe suas oportunidades e edite publicações abertas.</p></div><a class="btn-primary" href="dashboard-empresa.html#publicarProblema">Publicar projeto</a></div>
+        <p id="loadingProblemas" class="freelancer-loading">Carregando projetos...</p>
+        <ul id="problemasPublicados" class="empresa-card-list" aria-live="polite"></ul>
+        <div id="estadoVazioProblemas" class="freelancer-empty hidden">Você ainda não publicou nenhum projeto.</div>
+      </section>
+
+      <section class="empresa-list-section" aria-labelledby="propostasTitulo">
+        <div class="empresa-section-head empresa-candidaturas-head"><div><p class="freelancer-kicker">Propostas</p><h2 id="propostasTitulo">Propostas recebidas</h2></div></div> <br>
+        <div class="freelancer-filtros freelancer-social-filters empresa-filters"><input id="buscaCandidaturas" type="search" placeholder="Buscar projeto ou freelancer"><select id="filtroStatus"><option value="todos">Todos os status</option><option value="pendente">Pendentes</option><option value="aceito">Aceitas</option><option value="recusado">Recusadas</option></select><select id="ordenacaoCandidaturas"><option value="recentes">Mais recentes</option><option value="antigos">Mais antigas</option><option value="titulo">Por projeto</option></select></div>
+        <p id="loadingCandidaturas" class="freelancer-loading">Carregando propostas...</p>
+        <ul id="candidaturas" class="empresa-card-list" aria-live="polite"></ul>
+        <div id="estadoVazioCandidaturas" class="freelancer-empty hidden">Nenhuma proposta encontrada.</div>
+      </section>
+    </section>
+  </main>
+
+  <nav class="freelancer-bottom-nav" aria-label="Navegação mobile"><a href="dashboard-empresa.html">Início</a><a class="is-active" href="projetos-publicados-empresa.html">Projetos</a><a href="meus-chats.html">Chats</a><a href="busca-perfil-Empresa.html">Perfis</a></nav>
+  <script type="module" src="../scripts/animation.js"></script>
+  <script type="module" src="../scripts/freelancer-sidebar.js"></script>
+  <script type="module" src="../scripts/empresa.js"></script>
+</body>
+</html>

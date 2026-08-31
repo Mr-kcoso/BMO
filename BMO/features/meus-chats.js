@@ -183,7 +183,7 @@ async function carregarChats(user) {
 
   try {
     const perfil = await getUserProfile(user.uid);
-    const tipo = perfil?.tipo;
+    const tipo = String(perfil?.tipo || "").trim().toLowerCase();
 
     if (!tipo) {
       showToast("Perfil de usuário inválido", "error");

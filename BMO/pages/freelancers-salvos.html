@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Freelancers salvos pela empresa no BMO.">
+	<title>Freelancers salvos - BMO</title>
+	<link rel="stylesheet" href="../styles/design.css">
+	<link rel="stylesheet" href="../styles/freelancer-social.css">
+	<link rel="stylesheet" href="../styles/freelancer-sidebar.css">
+	<link rel="stylesheet" href="../styles/busca-perfis.css">
+	<link rel="stylesheet" href="../styles/empresa-freelancers.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+</head>
+<body class="busca-page freelancer-social-page empresa-freelancers-page" data-page="salvos">
+	<div class="busca-shell">
+		<aside class="freelancer-sidebar" id="freelancerSidebar" aria-label="Menu da empresa">
+			<div class="freelancer-sidebar-brand"><div><a href="dashboard-empresa.html" class="freelancer-brand-mark">BMO</a><span>Building My Opportunity</span></div><button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Recolher menu" aria-expanded="true"><span></span><span></span><span></span></button></div>
+			<div class="freelancer-nav-section"><p>Principal</p><nav class="freelancer-sidebar-nav" aria-label="Navegação principal"><a href="dashboard-empresa.html"><span>Início</span></a><a href="projetos-publicados-empresa.html"><span>Projeto/Propostas</span></a><a href="meus-chats.html"><span>Mensagens</span></a></nav></div>
+			<div class="freelancer-nav-section"><p>Rede</p><nav class="freelancer-sidebar-nav" aria-label="Rede profissional"><a class="is-active" href="freelancers-salvos.html"><span>Freelancers salvos</span></a><a href="busca-perfil-Empresa.html"><span>Buscar freelancers</span></a><a href="minhas-equipes.html"><span>Equipes</span></a><a href="configuracao-empresa.html"><span>Configurações</span></a></nav></div>
+			<div class="freelancer-sidebar-footer"><a class="freelancer-user-mini" href="perfil-empresa.html"><div class="freelancer-avatar" data-empresa-inicial aria-hidden="true">E</div><div><strong data-empresa-nome>Empresa BMO</strong><span>Conta empresarial</span></div></a><a class="freelancer-create-btn" href="dashboard-empresa.html#publicarProblema">Publicar projeto</a></div>
+		</aside>
+		<main class="busca-main">
+			<header class="busca-topbar"><div class="busca-title-block"><p class="busca-kicker">Rede profissional</p><h1>Freelancers salvos</h1><p id="resumoFreelancers" class="busca-resumo">Carregando freelancers...</p></div><a class="freelancer-top-profile" href="perfil-empresa.html" aria-label="Abrir perfil da empresa"><span data-empresa-inicial aria-hidden="true">E</span></a></header>
+			<div class="busca-content">
+				<div class="busca-filtros-card" role="search" aria-label="Filtrar freelancers salvos"><input id="buscaFreelancers" type="search" placeholder="Buscar por nome, área ou habilidade" aria-label="Buscar freelancers salvos"><input id="filtroTecnologia" type="search" placeholder="Tecnologia" aria-label="Filtrar por tecnologia"><input id="filtroLocalizacao" type="search" placeholder="Localização" aria-label="Filtrar por localização"><select id="filtroExperiencia" aria-label="Filtrar por experiência"><option value="">Experiência</option><option value="iniciante">Iniciante</option><option value="intermediário">Intermediário</option><option value="sênior">Sênior</option></select></div>
+				<ul id="listaFreelancers" class="empresa-candidaturas-grid" aria-live="polite" aria-label="Freelancers salvos"></ul>
+				<div id="estadoVazio" class="empresa-empty hidden" role="status">Nenhum freelancer salvo encontrado.</div>
+			</div>
+		</main>
+	</div>
+	<nav class="busca-bottom-nav" aria-label="Navegação mobile"><a href="dashboard-empresa.html">Início</a><a href="projetos-publicados-empresa.html">Projetos</a><a href="meus-chats.html">Chats</a><a class="is-active" href="freelancers-salvos.html">Salvos</a></nav>
+	<dialog id="modalConvite" class="empresa-dialog"><div class="empresa-dialog-content"><h2>Convidar freelancer</h2><p>Escolha o projeto para enviar um convite a <strong id="nomeFreelancerConvite"></strong>.</p><select id="projetoConvite" aria-label="Projeto do convite"></select><div class="empresa-dialog-actions"><button id="cancelarConvite" class="empresa-secondary-btn" type="button">Cancelar</button><button id="confirmarConvite" class="btn-primary" type="button">Enviar convite</button></div></div></dialog>
+	<script type="module" src="../scripts/animation.js"></script><script type="module" src="../scripts/freelancer-sidebar.js"></script><script type="module" src="../features/empresa-freelancers.js"></script>
+</body>
+</html>

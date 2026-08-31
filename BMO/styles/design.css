@@ -4,7 +4,7 @@
   --bmo-azul: #3b82f6;
   --bmo-cinza-bg: #f3f4f6;
   --bmo-cinza-borda: #d1d5db;
---gradient:linear-gradient(135deg, var(--auth-orange), #ff8b3d 58%, #ffc46b);
+--gradient: #ff6b00;;
 
   --auth-bg: #070a12;
   --auth-panel: rgba(14, 20, 34, 0.82);
@@ -1201,7 +1201,7 @@ button:hover {
 /* ===== Dashboard Empresa: tema escuro (alinhado à Dashboard Freelancer) ===== */
 :root {
   --db-primary: var(--bmo-azul);
-  --db-primary-600: #1e40af;
+  --db-primary-600: #ff6b00;
   --db-muted: #9ca3af;
   --db-surface-dark: #181818;
   --db-surface-darker: #0b0b0c;
@@ -1275,10 +1275,10 @@ button:hover {
 
 /* Button styles aligned with freelancer dashboard, but in azul */
 .empresa-dashboard-page .btn-primary {
-  background: linear-gradient(135deg, var(--db-primary), #60a5fa 58%);
+  background: #ff6b00;
   color: #071024;
   border: 0;
-  box-shadow: 0 10px 24px rgba(59,130,246,0.16);
+  box-shadow: 0 10px 24px rgba(246, 199, 59, 0.16);
 }
 .empresa-dashboard-page .btn-primary:hover { filter: brightness(1.04); transform: translateY(-1px); }
 

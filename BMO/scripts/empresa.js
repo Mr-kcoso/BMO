@@ -25,6 +25,7 @@ const prazoProblema = document.getElementById("prazoProblema");
 const valorProblema = document.getElementById("valorProblema");
 const remotoProblema = document.getElementById("remotoProblema");
 const urgenteProblema = document.getElementById("urgenteProblema");
+const presencialProblema = document.getElementById("presencialProblema");
 
 const msg = document.getElementById("msg");
 const lista = document.getElementById("candidaturas");
@@ -256,6 +257,7 @@ function renderPlanosEmpresa() {
 }
 
 function renderSkeletonCandidaturas(total = 4) {
+  if (!lista) return;
   clearElement(lista);
 
   for (let index = 0; index < total; index += 1) {
@@ -313,17 +315,24 @@ function limparFormularioProblema() {
   if (valorProblema) valorProblema.value = "";
   urgenteProblema.checked = false;
   remotoProblema.checked = true;
+  if (presencialProblema) presencialProblema.checked = false;
   tipoProblema.value = "software";
   nivelProblema.value = "intermediario";
 }
 
 function atualizarEstadoEdicao() {
   const emEdicao = Boolean(state.problemaEditandoId);
-  btnPublicar.textContent = emEdicao ? "Salvar alterações" : "Publicar problema";
-  btnCancelarEdicao.hidden = !emEdicao;
+  if (btnPublicar) btnPublicar.textContent = emEdicao ? "Salvar alterações" : "Publicar problema";
+  if (btnCancelarEdicao) btnCancelarEdicao.hidden = !emEdicao;
 }
 
 function iniciarEdicaoProblema(problema) {
+  if (!titulo || !descricao || !tipoProblema || !nivelProblema || !prazoProblema || !urgenteProblema || !remotoProblema) {
+    sessionStorage.setItem("bmo_problema_para_editar", problema.id);
+    window.location.href = "dashboard-empresa.html#publicarProblema";
+    return;
+  }
+
   state.problemaEditandoId = problema.id;
   titulo.value = problema.titulo || "";
   descricao.value = problema.descricao || "";
@@ -335,6 +344,7 @@ function iniciarEdicaoProblema(problema) {
     : "";
   if (valorProblema) valorProblema.value = Number(problema.valorSimulado || 0) || "";
   remotoProblema.checked = Boolean(problema.remoto);
+  if (presencialProblema) presencialProblema.checked = !problema.remoto;
   urgenteProblema.checked = Boolean(problema.urgente);
   atualizarEstadoEdicao();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -347,6 +357,10 @@ function cancelarEdicaoProblema() {
 }
 
 function renderProblemasPublicados() {
+  if (!listaProblemas) {
+    renderDashboardResumo();
+    return;
+  }
   clearElement(listaProblemas);
 
   state.problemas.forEach((problema) => {
@@ -404,12 +418,12 @@ function renderProblemasPublicados() {
 }
 
 function renderCandidaturas() {
-  clearElement(lista);
-
   const filtradas = filtrarCandidaturas(state.candidaturas);
   const ordenadas = ordenarCandidaturas(filtradas);
 
   renderResumo(ordenadas.length);
+  if (!lista) return;
+  clearElement(lista);
 
   ordenadas.forEach((item) => {
     const { problema, candidatura, nomeFreelancer, freelancerId } = item;
@@ -698,6 +712,14 @@ async function carregarCandidaturasEmpresa(user) {
 
     state.candidaturas = candidaturasList;
     state.problemas = problemasList.sort((a, b) => getDateValue(b.criadoEm) - getDateValue(a.criadoEm));
+
+    const problemaParaEditar = sessionStorage.getItem("bmo_problema_para_editar");
+    if (problemaParaEditar) {
+      const problema = state.problemas.find((item) => item.id === problemaParaEditar);
+      sessionStorage.removeItem("bmo_problema_para_editar");
+      if (problema) iniciarEdicaoProblema(problema);
+    }
+
     renderProblemasPublicados();
     renderCandidaturas();
   } catch (error) {
@@ -716,9 +738,19 @@ function bindFiltros() {
   });
 }
 
+function bindModalidade() {
+  const opcoes = document.querySelectorAll(".empresa-modalidade-card");
+  opcoes.forEach((opcao) => {
+    opcao.querySelector("input")?.addEventListener("change", () => {
+      opcoes.forEach((item) => item.classList.toggle("is-selected", item.querySelector("input")?.checked));
+    });
+  });
+}
+
 btnPublicar?.addEventListener("click", publicarProblema);
 btnCancelarEdicao?.addEventListener("click", cancelarEdicaoProblema);
 bindFiltros();
+bindModalidade();
 atualizarEstadoEdicao();
 
 observeAuthenticatedUser(

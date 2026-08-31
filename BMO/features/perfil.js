@@ -23,6 +23,7 @@ const siteInput = document.getElementById("siteEmpresa");
 const linkedinInput = document.getElementById("linkedinPerfil");
 const githubInput = document.getElementById("githubPerfil");
 const btnSalvar = document.getElementById("btnSalvarPerfil");
+const heroNome = document.getElementById("heroNome");
 
 let currentUser = null;
 let currentPerfil = null;
@@ -46,6 +47,7 @@ function setTipoFields(tipo) {
 
 function preencherFormulario(perfil, authUser, uidUsuario) {
   if (nomeInput) nomeInput.value = perfil?.nome || "";
+  if (heroNome) heroNome.textContent = perfil?.nome || "Sua empresa";
   if (emailInput) emailInput.value = perfil?.email || authUser.email || "";
 
   // Mostra o UID REAL do Firebase, usado pelo sistema de equipes
