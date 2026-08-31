@@ -1,0 +1,34 @@
+.config-page { min-height: 100vh; background: var(--social-bg); color: var(--social-text); }
+.config-shell { min-height: 100vh; display: flex; }
+.config-main { width: min(900px, calc(100% - 260px)); margin-left: 260px; padding: 28px 32px 48px; }
+.config-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
+.config-kicker { margin: 0 0 6px; color: #ff9b52; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+.config-header h1 { margin: 0; color: #fff; font-size: clamp(25px, 3vw, 36px); }
+.config-subtitle { margin: 7px 0 0; color: var(--social-muted); font-size: 14px; }
+.config-back { color: var(--social-text-soft); text-decoration: none; font-size: 13px; font-weight: 800; }
+.config-back:hover { color: #fff; }
+.config-grid { display: grid; gap: 16px; }
+.config-card { padding: 20px; border: 1px solid var(--social-line); border-radius: 16px; background: var(--social-card); box-shadow: var(--social-shadow); }
+.config-card h2 { margin: 0; color: #fff; font-size: 17px; }
+.config-card > p { margin: 6px 0 16px; color: var(--social-muted); font-size: 13px; }
+.config-account { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 13px; align-items: center; }
+.config-avatar { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(135deg, #ff7a1a, #d75b00); color: #17100a; font-weight: 900; }
+.config-account strong, .config-account span { display: block; }
+.config-account strong { color: #fff; font-size: 15px; }
+.config-account span { margin-top: 4px; color: var(--social-muted); font-size: 12px; }
+.config-account-type { padding: 7px 10px; border-radius: 999px; background: var(--social-orange-soft); color: #ffb06c; font-size: 11px; font-weight: 800; }
+.config-link { color: #ffb06c; font-size: 12px; font-weight: 800; text-decoration: none; }
+.config-options { display: grid; gap: 2px; }
+.config-option { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--social-line); color: var(--social-text-soft); font-size: 13px; }
+.config-option:last-child { border-bottom: 0; }
+.config-option small { display: block; margin-top: 3px; color: var(--social-muted); font-size: 11px; }
+.config-option input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--social-orange); }
+.config-option select { min-width: 150px; padding: 9px 10px; border: 1px solid var(--social-line-strong); border-radius: 9px; background: var(--social-bg-soft); color: var(--social-text); }
+.config-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.config-save { min-height: 40px; padding: 0 16px; border: 0; border-radius: 10px; background: var(--social-orange); color: #120b05; font-size: 13px; font-weight: 900; cursor: pointer; }
+.config-save:hover { filter: brightness(1.08); }
+.config-status { min-height: 17px; margin: 0; color: var(--social-muted); font-size: 12px; }
+.config-danger { border-color: rgba(255, 107, 0, .22); }
+.config-logout { min-height: 38px; padding: 0 14px; border: 1px solid rgba(255, 107, 0, .4); border-radius: 10px; background: transparent; color: #ffb06c; font-weight: 800; cursor: pointer; }
+.config-logout:hover { background: var(--social-orange-soft); }
+@media (max-width: 760px) { .config-main { width: 100%; margin-left: 0; padding: 20px 14px 88px; } .config-header { align-items: start; flex-direction: column; } .config-account { grid-template-columns: 44px minmax(0, 1fr); } .config-account-type { grid-column: 2; width: fit-content; } }

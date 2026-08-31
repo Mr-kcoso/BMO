@@ -51,23 +51,11 @@
 .freelancer-sidebar-nav a {
   min-height: 44px;
   padding: 0 14px;
-  gap: 0;
+  gap: 10px;
 }
 
 .freelancer-sidebar-nav a::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  margin-left: auto;
-  border-radius: 999px;
-  background: transparent;
-  transition: background 180ms ease, box-shadow 180ms ease;
-}
-
-.freelancer-sidebar-nav a.is-active::after,
-.freelancer-sidebar-nav a:hover::after {
-  background: var(--social-orange);
-  box-shadow: 0 0 0 5px rgba(255, 107, 0, 0.11);
+  display: none;
 }
 
 .freelancer-sidebar-nav a > span,
@@ -122,7 +110,7 @@
 }
 
 .freelancer-social-page.sidebar-collapsed .freelancer-sidebar-nav a::after {
-  margin-left: 0;
+  display: none;
 }
 
 .freelancer-social-page.sidebar-collapsed .freelancer-user-mini {
@@ -146,6 +134,11 @@
 
 @media (max-width: 1180px) {
   .sidebar-toggle {
+    display: none;
+  }
+
+  /* Em telas compactas, o icone ocupa sozinho o centro do item. */
+  .freelancer-sidebar-nav a::after {
     display: none;
   }
 }

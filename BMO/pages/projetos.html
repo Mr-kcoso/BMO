@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projetos salvos - BMO</title>
+  <link rel="stylesheet" href="../styles/design.css">
+  <link rel="stylesheet" href="../styles/freelancer-social.css">
+  <link rel="stylesheet" href="../styles/freelancer-sidebar.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
+</head>
+<body class="freelancer-dashboard-page freelancer-social-page" data-page="projetos-salvos">
+  <aside class="freelancer-sidebar" aria-label="Menu freelancer">
+    <div class="freelancer-sidebar-brand">
+      <div>
+        <a href="dashboard-freelancer.html" class="freelancer-brand-mark">BMO</a>
+        <span>Building My Opportunity</span>
+      </div>
+      <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Recolher menu" aria-expanded="true">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="freelancer-nav-section">
+      <p>Principal</p>
+      <nav class="freelancer-sidebar-nav" aria-label="Navegacao principal">
+        <a href="dashboard-freelancer.html" title="Inicio"><span>Inicio</span></a>
+        <a class="is-active" href="projetos.html" title="Projetos"><span>Projetos</span></a>
+        <a href="meus-chats.html" title="Mensagens"><span>Mensagens</span></a>
+      </nav>
+    </div>
+    <div class="freelancer-nav-section">
+      <p>Rede</p>
+      <nav class="freelancer-sidebar-nav" aria-label="Rede profissional">
+        <a href="meus-amigos.html" title="Meus Amigos"><span>Meus Amigos</span></a>
+        <a href="busca-perfis.html" title="Buscar Perfis"><span>Buscar Perfis</span></a>
+        <a href="minhas-equipes.html" title="Equipes"><span>Equipes</span></a>
+        <a href="Configuracao-freelancer.html" title="Configurações"><span>Configurações</span></a>
+      </nav>
+    </div>
+    <div class="freelancer-sidebar-footer">
+      <a class="freelancer-user-mini" href="perfil-freelancer.html" title="Perfil do freelancer">
+        <div id="freelancerAvatar" class="freelancer-avatar" aria-hidden="true">B</div>
+        <div><strong id="freelancerProfileName">Freelancer BMO</strong><span id="freelancerProfileType">Profissional verificado</span></div>
+      </a>
+      <a class="freelancer-create-btn" href="dashboard-freelancer.html">Explorar projetos</a>
+    </div>
+  </aside>
+
+  <main class="freelancer-social-shell">
+    <section class="freelancer-feed-column" id="feedProblemas">
+      <header class="freelancer-feed-header">
+        <div class="freelancer-title-block">
+          <p class="freelancer-kicker">Sua seleção</p>
+          <h1>Projetos salvos</h1>
+          <p id="resumoProblemas" class="freelancer-subtitle">Carregando projetos salvos...</p>
+        </div>
+        <a class="freelancer-top-profile" href="perfil-freelancer.html" aria-label="Abrir meu perfil"><span id="freelancerTopAvatar" aria-hidden="true">B</span></a>
+      </header>
+      <section class="freelancer-filtros freelancer-social-filters" aria-label="Filtros de projetos salvos">
+        <input id="buscaProblemas" type="search" placeholder="Buscar projetos salvos">
+        <select id="filtroCategoria"><option value="todos">Categorias</option></select>
+        <select id="filtroNivel"><option value="todos">Niveis</option><option value="iniciante">Iniciante</option><option value="intermediario">Intermediario</option></select>
+        <select id="ordenacaoProblemas"><option value="recentes">Recentes</option><option value="antigos">Antigos</option><option value="candidaturas">Candidaturas</option><option value="prazo">Prazo</option></select>
+      </section>
+      <p id="loadingProblemas" class="freelancer-loading">Carregando projetos salvos...</p>
+      <ul id="lista" class="freelancer-grid freelancer-social-feed" aria-live="polite"></ul>
+      <div id="estadoVazio" class="freelancer-empty hidden">Você ainda não salvou nenhum projeto. Explore as oportunidades e salve as que deseja acompanhar.</div>
+    </section>
+  </main>
+
+  <nav class="freelancer-bottom-nav" aria-label="Navegacao mobile">
+    <a href="dashboard-freelancer.html">Inicio</a><a class="is-active" href="projetos.html">Projetos</a><a href="meus-chats.html">Chats</a><a href="meus-amigos.html">Amigos</a>
+  </nav>
+
+  <div id="modalDetalhes" class="freelancer-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalDetalhesTitulo">
+    <div class="freelancer-modal-content">
+      <button id="fecharModalDetalhes" class="freelancer-modal-close" aria-label="Fechar detalhes">x</button>
+      <h2 id="modalDetalhesTitulo">Detalhes do problema</h2><p id="modalDetalhesSubtitulo" class="freelancer-modal-subtitle"></p><p id="modalDetalhesDescricao" class="freelancer-modal-description"></p><h3>Detalhamento completo</h3><p id="modalDetalhesTexto" class="freelancer-modal-detail"></p>
+    </div>
+  </div>
+  <script type="module" src="../scripts/animation.js"></script>
+  <script type="module" src="../features/freelancer.js"></script>
+  <script type="module" src="../scripts/freelancer-sidebar.js"></script>
+</body>
+</html>

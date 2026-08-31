@@ -1,85 +1,50 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil Empresa - BMO</title>
+  <meta name="description" content="Gerencie o perfil institucional da sua empresa na plataforma BMO.">
+  <title>Perfil da empresa - BMO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles/design.css">
+  <link rel="stylesheet" href="../styles/freelancer-social.css">
+  <link rel="stylesheet" href="../styles/freelancer-sidebar.css">
+  <link rel="stylesheet" href="../styles/perfil-modern.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="icon" href="../assets/fotos/logo.png" type="image/x-icon">
 </head>
+<body class="perfil-page freelancer-social-page" data-perfil-tipo="empresa">
+  <div class="perfil-shell">
+    <aside class="freelancer-sidebar" id="freelancerSidebar" aria-label="Menu do perfil da empresa">
+      <div class="freelancer-sidebar-brand"><div><a href="dashboard-empresa.html" class="freelancer-brand-mark">BMO</a><span>Building My Opportunity</span></div><button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Recolher menu" aria-expanded="true"><span></span><span></span><span></span></button></div>
+      <div class="freelancer-nav-section"><p>Principal</p><nav class="freelancer-sidebar-nav" aria-label="Navegação principal"><a href="dashboard-empresa.html"><span>Início</span></a><a href="projetos-publicados-empresa.html"><span>Projeto/Propostas</span></a><a href="meus-chats.html"><span>Mensagens</span></a></nav></div>
+      <div class="freelancer-nav-section"><p>Rede</p><nav class="freelancer-sidebar-nav" aria-label="Rede profissional"><a href="freelancers-salvos.html"><span>Freelancers salvos</span></a><a href="busca-perfil-Empresa.html"><span>Buscar freelancers</span></a><a href="minhas-equipes.html"><span>Equipes</span></a><a href="configuracao-empresa.html"><span>Configurações</span></a></nav></div>
+      <div class="freelancer-sidebar-footer"><a class="freelancer-user-mini" href="perfil-empresa.html"><div class="freelancer-avatar" data-empresa-inicial aria-hidden="true">E</div><div><strong data-empresa-nome>Empresa BMO</strong><span>Conta empresarial</span></div></a><a class="freelancer-create-btn" href="dashboard-empresa.html#publicarProblema">Publicar projeto</a></div>
+    </aside>
 
-<body class="perfil-page" data-perfil-tipo="empresa">
-  <main class="perfil-layout">
-    <header class="page-header perfil-header">
-      <div>
-        <h1>Perfil da empresa</h1>
-        <p class="perfil-subtitle">Apresente sua marca para atrair os freelancers mais alinhados.</p>
+    <main class="perfil-main">
+      <header class="perfil-topbar" aria-label="Cabeçalho do perfil da empresa"><div class="perfil-title-block"><p class="perfil-kicker">Sua presença no BMO</p><h1>Perfil da empresa</h1><p class="perfil-hero-hint">Apresente sua operação e encontre profissionais que combinam com seus projetos.</p></div><div class="perfil-topbar-actions"><button class="perfil-btn-secondary" type="button" onclick="window.history.back()">Voltar</button><a class="perfil-btn-primary" href="busca-perfil-Empresa.html">Buscar freelancers</a></div></header>
+
+      <div class="perfil-content">
+        <section class="perfil-hero-card" aria-label="Identidade da empresa">
+          <div class="perfil-avatar-ring"><img id="previewFoto" class="perfil-avatar" alt="Logo da empresa" src=""></div>
+          <div class="perfil-hero-info"><span class="perfil-badge">Empresa</span><p class="perfil-hero-name" id="heroNome">Sua empresa</p><p class="perfil-hero-hint">Um perfil claro ajuda freelancers a entenderem sua cultura, seus projetos e o tipo de parceria que você procura.</p></div>
+          <div class="perfil-photo-upload"><label class="perfil-photo-label" for="fotoPerfil">Trocar logo</label><input class="perfil-photo-input" id="fotoPerfil" type="file" accept="image/*" aria-label="Enviar logo da empresa"></div>
+        </section>
+
+        <section class="perfil-form-section" aria-labelledby="secInfoGerais"><div class="perfil-section-header"><div class="perfil-section-icon" aria-hidden="true">ID</div><div><h2 class="perfil-section-title" id="secInfoGerais">Informações da conta</h2><p class="perfil-section-subtitle">Dados básicos usados para identificar sua empresa</p></div></div><div class="perfil-section-body"><div class="perfil-fields-grid"><div class="perfil-field"><label for="nomePerfil">Nome da empresa</label><input id="nomePerfil" type="text" placeholder="Ex.: BMO Tecnologia" autocomplete="organization"></div><div class="perfil-field"><label for="emailPerfil">E-mail da conta</label><input id="emailPerfil" type="email" placeholder="empresa@email.com" disabled></div><div class="perfil-field perfil-field--full"><label for="uidPerfil">Identificador da conta</label><input id="uidPerfil" type="text" disabled></div></div></div></section>
+
+        <section class="perfil-form-section" id="empresaCampos" aria-labelledby="secInstitucional"><div class="perfil-section-header"><div class="perfil-section-icon" aria-hidden="true">EM</div><div><h2 class="perfil-section-title" id="secInstitucional">Identidade institucional</h2><p class="perfil-section-subtitle">Conte quem sua empresa é e quais oportunidades oferece</p></div></div><div class="perfil-section-body"><div class="perfil-field"><label for="descricaoInstitucional">Sobre a empresa</label><textarea id="descricaoInstitucional" class="resizeno" maxlength="1600" placeholder="Fale sobre sua área de atuação, cultura, momento atual e o que torna seus projetos interessantes."></textarea><p class="perfil-field-help">Uma descrição objetiva ajuda a atrair candidaturas mais alinhadas.</p></div><div class="perfil-fields-grid"><div class="perfil-field"><label for="localizacaoEmpresa">Localização</label><input id="localizacaoEmpresa" type="text" placeholder="Ex.: São Paulo, SP" autocomplete="address-level2"></div></div></div></section>
+
+        <section class="perfil-form-section" aria-labelledby="secPresenca"><div class="perfil-section-header"><div class="perfil-section-icon" aria-hidden="true">LK</div><div><h2 class="perfil-section-title" id="secPresenca">Presença e contato</h2><p class="perfil-section-subtitle">Conecte os canais oficiais ao perfil da sua empresa</p></div></div><div class="perfil-section-body"><div class="perfil-fields-grid"><div class="perfil-field perfil-field--full"><label for="siteEmpresa">Site oficial</label><input id="siteEmpresa" type="url" placeholder="https://suaempresa.com" autocomplete="url"></div><div class="perfil-field"><label for="linkedinPerfil">LinkedIn</label><input id="linkedinPerfil" type="url" placeholder="https://www.linkedin.com/company/sua-empresa" autocomplete="url"></div><div class="perfil-field"><label for="githubPerfil">GitHub</label><input id="githubPerfil" type="url" placeholder="https://github.com/sua-empresa" autocomplete="url"></div></div></div></section>
+
+        <div class="perfil-form-footer" role="contentinfo"><p class="perfil-footer-hint">As informações institucionais ficam disponíveis para melhorar suas conexões profissionais.</p><button id="btnSalvarPerfil" class="perfil-save-btn" type="button">Salvar perfil</button></div>
       </div>
-      <button class="empresa-nav-btn" onclick="window.history.back()">Voltar</button>
-    </header>
-
-    <section class="card perfil-card">
-      <div class="perfil-hero">
-        <div class="perfil-avatar-wrapper">
-          <img id="previewFoto" class="perfil-avatar" alt="Foto da empresa">
-        </div>
-        <div class="perfil-tag-area">
-          <span class="perfil-tag">Empresa</span>
-          <p>Mostre sua identidade institucional e facilite a conexão com talentos.</p>
-        </div>
-      </div>
-
-      <div class="perfil-section">
-        <h2>Informações gerais</h2>
-        <div class="perfil-grid">
-          <div class="perfil-field-full">
-            <label for="fotoPerfil">Imagem principal</label>
-            <input id="fotoPerfil" type="file" accept="image/*">
-          </div>
-          <div>
-            <label for="nomePerfil">Nome da empresa</label>
-            <input id="nomePerfil" type="text" placeholder="Nome da empresa">
-          </div>
-          <div>
-            <label for="emailPerfil">Email</label>
-            <input id="emailPerfil" type="email" placeholder="Seu email" disabled>
-          </div>
-          <div>
-            <label for="uidPerfil">UID da conta</label>
-            <input id="uidPerfil" type="text" disabled>
-          </div>
-        </div>
-      </div>
-
-      <div id="empresaCampos" class="perfil-section perfil-section-highlight">
-        <h2>Dados institucionais</h2>
-        <label for="logoEmpresa">Logo institucional</label>
-        <input id="logoEmpresa" type="file" accept="image/*">
-
-        <label for="descricaoInstitucional">Descrição institucional</label>
-        <textarea id="descricaoInstitucional" class="resizeno" maxlength="1600"
-          placeholder="Descreva o posicionamento da empresa"></textarea>
-
-        <label for="localizacaoEmpresa">Localização</label>
-        <input id="localizacaoEmpresa" type="text" placeholder="Cidade/Estado">
-
-        <label for="siteEmpresa">Site</label>
-        <input id="siteEmpresa" type="url" placeholder="https://suaempresa.com">
-
-        <label for="linkedinPerfil">LinkedIn</label>
-        <input id="linkedinPerfil" type="url" placeholder="https://www.linkedin.com/company/sua-empresa">
-
-        <label for="githubPerfil">GitHub</label>
-        <input id="githubPerfil" type="url" placeholder="https://github.com/sua-empresa">
-      </div>
-
-      <button id="btnSalvarPerfil" class="btn-primary">Salvar perfil</button>
-    </section>
-  </main>
-
-  <script type="module" src="../scripts/animation.js"></script>
-  <script type="module" src="../features/perfil.js"></script>
+    </main>
+  </div>
+  <nav class="perfil-bottom-nav" aria-label="Navegação mobile"><a href="dashboard-empresa.html">Início</a><a href="projetos-publicados-empresa.html">Projetos</a><a href="busca-perfil-Empresa.html">Buscar</a><a href="perfil-empresa.html" class="is-active">Perfil</a></nav>
+  <script type="module" src="../scripts/animation.js"></script><script type="module" src="../scripts/freelancer-sidebar.js"></script><script type="module" src="../features/perfil.js"></script>
 </body>
-
 </html>

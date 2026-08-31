@@ -23,6 +23,7 @@ const freelancerPanelName = document.getElementById("freelancerPanelName");
 const freelancerAvatar = document.getElementById("freelancerAvatar");
 const freelancerTopAvatar = document.getElementById("freelancerTopAvatar");
 const recommendedCount = document.getElementById("recommendedCount");
+const recommendedList = document.getElementById("recommendedList");
 const categoryList = document.getElementById("categoryList");
 
 const modalDetalhes = document.getElementById("modalDetalhes");
@@ -31,13 +32,47 @@ const modalDetalhesTitulo = document.getElementById("modalDetalhesTitulo");
 const modalDetalhesSubtitulo = document.getElementById("modalDetalhesSubtitulo");
 const modalDetalhesDescricao = document.getElementById("modalDetalhesDescricao");
 const modalDetalhesTexto = document.getElementById("modalDetalhesTexto");
+const mostrarSomenteSalvos = document.body?.dataset?.page === "projetos-salvos";
 
 const state = {
   problemas: [],
   candidaturasMap: new Map(),
+  salvos: new Set(),
   user: null,
   profile: null
 };
+
+function getSalvosKey(userId) {
+  return `bmo_projetos_salvos_${userId}`;
+}
+
+function carregarSalvos(userId) {
+  try {
+    const salvos = JSON.parse(localStorage.getItem(getSalvosKey(userId)) || "[]");
+    return new Set(Array.isArray(salvos) ? salvos : []);
+  } catch (error) {
+    console.error("Erro ao carregar projetos salvos", error);
+    return new Set();
+  }
+}
+
+function salvarEstadoSalvos() {
+  localStorage.setItem(getSalvosKey(state.user.uid), JSON.stringify([...state.salvos]));
+}
+
+function alternarSalvo(problema, salvo) {
+  if (salvo) {
+    state.salvos.add(problema.id);
+  } else {
+    state.salvos.delete(problema.id);
+    if (mostrarSomenteSalvos) {
+      state.problemas = state.problemas.filter((item) => item.id !== problema.id);
+    }
+  }
+  salvarEstadoSalvos();
+  renderLista();
+  showToast(salvo ? "Projeto salvo" : "Projeto removido dos salvos", "success");
+}
 
 function renderSkeletonCards(total = 3) {
   clearElement(lista);
@@ -82,7 +117,9 @@ function getProfileInitial(profile) {
 
 function renderResumo(total) {
   if (!resumoProblemas) return;
-  resumoProblemas.textContent = `${total} problema${total === 1 ? "" : "s"} ativo${total === 1 ? "" : "s"} no feed`;
+  resumoProblemas.textContent = mostrarSomenteSalvos
+    ? `${total} projeto${total === 1 ? "" : "s"} salvo${total === 1 ? "" : "s"}`
+    : `${total} problema${total === 1 ? "" : "s"} ativo${total === 1 ? "" : "s"} no feed`;
 }
 
 function preencherCategorias(problemas) {
@@ -126,17 +163,66 @@ function atualizarPainelSocial(problemas) {
     recommendedCount.textContent = `${problemas.length} ativo${problemas.length === 1 ? "" : "s"}`;
   }
 
+  if (recommendedList) {
+    clearElement(recommendedList);
+
+    ordenarProblemas(problemas).slice(0, 2).forEach((problema) => {
+      const recommendation = document.createElement("button");
+      recommendation.type = "button";
+      recommendation.className = "freelancer-panel-item";
+      recommendation.innerHTML = `
+        <span class="mini-thumb" aria-hidden="true"><i class="fa-solid fa-briefcase"></i></span>
+        <span><strong></strong><small></small></span>
+      `;
+      recommendation.querySelector("strong").textContent = problema.titulo || "Projeto recomendado";
+      recommendation.querySelector("small").textContent = problema.descricao || problema.tipo || "Ver oportunidade";
+      recommendation.addEventListener("click", () => filtrarPeloProjeto(problema));
+      recommendedList.appendChild(recommendation);
+    });
+
+    if (!recommendedList.children.length) {
+      recommendedList.innerHTML = '<p class="freelancer-panel-empty">Nenhuma recomendacao disponivel.</p>';
+    }
+  }
+
   if (!categoryList) return;
 
   const categorias = [...new Set(problemas.map((problema) => problema.tipo).filter(Boolean))].slice(0, 8);
-  if (!categorias.length) return;
-
   clearElement(categoryList);
+
+  if (!categorias.length) {
+    categoryList.innerHTML = '<p class="freelancer-panel-empty">Nenhuma categoria disponivel.</p>';
+    return;
+  }
+
   categorias.forEach((categoria) => {
-    const chip = document.createElement("span");
+    const chip = document.createElement("button");
+    chip.type = "button";
     chip.textContent = categoria;
+    chip.setAttribute("aria-label", `Filtrar oportunidades por ${categoria}`);
+    chip.addEventListener("click", () => filtrarPelaCategoria(categoria));
     categoryList.appendChild(chip);
   });
+}
+
+function focarNoFeed() {
+  document.getElementById("feedProblemas")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function filtrarPeloProjeto(problema) {
+  if (buscaProblemas) buscaProblemas.value = problema.titulo || "";
+  if (filtroCategoria) filtroCategoria.value = "todos";
+  if (filtroNivel) filtroNivel.value = "todos";
+  renderLista();
+  focarNoFeed();
+}
+
+function filtrarPelaCategoria(categoria) {
+  if (buscaProblemas) buscaProblemas.value = "";
+  if (filtroCategoria) filtroCategoria.value = categoria;
+  if (filtroNivel) filtroNivel.value = "todos";
+  renderLista();
+  focarNoFeed();
 }
 
 function filtrarProblemas(problemas) {
@@ -237,6 +323,8 @@ function renderLista() {
       container: lista,
       problema,
       candidatura,
+      salvo: state.salvos.has(problema.id),
+      onToggleSalvar: alternarSalvo,
       onAbrirChat: abrirChat,
       onVerDetalhes,
       onVerPerfilEmpresa,
@@ -294,7 +382,10 @@ async function carregarDashboardFreelancer(user) {
 
     state.user = user;
     state.profile = profile;
-    state.problemas = problemas;
+    state.salvos = carregarSalvos(user.uid);
+    state.problemas = mostrarSomenteSalvos
+      ? problemas.filter((problema) => state.salvos.has(problema.id))
+      : problemas;
     state.candidaturasMap = new Map(
       candidaturas.map((candidatura) => [candidatura.problemaId, candidatura])
     );
