@@ -74,6 +74,7 @@ export function renderProblema({
   onCandidatar,
   onAbrirChat,
   onVerDetalhes,
+  onVerComentarios,
   onVerPerfilEmpresa
 }) {
   const li = createElement("li", { className: "freelancer-card freelancer-post" });
@@ -168,7 +169,7 @@ export function renderProblema({
   });
 
   const commentsButton = createActionButton("Comentarios", "fa-comments");
-  commentsButton.addEventListener("click", () => onVerDetalhes(problema));
+  commentsButton.addEventListener("click", () => onVerComentarios(problema));
 
   const detailButton = createActionButton("Detalhes", "fa-list-check");
   detailButton.addEventListener("click", () => onVerDetalhes(problema));

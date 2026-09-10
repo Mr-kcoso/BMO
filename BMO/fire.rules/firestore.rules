@@ -121,6 +121,20 @@ service cloud.firestore {
 
       allow update, delete: if isSignedIn()
         && resource.data.empresaId == request.auth.uid;
+
+      match /comentarios/{comentarioId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn()
+          && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.tipo == "freelancer"
+          && request.resource.data.autorId == request.auth.uid
+          && request.resource.data.autorNome is string
+          && request.resource.data.autorNome.size() > 0
+          && request.resource.data.texto is string
+          && request.resource.data.texto.size() > 0
+          && request.resource.data.texto.size() <= 500;
+        allow update, delete: if isSignedIn()
+          && resource.data.autorId == request.auth.uid;
+      }
     }
 
     match /candidaturas/{candidaturaId} {
@@ -207,6 +221,27 @@ service cloud.firestore {
           && exists(/databases/$(database)/documents/chats/$(chatId))
           && (get(/databases/$(database)/documents/chats/$(chatId)).data.empresaId == request.auth.uid
             || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid);
+      }
+
+      match /propostas/{propostaId} {
+        allow read: if isSignedIn()
+          && (get(/databases/$(database)/documents/chats/$(chatId)).data.empresaId == request.auth.uid
+            || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid);
+        allow create: if isSignedIn()
+          && request.resource.data.autorId == request.auth.uid
+          && request.resource.data.valor is number
+          && request.resource.data.valor > 0
+          && request.resource.data.status == "pendente"
+          && get(/databases/$(database)/documents/chats/$(chatId)).data.acordo == null
+          && (get(/databases/$(database)/documents/chats/$(chatId)).data.empresaId == request.auth.uid
+            || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid);
+        allow update: if isSignedIn()
+          && (get(/databases/$(database)/documents/chats/$(chatId)).data.empresaId == request.auth.uid
+            || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid)
+          && request.auth.uid != resource.data.autorId
+          && resource.data.status == "pendente"
+          && request.resource.data.status == "aceita"
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "aceitaEm", "aceitaPor"]);
       }
     }
 

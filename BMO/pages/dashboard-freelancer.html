@@ -137,12 +137,43 @@
   <div id="modalDetalhes" class="freelancer-modal hidden" role="dialog" aria-modal="true"
     aria-labelledby="modalDetalhesTitulo">
     <div class="freelancer-modal-content">
-      <button id="fecharModalDetalhes" class="freelancer-modal-close" aria-label="Fechar detalhes">x</button>
-      <h2 id="modalDetalhesTitulo">Detalhes do problema</h2>
-      <p id="modalDetalhesSubtitulo" class="freelancer-modal-subtitle"></p>
-      <p id="modalDetalhesDescricao" class="freelancer-modal-description"></p>
-      <h3>Detalhamento completo</h3>
-      <p id="modalDetalhesTexto" class="freelancer-modal-detail"></p>
+      <header class="freelancer-modal-header">
+        <div>
+          <p class="freelancer-modal-eyebrow">Oportunidade em destaque</p>
+          <h2 id="modalDetalhesTitulo">Detalhes do problema</h2>
+          <p id="modalDetalhesSubtitulo" class="freelancer-modal-subtitle"></p>
+        </div>
+        <button id="fecharModalDetalhes" class="freelancer-modal-close" aria-label="Fechar detalhes">&times;</button>
+      </header>
+
+      <div id="modalDetalhesLayout" class="freelancer-modal-layout">
+        <main id="modalDetalhesConteudo">
+          <section class="freelancer-modal-section">
+            <p class="freelancer-modal-label">Resumo do projeto</p>
+            <p id="modalDetalhesDescricao" class="freelancer-modal-description"></p>
+          </section>
+          <section class="freelancer-modal-section">
+            <p class="freelancer-modal-label">Detalhamento técnico</p>
+            <p id="modalDetalhesTexto" class="freelancer-modal-detail"></p>
+          </section>
+        </main>
+
+        <aside id="modalComentariosConteudo" class="freelancer-comments-panel">
+          <div class="freelancer-comments-heading">
+            <div>
+              <p class="freelancer-modal-label">Discussão</p>
+              <h3>Comentários da comunidade</h3>
+            </div>
+            <span id="comentariosContagem">0</span>
+          </div>
+          <div id="listaComentarios" class="freelancer-comments-list" aria-live="polite"></div>
+          <form id="formComentario" class="freelancer-comment-form">
+            <label for="novoComentario">Compartilhe sua opinião</label>
+            <textarea id="novoComentario" rows="3" maxlength="500" placeholder="O que você acha desta oportunidade?" required></textarea>
+            <button class="btn-primary freelancer-comment-submit" type="submit">Publicar comentário</button>
+          </form>
+        </aside>
+      </div>
     </div>
   </div>
 

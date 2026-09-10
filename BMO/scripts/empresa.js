@@ -55,6 +55,10 @@ const empresaPanelName = document.getElementById("empresaPanelName");
 const empresaAvatar = document.getElementById("empresaAvatar");
 const empresaTopAvatar = document.getElementById("empresaTopAvatar");
 const empresaPanelAvatar = document.getElementById("empresaPanelAvatar");
+const painelPropostasPendentes = document.getElementById("painelPropostasPendentes");
+const empresaCategoriasPainel = document.getElementById("empresaCategoriasPainel");
+const empresaProximoPasso = document.getElementById("empresaProximoPasso");
+const empresaProximoPassoLink = document.getElementById("empresaProximoPassoLink");
 
 const PLANOS_EMPRESA = [
   {
@@ -127,6 +131,52 @@ function renderDashboardResumo() {
   [empresaAvatar, empresaTopAvatar, empresaPanelAvatar].forEach((element) => {
     if (element) element.textContent = inicial;
   });
+  renderPainelLateral();
+}
+
+function renderPainelLateral() {
+  const pendentes = state.candidaturas.filter(
+    (item) => item.candidatura.status === STATUS.PENDENTE
+  ).length;
+  const categorias = [...new Set(state.problemas.map((problema) => problema.tipo).filter(Boolean))];
+  const semDetalhamento = state.problemas.filter((problema) => !problema.detalhamento?.trim()).length;
+
+  if (painelPropostasPendentes) {
+    painelPropostasPendentes.textContent = pendentes
+      ? `${pendentes} proposta${pendentes === 1 ? "" : "s"} aguardando análise`
+      : "Nenhuma proposta pendente";
+  }
+
+  if (empresaCategoriasPainel) {
+    clearElement(empresaCategoriasPainel);
+    if (!categorias.length) {
+      empresaCategoriasPainel.appendChild(createElement("span", { text: "Nenhuma categoria publicada" }));
+    } else {
+      categorias.slice(0, 5).forEach((categoria) => {
+        empresaCategoriasPainel.appendChild(createElement("span", { text: categoria }));
+      });
+    }
+  }
+
+  if (empresaProximoPasso && empresaProximoPassoLink) {
+    if (pendentes) {
+      empresaProximoPasso.textContent = `Você tem ${pendentes} proposta${pendentes === 1 ? "" : "s"} para avaliar e comparar.`;
+      empresaProximoPassoLink.href = "projetos-publicados-empresa.html";
+      empresaProximoPassoLink.firstChild.textContent = "Revisar propostas ";
+    } else if (semDetalhamento) {
+      empresaProximoPasso.textContent = `${semDetalhamento} projeto${semDetalhamento === 1 ? "" : "s"} ainda não tem detalhamento técnico.`;
+      empresaProximoPassoLink.href = "#publicarProblema";
+      empresaProximoPassoLink.firstChild.textContent = "Completar projeto ";
+    } else if (!state.problemas.length) {
+      empresaProximoPasso.textContent = "Publique sua primeira oportunidade para começar a receber propostas.";
+      empresaProximoPassoLink.href = "#publicarProblema";
+      empresaProximoPassoLink.firstChild.textContent = "Publicar projeto ";
+    } else {
+      empresaProximoPasso.textContent = "Seus projetos estão completos. Busque freelancers para ampliar suas opções.";
+      empresaProximoPassoLink.href = "busca-perfil-Empresa.html";
+      empresaProximoPassoLink.firstChild.textContent = "Buscar freelancers ";
+    }
+  }
 }
 
 function formatCurrency(value) {
@@ -497,7 +547,7 @@ function renderCandidaturas() {
         try {
           setButtonLoading(btnAceitar, true, "Aceitando...");
           btnRecusar.disabled = true;
-          await aceitarCandidatura(candidatura, problema.id, state.user.uid);
+          await aceitarCandidatura(candidatura, problema, state.user.uid);
         } catch (error) {
           console.error(error);
           showToast("Falha ao aceitar candidatura", "error");
@@ -625,11 +675,17 @@ async function atualizarStatusCandidatura(candidaturaId, status) {
   await updateDoc(doc(db, "candidaturas", candidaturaId), { status });
 }
 
-async function aceitarCandidatura(candidatura, problemaId, empresaId) {
+async function aceitarCandidatura(candidatura, problema, empresaId) {
   const chatRef = await addDoc(collection(db, "chats"), {
-    problemaId,
+    problemaId: problema.id,
+    problemaTitulo: problema.titulo || "Projeto BMO",
+    valorReferencia: Number(problema.valorSimulado || 0),
+    prazoReferencia: problema.prazo?.toDate ? problema.prazo.toDate().toISOString().slice(0, 10) : "",
     empresaId,
     freelancerId: candidatura.freelancerId,
+    statusProjeto: "em_negociacao",
+    propostaAtual: null,
+    acordo: null,
     criadoEm: serverTimestamp()
   });
 
@@ -641,7 +697,7 @@ async function aceitarCandidatura(candidatura, problemaId, empresaId) {
   candidatura.status = STATUS.ACEITO;
   candidatura.chatId = chatRef.id;
 
-  const problemaIndex = state.problemas.findIndex((item) => item.id === problemaId);
+  const problemaIndex = state.problemas.findIndex((item) => item.id === problema.id);
   if (problemaIndex >= 0) {
     state.problemas[problemaIndex].possuiServicoAceito = true;
   }

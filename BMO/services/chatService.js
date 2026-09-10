@@ -106,6 +106,68 @@ export async function enviarMensagem(chatId, autorId, texto, tipoChat = "projeto
   });
 }
 
+export async function listarPropostas(chatId) {
+  const propostasRef = collection(db, "chats", chatId, "propostas");
+  const propostasQuery = query(propostasRef, orderBy("criadoEm", "desc"));
+  const snapshot = await getDocs(propostasQuery);
+  return snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
+}
+
+export async function enviarProposta({ chatId, autorId, valor, prazo, observacao = "" }) {
+  const proposta = {
+    autorId,
+    valor: Number(valor),
+    prazo: prazo || "",
+    observacao: observacao.trim(),
+    status: "pendente",
+    criadoEm: serverTimestamp()
+  };
+
+  const propostaRef = await addDoc(collection(db, "chats", chatId, "propostas"), proposta);
+  await updateDoc(doc(db, "chats", chatId), {
+    propostaAtual: { id: propostaRef.id, ...proposta, criadoEm: new Date() },
+    ultimaMensagem: `Nova proposta: R$ ${Number(valor).toFixed(2).replace(".", ",")}`,
+    ultimaMensagemAutorId: autorId,
+    ultimaMensagemEm: serverTimestamp()
+  });
+
+  return { id: propostaRef.id, ...proposta };
+}
+
+export async function aceitarProposta({ chatId, propostaId, valor, prazo, aceitoPor }) {
+  await updateDoc(doc(db, "chats", chatId, "propostas", propostaId), {
+    status: "aceita",
+    aceitaEm: serverTimestamp(),
+    aceitaPor
+  });
+
+  await updateDoc(doc(db, "chats", chatId), {
+    acordo: {
+      valorFinal: Number(valor),
+      prazoFinal: prazo || "",
+      status: "aceito",
+      aceitoPor,
+      aceitoEm: serverTimestamp()
+    },
+    propostaAtual: null,
+    statusProjeto: "em_execucao",
+    ultimaMensagem: "Proposta aceita. Acordo formalizado.",
+    ultimaMensagemAutorId: aceitoPor,
+    ultimaMensagemEm: serverTimestamp()
+  });
+}
+
+export async function salvarGithubProjeto({ chatId, repositorioUrl, pullRequestUrl, autorId }) {
+  await updateDoc(doc(db, "chats", chatId), {
+    github: {
+      repositorioUrl: repositorioUrl.trim(),
+      pullRequestUrl: pullRequestUrl.trim(),
+      atualizadoPor: autorId,
+      atualizadoEm: serverTimestamp()
+    }
+  });
+}
+
 export async function marcarChatComoLido(chatId, userId, tipoChat = "projeto") {
   const chatCollection = getChatCollection(tipoChat);
   const chatRef = doc(db, chatCollection, chatId);

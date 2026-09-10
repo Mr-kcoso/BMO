@@ -196,7 +196,6 @@
 }
 
 .freelancer-user-mini span,
-.freelancer-panel-card span,
 .freelancer-panel-card small {
   display: block;
   color: var(--social-muted);
@@ -585,6 +584,264 @@
   color: #ffb06c;
 }
 
+.freelancer-modal {
+  padding: 24px;
+  background: rgba(3, 5, 8, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.freelancer-modal-content {
+  width: min(1020px, 100%);
+  max-height: min(860px, 92vh);
+  padding: 0;
+  overflow: hidden auto;
+  border: 1px solid var(--social-line-strong);
+  border-radius: 20px;
+  background: var(--social-card);
+  color: var(--social-text);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48);
+}
+
+.freelancer-modal-header {
+  padding: 26px 30px 22px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--social-line);
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.14), rgba(20, 24, 33, 0.2) 46%);
+}
+
+.freelancer-modal-eyebrow,
+.freelancer-modal-label {
+  margin: 0 0 7px;
+  color: #ff9b52;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.freelancer-modal-header h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(22px, 3vw, 32px);
+  line-height: 1.1;
+}
+
+.freelancer-modal-close {
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--social-line-strong);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--social-text-soft);
+  font-size: 22px;
+}
+
+.freelancer-modal-close:hover {
+  background: var(--social-orange-soft);
+  color: #fff;
+}
+
+.freelancer-modal-subtitle {
+  margin: 9px 0 0;
+  color: var(--social-muted);
+  font-size: 13px;
+}
+
+.freelancer-modal-layout {
+  padding: 26px 30px 30px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(310px, 0.85fr);
+  gap: 26px;
+}
+
+.freelancer-modal-layout.is-comments-mode {
+  display: block;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.freelancer-modal-layout.is-comments-mode .freelancer-comments-panel {
+  width: 100%;
+}
+
+.freelancer-modal-content .is-hidden {
+  display: none;
+}
+
+.freelancer-modal-section + .freelancer-modal-section {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid var(--social-line);
+}
+
+.freelancer-modal-description,
+.freelancer-modal-detail {
+  margin: 0;
+  color: var(--social-text-soft);
+  line-height: 1.7;
+}
+
+.freelancer-modal-description {
+  padding: 16px 18px;
+  border: 1px solid var(--social-line);
+  border-left: 3px solid var(--social-orange);
+  border-radius: 0 12px 12px 0;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.freelancer-modal-detail {
+  white-space: pre-wrap;
+}
+
+.freelancer-comments-panel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--social-line);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.freelancer-comments-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--social-line);
+}
+
+.freelancer-comments-heading h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 16px;
+}
+
+.freelancer-comments-heading > span {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--social-orange-soft);
+  color: #ffb16f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.freelancer-comments-list {
+  min-height: 96px;
+  max-height: 290px;
+  overflow-y: auto;
+}
+
+.freelancer-comment {
+  padding: 15px 0;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  border-bottom: 1px solid var(--social-line);
+}
+
+.freelancer-comment-avatar {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #273142;
+  color: #ffb16f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.freelancer-comment-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.freelancer-comment-meta strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #fff;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.freelancer-comment-meta time {
+  flex: 0 0 auto;
+  color: var(--social-muted);
+  font-size: 11px;
+}
+
+.freelancer-comment p,
+.freelancer-comments-empty {
+  margin: 6px 0 0;
+  color: var(--social-text-soft);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.freelancer-comments-empty {
+  padding: 22px 0;
+  color: var(--social-muted);
+}
+
+.freelancer-comment-form {
+  padding-top: 17px;
+  display: grid;
+  gap: 9px;
+}
+
+.freelancer-comment-form label {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.freelancer-comment-form textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 11px 12px;
+  border: 1px solid var(--social-line-strong);
+  border-radius: 10px;
+  outline: none;
+  background: var(--social-bg-soft);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+}
+
+.freelancer-comment-form textarea:focus {
+  border-color: rgba(255, 107, 0, 0.65);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.12);
+}
+
+.freelancer-comment-submit {
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.freelancer-comment-submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .freelancer-card-actions {
   margin: 0;
   display: flex;
@@ -866,6 +1123,31 @@
 @media (max-width: 760px) {
   .freelancer-sidebar {
     display: none;
+  }
+
+  .freelancer-modal {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .freelancer-modal-content {
+    max-height: 94vh;
+    border-radius: 17px 17px 0 0;
+  }
+
+  .freelancer-modal-header,
+  .freelancer-modal-layout {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .freelancer-modal-layout {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .freelancer-comments-list {
+    max-height: 230px;
   }
 
   .freelancer-social-shell {

@@ -4,6 +4,9 @@ import {
   buscarMensagensHistoricas,
   escutarNovasMensagens,
   escutarMetadataChat,
+  enviarProposta,
+  aceitarProposta,
+  salvarGithubProjeto,
   enviarMensagem,
   marcarChatComoLido,
   validarAcessoAoChat
@@ -22,6 +25,18 @@ const btnVoltar = document.getElementById("btnVoltar");
 const btnVerPerfil = document.getElementById("btnVerPerfil");
 const chatTitulo = document.getElementById("chatTitulo");
 const chatSubtitulo = document.getElementById("chatSubtitulo");
+const painelProjeto = document.getElementById("painelProjeto");
+const statusAcordo = document.getElementById("statusAcordo");
+const propostaAtual = document.getElementById("propostaAtual");
+const formProposta = document.getElementById("formProposta");
+const valorProposta = document.getElementById("valorProposta");
+const prazoProposta = document.getElementById("prazoProposta");
+const observacaoProposta = document.getElementById("observacaoProposta");
+const btnEnviarProposta = document.getElementById("btnEnviarProposta");
+const formGithub = document.getElementById("formGithub");
+const githubRepositorio = document.getElementById("githubRepositorio");
+const githubPullRequest = document.getElementById("githubPullRequest");
+const githubLinks = document.getElementById("githubLinks");
 
 const profileCache = new Map();
 const mensagensRenderizadas = new Set();
@@ -32,6 +47,8 @@ let newestVisibleDoc = null;
 let unsubscribeMensagens = null;
 let carregarMaisClicado = false;
 let temMaisMensagens = true;
+let chatAtual = null;
+let usuarioAtual = null;
 
 function getDateValue(value) {
   if (!value) return 0;
@@ -59,6 +76,93 @@ function formatDate(value) {
   const date = typeof value?.toDate === "function" ? value.toDate() : new Date(value || 0);
   if (Number.isNaN(date.getTime()) || date.getTime() === 0) return "Agora";
   return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function formatCurrency(value) {
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
+}
+
+function renderGithubLinks(github) {
+  if (!githubLinks) return;
+  clearElement(githubLinks);
+  const links = [
+    [github?.repositorioUrl, "Abrir repositório", "fa-code-branch"],
+    [github?.pullRequestUrl, "Abrir Pull Request", "fa-code-pull-request"]
+  ].filter(([url]) => url);
+
+  if (!links.length) {
+    githubLinks.appendChild(createElement("p", { className: "chat-panel-help", text: "Nenhum link GitHub cadastrado ainda." }));
+    return;
+  }
+
+  links.forEach(([url, label, icon]) => {
+    const link = createElement("a", { className: "chat-github-link", text: label });
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    const iconElement = createElement("i", { className: `fa-solid ${icon}` });
+    iconElement.setAttribute("aria-hidden", "true");
+    link.prepend(iconElement);
+    githubLinks.appendChild(link);
+  });
+}
+
+async function renderAcordo(chatMetadata, currentUserId) {
+  if (!painelProjeto || tipoChat !== "projeto") return;
+  chatAtual = chatMetadata;
+  renderGithubLinks(chatMetadata?.github);
+  if (githubRepositorio && document.activeElement !== githubRepositorio) {
+    githubRepositorio.value = chatMetadata?.github?.repositorioUrl || "";
+  }
+  if (githubPullRequest && document.activeElement !== githubPullRequest) {
+    githubPullRequest.value = chatMetadata?.github?.pullRequestUrl || "";
+  }
+
+  if (chatMetadata?.acordo?.status === "aceito") {
+    statusAcordo.textContent = "Acordo aceito";
+    statusAcordo.className = "chat-status-pill is-accepted";
+    clearElement(propostaAtual);
+    propostaAtual.appendChild(createElement("strong", { text: `Valor final: ${formatCurrency(chatMetadata.acordo.valorFinal)}` }));
+    propostaAtual.appendChild(createElement("p", { text: chatMetadata.acordo.prazoFinal ? `Prazo: ${chatMetadata.acordo.prazoFinal}` : "Prazo não definido" }));
+    formProposta.hidden = true;
+    return;
+  }
+
+  statusAcordo.textContent = "Em negociação";
+  statusAcordo.className = "chat-status-pill";
+  formProposta.hidden = false;
+  clearElement(propostaAtual);
+  const proposta = chatMetadata?.propostaAtual;
+  if (!proposta) {
+    if (chatMetadata?.valorReferencia) {
+      propostaAtual.appendChild(createElement("strong", { text: `Valor publicado: ${formatCurrency(chatMetadata.valorReferencia)}` }));
+      propostaAtual.appendChild(createElement("p", { text: "Este valor é apenas uma referência. Envie uma proposta para iniciar a negociação." }));
+    } else {
+      propostaAtual.appendChild(createElement("p", { text: "Nenhuma proposta enviada. Use o formulário para iniciar a negociação." }));
+    }
+    return;
+  }
+
+  const autorNome = await getProfileName(proposta.autorId);
+  propostaAtual.appendChild(createElement("strong", { text: `${autorNome} propôs ${formatCurrency(proposta.valor)}` }));
+  propostaAtual.appendChild(createElement("p", { text: proposta.prazo ? `Prazo: ${proposta.prazo}` : "Prazo não definido" }));
+  if (proposta.observacao) propostaAtual.appendChild(createElement("p", { className: "chat-offer-note", text: proposta.observacao }));
+
+  if (proposta.autorId !== currentUserId) {
+    const button = createElement("button", { className: "btn-primary chat-accept-offer", text: "Aceitar valor e prazo" });
+    button.addEventListener("click", async () => {
+      try {
+        setButtonLoading(button, true, "Confirmando...");
+        await aceitarProposta({ chatId, propostaId: proposta.id, valor: proposta.valor, prazo: proposta.prazo, aceitoPor: currentUserId });
+        showToast("Acordo formalizado", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Não foi possível aceitar a proposta", "error");
+        setButtonLoading(button, false);
+      }
+    });
+    propostaAtual.appendChild(button);
+  }
 }
 
 async function getProfileName(userId) {
@@ -231,6 +335,9 @@ async function iniciarChat(user) {
       return;
     }
 
+    usuarioAtual = user;
+    if (painelProjeto) painelProjeto.hidden = tipoChat !== "projeto";
+
     let outroId = null;
 
     if (tipoChat === "amizade") {
@@ -263,6 +370,8 @@ async function iniciarChat(user) {
     escutarMetadataChat(chatId, (chatMetadata) => {
       if (!chatMetadata) return;
 
+      renderAcordo(chatMetadata, user.uid);
+
       const tUltima = getDateValue(chatMetadata.ultimaMensagemEm);
       const tAcesso = getDateValue(chatMetadata?.ultimoAcessoPor?.[user.uid]);
 
@@ -270,6 +379,51 @@ async function iniciarChat(user) {
         marcarChatComoLido(chatId, user.uid, tipoChat);
       }
     }, tipoChat);
+
+    formProposta?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const valor = Number(valorProposta.value);
+      if (!Number.isFinite(valor) || valor <= 0) {
+        showToast("Informe um valor válido", "error");
+        return;
+      }
+
+      try {
+        setButtonLoading(btnEnviarProposta, true, "Enviando...");
+        await enviarProposta({
+          chatId,
+          autorId: user.uid,
+          valor,
+          prazo: prazoProposta.value,
+          observacao: observacaoProposta.value
+        });
+        observacaoProposta.value = "";
+        showToast("Proposta enviada", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Não foi possível enviar a proposta", "error");
+      } finally {
+        setButtonLoading(btnEnviarProposta, false);
+      }
+    });
+
+    formGithub?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const repositorioUrl = githubRepositorio.value.trim();
+      const pullRequestUrl = githubPullRequest.value.trim();
+      if (!repositorioUrl && !pullRequestUrl) {
+        showToast("Informe pelo menos um link do GitHub", "error");
+        return;
+      }
+
+      try {
+        await salvarGithubProjeto({ chatId, repositorioUrl, pullRequestUrl, autorId: user.uid });
+        showToast("Links do GitHub salvos", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Não foi possível salvar os links", "error");
+      }
+    });
 
     const enviar = async () => {
       const mensagem = texto.value.trim();

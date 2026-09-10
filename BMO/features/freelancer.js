@@ -1,6 +1,8 @@
 import { observeAuthenticatedUser, getUserProfile } from "../services/authService.js";
 import {
   criarCandidatura,
+  criarComentario,
+  getComentariosByProblema,
   getCandidaturasByFreelancer,
   getProblemas
 } from "../services/candidaturaService.js";
@@ -32,6 +34,13 @@ const modalDetalhesTitulo = document.getElementById("modalDetalhesTitulo");
 const modalDetalhesSubtitulo = document.getElementById("modalDetalhesSubtitulo");
 const modalDetalhesDescricao = document.getElementById("modalDetalhesDescricao");
 const modalDetalhesTexto = document.getElementById("modalDetalhesTexto");
+const modalDetalhesLayout = document.getElementById("modalDetalhesLayout");
+const modalDetalhesConteudo = document.getElementById("modalDetalhesConteudo");
+const modalComentariosConteudo = document.getElementById("modalComentariosConteudo");
+const listaComentarios = document.getElementById("listaComentarios");
+const comentariosContagem = document.getElementById("comentariosContagem");
+const formComentario = document.getElementById("formComentario");
+const novoComentario = document.getElementById("novoComentario");
 const mostrarSomenteSalvos = document.body?.dataset?.page === "projetos-salvos";
 
 const state = {
@@ -41,6 +50,8 @@ const state = {
   user: null,
   profile: null
 };
+
+let problemaModalAtual = null;
 
 function getSalvosKey(userId) {
   return `bmo_projetos_salvos_${userId}`;
@@ -271,9 +282,10 @@ function ordenarProblemas(problemas) {
 function fecharDetalhes() {
   modalDetalhes?.classList.add("hidden");
   document.body.style.overflow = "";
+  problemaModalAtual = null;
 }
 
-function onVerDetalhes(problema) {
+function abrirModalOportunidade(problema, modo) {
   if (!modalDetalhes) {
     showToast(`${problema.titulo}: ${problema.descricao || "Sem descricao"}`, "info");
     return;
@@ -292,11 +304,110 @@ function onVerDetalhes(problema) {
     modalDetalhesDescricao.textContent = problema.descricao || "Sem descricao";
   }
 
-  const detalhamento = problema.detalhamento || problema.descricao || "Sem detalhamento adicional.";
+  const detalhamento = problema.detalhamento || "A empresa não informou detalhes técnicos para esta oportunidade.";
   if (modalDetalhesTexto) modalDetalhesTexto.textContent = detalhamento;
 
+  problemaModalAtual = problema;
+  modalDetalhesLayout?.classList.toggle("is-comments-mode", modo === "comentarios");
+  modalDetalhesConteudo?.classList.toggle("is-hidden", modo === "comentarios");
+  modalComentariosConteudo?.classList.toggle("is-hidden", modo !== "comentarios");
+  if (modalDetalhesTitulo) {
+    modalDetalhesTitulo.textContent = modo === "comentarios"
+      ? `Comentários sobre ${problema.titulo || "esta oportunidade"}`
+      : problema.titulo || "Detalhes do problema";
+  }
   modalDetalhes.classList.remove("hidden");
   document.body.style.overflow = "hidden";
+  if (modo === "comentarios") carregarComentarios(problema);
+}
+
+function onVerDetalhes(problema) {
+  abrirModalOportunidade(problema, "detalhes");
+}
+
+function onVerComentarios(problema) {
+  abrirModalOportunidade(problema, "comentarios");
+}
+
+function formatComentarioDate(criadoEm) {
+  if (!criadoEm) return "agora";
+  const value = typeof criadoEm.toDate === "function" ? criadoEm.toDate() : new Date(criadoEm);
+  if (Number.isNaN(value.getTime())) return "agora";
+  return value.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+}
+
+function getComentarioInitial(nome) {
+  return (nome || "F").trim().charAt(0).toUpperCase() || "F";
+}
+
+function renderComentarios(comentarios) {
+  if (!listaComentarios) return;
+  listaComentarios.replaceChildren();
+  if (comentariosContagem) comentariosContagem.textContent = comentarios.length;
+
+  if (!comentarios.length) {
+    const empty = document.createElement("p");
+    empty.className = "freelancer-comments-empty";
+    empty.textContent = "Ainda não há comentários. Seja o primeiro a compartilhar uma opinião.";
+    listaComentarios.appendChild(empty);
+    return;
+  }
+
+  comentarios.forEach((comentario) => {
+    const item = document.createElement("article");
+    item.className = "freelancer-comment";
+    item.innerHTML = `
+      <div class="freelancer-comment-avatar" aria-hidden="true"></div>
+      <div class="freelancer-comment-content">
+        <div class="freelancer-comment-meta"><strong></strong><time></time></div>
+        <p></p>
+      </div>
+    `;
+    item.querySelector(".freelancer-comment-avatar").textContent = getComentarioInitial(comentario.autorNome);
+    item.querySelector("strong").textContent = comentario.autorNome || "Freelancer da comunidade";
+    item.querySelector("time").textContent = formatComentarioDate(comentario.criadoEm);
+    item.querySelector("p").textContent = comentario.texto || "";
+    listaComentarios.appendChild(item);
+  });
+}
+
+async function carregarComentarios(problema) {
+  if (!listaComentarios) return;
+  listaComentarios.innerHTML = '<p class="freelancer-comments-empty">Carregando comentários...</p>';
+  try {
+    const comentarios = await getComentariosByProblema(problema.id);
+    if (problemaModalAtual?.id === problema.id) renderComentarios(comentarios);
+  } catch (error) {
+    console.error(error);
+    listaComentarios.innerHTML = '<p class="freelancer-comments-empty">Não foi possível carregar os comentários.</p>';
+  }
+}
+
+async function publicarComentario(event) {
+  event.preventDefault();
+  const texto = novoComentario?.value.trim();
+  if (!problemaModalAtual || !texto || !state.user || !state.profile) return;
+
+  const submitButton = formComentario.querySelector("button[type=submit]");
+  submitButton.disabled = true;
+  submitButton.textContent = "Publicando...";
+  try {
+    await criarComentario({
+      problemaId: problemaModalAtual.id,
+      autorId: state.user.uid,
+      autorNome: state.profile.nome || "Freelancer BMO",
+      texto
+    });
+    novoComentario.value = "";
+    await carregarComentarios(problemaModalAtual);
+    showToast("Comentário publicado", "success");
+  } catch (error) {
+    console.error(error);
+    showToast("Não foi possível publicar o comentário", "error");
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Publicar comentário";
+  }
 }
 
 function onVerPerfilEmpresa(problema) {
@@ -327,6 +438,7 @@ function renderLista() {
       onToggleSalvar: alternarSalvo,
       onAbrirChat: abrirChat,
       onVerDetalhes,
+      onVerComentarios,
       onVerPerfilEmpresa,
       onCandidatar: async (button) => {
         try {
@@ -411,6 +523,8 @@ modalDetalhes?.addEventListener("click", (event) => {
     fecharDetalhes();
   }
 });
+
+formComentario?.addEventListener("submit", publicarComentario);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && modalDetalhes && !modalDetalhes.classList.contains("hidden")) {

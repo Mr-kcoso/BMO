@@ -4,6 +4,7 @@ import {
   collection,
   getDocs,
   query,
+  serverTimestamp,
   where
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -39,4 +40,30 @@ export async function criarCandidatura({ problemaId, empresaId, freelancerId, fr
     status: STATUS.PENDENTE,
     criadoEm: new Date()
   });
+}
+
+export async function getComentariosByProblema(problemaId) {
+  const comentariosSnapshot = await getDocs(
+    collection(db, "problemas", problemaId, "comentarios")
+  );
+
+  return comentariosSnapshot.docs
+    .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }))
+    .sort((a, b) => getDateValue(b.criadoEm) - getDateValue(a.criadoEm));
+}
+
+export async function criarComentario({ problemaId, autorId, autorNome, texto }) {
+  return addDoc(collection(db, "problemas", problemaId, "comentarios"), {
+    autorId,
+    autorNome,
+    texto: texto.trim(),
+    criadoEm: serverTimestamp()
+  });
+}
+
+function getDateValue(value) {
+  if (!value) return 0;
+  if (typeof value.toDate === "function") return value.toDate().getTime();
+  const parsed = new Date(value).getTime();
+  return Number.isNaN(parsed) ? 0 : parsed;
 }

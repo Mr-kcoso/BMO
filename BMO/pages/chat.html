@@ -8,6 +8,7 @@
   <title>Chat - BMO</title>
   <link rel="stylesheet" href="../styles/design.css">
   <link rel="stylesheet" href="../styles/chat-modern.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body class="chat-page">
@@ -30,6 +31,33 @@
         <input type="text" id="texto" placeholder="Digite sua mensagem" />
         <button id="btnEnviar" class="btn-primary">Enviar</button>
       </div>
+    </section>
+
+    <section id="painelProjeto" class="chat-project-panels" hidden aria-label="Acordo do projeto">
+      <section class="chat-project-panel">
+        <div class="chat-project-panel-heading">
+          <div><p class="chat-panel-kicker">Acordo comercial</p><h2>Negociação de preço</h2></div>
+          <span id="statusAcordo" class="chat-status-pill">Em negociação</span>
+        </div>
+        <div id="propostaAtual" class="chat-offer-current"></div>
+        <form id="formProposta" class="chat-offer-form">
+          <label>Valor da proposta (R$)<input id="valorProposta" type="number" min="0.01" step="0.01" required placeholder="Ex.: 520,00"></label>
+          <label>Prazo estimado<input id="prazoProposta" type="date"></label>
+          <label class="chat-field-wide">Observação<textarea id="observacaoProposta" rows="2" maxlength="500" placeholder="Explique o que está incluído no valor"></textarea></label>
+          <button id="btnEnviarProposta" class="btn-primary" type="submit">Enviar proposta</button>
+        </form>
+      </section>
+
+      <section class="chat-project-panel">
+        <div class="chat-project-panel-heading"><div><p class="chat-panel-kicker">Entrega do projeto</p><h2>GitHub</h2></div><i class="fa-brands fa-github" aria-hidden="true"></i></div>
+        <p class="chat-panel-help">Os arquivos ficam no GitHub. Salve aqui os links de trabalho para as duas pessoas encontrarem o projeto.</p>
+        <form id="formGithub" class="chat-github-form">
+          <label>Repositório<input id="githubRepositorio" type="url" placeholder="https://github.com/empresa/projeto"></label>
+          <label>Pull Request<input id="githubPullRequest" type="url" placeholder="https://github.com/.../pull/1"></label>
+          <button class="chat-nav-btn" type="submit">Salvar links</button>
+        </form>
+        <div id="githubLinks" class="chat-github-links"></div>
+      </section>
     </section>
   </main>
 
