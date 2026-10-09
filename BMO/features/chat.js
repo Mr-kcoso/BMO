@@ -4,14 +4,17 @@ import {
   buscarMensagensHistoricas,
   escutarNovasMensagens,
   escutarMetadataChat,
+  listarPropostas,
   enviarProposta,
   aceitarProposta,
+  recusarProposta,
   salvarGithubProjeto,
   enviarMensagem,
   marcarChatComoLido,
   validarAcessoAoChat
 } from "../services/chatService.js";
 import { clearElement, createElement, setButtonLoading, showToast } from "../scripts/utils.js";
+import { analisarUrlRepositorioGithub, carregarAtividadeRepositorioPublico } from "../services/githubPublicService.js";
 
 const params = new URLSearchParams(window.location.search);
 const chatId = params.get("chatId");
@@ -28,6 +31,7 @@ const chatSubtitulo = document.getElementById("chatSubtitulo");
 const painelProjeto = document.getElementById("painelProjeto");
 const statusAcordo = document.getElementById("statusAcordo");
 const propostaAtual = document.getElementById("propostaAtual");
+const historicoPropostas = document.getElementById("historicoPropostas");
 const formProposta = document.getElementById("formProposta");
 const valorProposta = document.getElementById("valorProposta");
 const prazoProposta = document.getElementById("prazoProposta");
@@ -37,6 +41,13 @@ const formGithub = document.getElementById("formGithub");
 const githubRepositorio = document.getElementById("githubRepositorio");
 const githubPullRequest = document.getElementById("githubPullRequest");
 const githubLinks = document.getElementById("githubLinks");
+const btnAtualizarGithub = document.getElementById("btnAtualizarGithub");
+const btnSalvarGithub = document.getElementById("btnSalvarGithub");
+const githubStatus = document.getElementById("githubStatus");
+const githubResumo = document.getElementById("githubResumo");
+const githubCommits = document.getElementById("githubCommits");
+const githubPullRequestsLista = document.getElementById("githubPullRequests");
+const githubIssues = document.getElementById("githubIssues");
 
 const profileCache = new Map();
 const mensagensRenderizadas = new Set();
@@ -49,6 +60,9 @@ let carregarMaisClicado = false;
 let temMaisMensagens = true;
 let chatAtual = null;
 let usuarioAtual = null;
+let chaveHistoricoPropostas = null;
+let githubDashboardUrl = null;
+let githubRequestSequence = 0;
 
 function getDateValue(value) {
   if (!value) return 0;
@@ -90,10 +104,7 @@ function renderGithubLinks(github) {
     [github?.pullRequestUrl, "Abrir Pull Request", "fa-code-pull-request"]
   ].filter(([url]) => url);
 
-  if (!links.length) {
-    githubLinks.appendChild(createElement("p", { className: "chat-panel-help", text: "Nenhum link GitHub cadastrado ainda." }));
-    return;
-  }
+  if (!links.length) return;
 
   links.forEach(([url, label, icon]) => {
     const link = createElement("a", { className: "chat-github-link", text: label });
@@ -107,10 +118,302 @@ function renderGithubLinks(github) {
   });
 }
 
+function setGithubStatus(message, status = "") {
+  if (!githubStatus) return;
+  githubStatus.textContent = message;
+  githubStatus.className = `chat-github-status${status ? ` is-${status}` : ""}`;
+}
+
+function criarLinkGithub(url, label, className = "chat-github-item-link") {
+  const link = document.createElement("a");
+  link.className = className;
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = label;
+  return link;
+}
+
+function formatGithubDate(value) {
+  if (!value) return "Data não disponível";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Data não disponível";
+  return date.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
+function renderGithubResumo(data) {
+  if (!githubResumo) return;
+  clearElement(githubResumo);
+
+  const repo = data.repositorio;
+  const top = document.createElement("div");
+  top.className = "chat-github-summary-top";
+  const title = criarLinkGithub(repo.html_url, repo.full_name, "chat-github-repo-name");
+  title.setAttribute("aria-label", `Abrir repositório ${repo.full_name} no GitHub`);
+  top.appendChild(title);
+  top.appendChild(createElement("span", { className: "chat-github-visibility", text: "Público" }));
+  githubResumo.appendChild(top);
+
+  githubResumo.appendChild(createElement("p", {
+    className: "chat-github-description",
+    text: repo.description || "Este repositório não possui descrição."
+  }));
+
+  const metrics = document.createElement("div");
+  metrics.className = "chat-github-metrics";
+  const metricValues = [
+    ["Linguagem", repo.language || "Não informada"],
+    ["Estrelas", Number(repo.stargazers_count || 0).toLocaleString("pt-BR")],
+    ["Issues + PRs abertas", Number(repo.open_issues_count || 0).toLocaleString("pt-BR")],
+    ["Branch padrão", repo.default_branch || "Não informada"]
+  ];
+  for (const [label, value] of metricValues) {
+    const metric = document.createElement("div");
+    metric.className = "chat-github-metric";
+    metric.appendChild(createElement("span", { text: label }));
+    metric.appendChild(createElement("strong", { text: String(value) }));
+    metrics.appendChild(metric);
+  }
+  githubResumo.appendChild(metrics);
+  githubResumo.appendChild(createElement("p", {
+    className: "chat-github-updated",
+    text: `Última atualização no GitHub: ${formatGithubDate(repo.updated_at)}`
+  }));
+}
+
+function renderGithubActivityList(container, items, tipo) {
+  if (!container) return;
+  clearElement(container);
+
+  if (!items.length) {
+    const mensagens = {
+      commit: "Nenhum commit encontrado.",
+      pull: "Nenhum pull request encontrado.",
+      issue: "Nenhuma issue aberta encontrada."
+    };
+    container.appendChild(createElement("p", { className: "chat-github-empty", text: mensagens[tipo] }));
+    return;
+  }
+
+  for (const item of items) {
+    const card = document.createElement("article");
+    card.className = "chat-github-activity-item";
+
+    let title = "";
+    let meta = "";
+    let badge = "";
+
+    if (tipo === "commit") {
+      title = String(item.commit?.message || "Commit sem mensagem").split(/\r?\n/)[0];
+      meta = `${item.commit?.author?.name || item.author?.login || "Autor desconhecido"} · ${formatGithubDate(item.commit?.author?.date || item.commit?.committer?.date)}`;
+      badge = (item.sha || "").slice(0, 7);
+    } else if (tipo === "pull") {
+      title = item.title || "Pull request sem título";
+      const estado = item.merged_at ? "Mesclado" : item.state === "open" ? "Aberto" : "Fechado";
+      meta = `#${item.number} · ${estado} · atualizado em ${formatGithubDate(item.updated_at)}`;
+      badge = item.draft ? "Rascunho" : estado;
+    } else {
+      title = item.title || "Issue sem título";
+      meta = `#${item.number} · aberta · atualizada em ${formatGithubDate(item.updated_at)}`;
+      badge = "Aberta";
+    }
+
+    const top = document.createElement("div");
+    top.className = "chat-github-activity-top";
+    top.appendChild(criarLinkGithub(item.html_url, title));
+    if (badge) top.appendChild(createElement("span", { className: `chat-github-state${tipo === "pull" && item.merged_at ? " is-merged" : ""}`, text: badge }));
+    card.appendChild(top);
+    card.appendChild(createElement("p", { className: "chat-github-activity-meta", text: meta }));
+    container.appendChild(card);
+  }
+}
+
+function limparPainelGithub(mensagem = "Conecte um repositório público para carregar a atividade.") {
+  if (githubResumo) clearElement(githubResumo);
+  renderGithubActivityList(githubCommits, [], "commit");
+  renderGithubActivityList(githubPullRequestsLista, [], "pull");
+  renderGithubActivityList(githubIssues, [], "issue");
+  setGithubStatus(mensagem);
+  githubDashboardUrl = null;
+}
+
+async function carregarPainelGithub(repoUrl, { forcar = false } = {}) {
+  const url = String(repoUrl || "").trim();
+  if (!url) {
+    limparPainelGithub();
+    return;
+  }
+
+  if (!forcar && githubDashboardUrl === url) return;
+
+  // Evita que respostas antigas sobrescrevam a solicitação mais recente.
+  const requestId = ++githubRequestSequence;
+  githubDashboardUrl = url;
+  try {
+    analisarUrlRepositorioGithub(url);
+  } catch (error) {
+    setGithubStatus(error.message || "URL de repositório inválida.", "error");
+    throw error;
+  }
+
+  if (btnAtualizarGithub) btnAtualizarGithub.disabled = true;
+  setGithubStatus("Carregando dados públicos do GitHub…", "loading");
+
+  try {
+    const dados = await carregarAtividadeRepositorioPublico(url);
+    if (requestId !== githubRequestSequence) return;
+    renderGithubResumo(dados);
+    renderGithubActivityList(githubCommits, dados.commits, "commit");
+    renderGithubActivityList(githubPullRequestsLista, dados.pullRequests, "pull");
+    renderGithubActivityList(githubIssues, dados.issues, "issue");
+    setGithubStatus(`Dados carregados de ${dados.repositorio.full_name}. Consulta realizada em ${formatGithubDate(new Date())}.`, "success");
+  } catch (error) {
+    if (requestId !== githubRequestSequence) return;
+    console.error("Erro ao carregar atividade do GitHub:", error);
+    if (githubResumo) clearElement(githubResumo);
+    renderGithubActivityList(githubCommits, [], "commit");
+    renderGithubActivityList(githubPullRequestsLista, [], "pull");
+    renderGithubActivityList(githubIssues, [], "issue");
+    setGithubStatus(error.message || "Não foi possível carregar a atividade do GitHub.", "error");
+  } finally {
+    if (requestId === githubRequestSequence && btnAtualizarGithub) btnAtualizarGithub.disabled = false;
+  }
+}
+
+function resetFormularioProposta({ habilitado, textoBotao }) {
+  [valorProposta, prazoProposta, observacaoProposta].forEach((campo) => {
+    if (campo) campo.disabled = !habilitado;
+  });
+
+  if (btnEnviarProposta) {
+    btnEnviarProposta.disabled = !habilitado;
+    btnEnviarProposta.textContent = textoBotao;
+    delete btnEnviarProposta.dataset.originalText;
+  }
+}
+
+function getStatusPropostaLabel(status, proposta, currentUserId, propostaAtualId) {
+  if (status === "pendente" && proposta.id === propostaAtualId) {
+    return proposta.autorId === currentUserId ? "Aguardando resposta" : "Aguardando sua resposta";
+  }
+
+  const labels = {
+    aceita: "Aceita",
+    recusada: "Recusada",
+    substituida: "Substituída",
+    pendente: "Pendente"
+  };
+
+  return labels[status] || "Pendente";
+}
+
+function createStatusElement(label, status, isCurrent = false) {
+  return createElement("span", {
+    className: `chat-offer-status ${isCurrent ? "is-current" : ""} status-${status || "pendente"}`.trim(),
+    text: label
+  });
+}
+
+function formatProposalDate(value) {
+  const date = typeof value?.toDate === "function" ? value.toDate() : new Date(value || 0);
+  if (Number.isNaN(date.getTime()) || date.getTime() === 0) return "Data não disponível";
+  return date.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+async function renderHistoricoPropostas(chatMetadata, currentUserId) {
+  if (!historicoPropostas) return;
+
+  const propostaAtualId = chatMetadata?.propostaAtual?.id || null;
+  const chaveAtual = `${propostaAtualId || ""}|${chatMetadata?.acordo?.status || ""}`;
+
+  if (chaveHistoricoPropostas === chaveAtual) return;
+  chaveHistoricoPropostas = chaveAtual;
+
+  clearElement(historicoPropostas);
+
+  try {
+    const propostas = await listarPropostas(chatId);
+
+    if (!propostas.length) {
+      historicoPropostas.appendChild(
+        createElement("p", {
+          className: "chat-panel-help",
+          text: "Nenhuma proposta anterior. A primeira proposta iniciará a negociação."
+        })
+      );
+      return;
+    }
+
+    propostas.reverse();
+
+    for (const proposta of propostas) {
+      const item = createElement("article", {
+        className: `chat-offer-history-item${proposta.id === propostaAtualId ? " is-current" : ""}`
+      });
+
+      const top = createElement("div", { className: "chat-offer-history-top" });
+      const autorNome = await getProfileName(proposta.autorId);
+      const autorTexto = proposta.autorId === currentUserId ? "Você" : autorNome;
+
+      top.appendChild(createElement("strong", {
+        text: `${autorTexto} · ${formatCurrency(proposta.valor)}`
+      }));
+
+      top.appendChild(
+        createStatusElement(
+          getStatusPropostaLabel(proposta.status, proposta, currentUserId, propostaAtualId),
+          proposta.status,
+          proposta.id === propostaAtualId
+        )
+      );
+
+      item.appendChild(top);
+
+      const detalhes = [];
+      if (proposta.prazo) detalhes.push(`Prazo: ${proposta.prazo}`);
+      detalhes.push(formatProposalDate(proposta.criadoEm));
+
+      item.appendChild(createElement("p", {
+        className: "chat-offer-history-meta",
+        text: detalhes.join(" · ")
+      }));
+
+      if (proposta.observacao) {
+        item.appendChild(createElement("p", {
+          className: "chat-offer-history-note",
+          text: proposta.observacao
+        }));
+      }
+
+      historicoPropostas.appendChild(item);
+    }
+  } catch (error) {
+    console.error("Erro ao carregar histórico de propostas:", error);
+    historicoPropostas.appendChild(
+      createElement("p", {
+        className: "chat-panel-help",
+        text: "Não foi possível carregar o histórico de propostas."
+      })
+    );
+  }
+}
+
 async function renderAcordo(chatMetadata, currentUserId) {
   if (!painelProjeto || tipoChat !== "projeto") return;
   chatAtual = chatMetadata;
   renderGithubLinks(chatMetadata?.github);
+  const repositorioSalvo = chatMetadata?.github?.repositorioUrl || "";
+  if (repositorioSalvo && repositorioSalvo !== githubDashboardUrl) {
+    carregarPainelGithub(repositorioSalvo).catch((error) => console.error(error));
+  } else if (!repositorioSalvo && githubDashboardUrl) {
+    limparPainelGithub();
+  }
   if (githubRepositorio && document.activeElement !== githubRepositorio) {
     githubRepositorio.value = chatMetadata?.github?.repositorioUrl || "";
   }
@@ -125,6 +428,7 @@ async function renderAcordo(chatMetadata, currentUserId) {
     propostaAtual.appendChild(createElement("strong", { text: `Valor final: ${formatCurrency(chatMetadata.acordo.valorFinal)}` }));
     propostaAtual.appendChild(createElement("p", { text: chatMetadata.acordo.prazoFinal ? `Prazo: ${chatMetadata.acordo.prazoFinal}` : "Prazo não definido" }));
     formProposta.hidden = true;
+    await renderHistoricoPropostas(chatMetadata, currentUserId);
     return;
   }
 
@@ -132,37 +436,82 @@ async function renderAcordo(chatMetadata, currentUserId) {
   statusAcordo.className = "chat-status-pill";
   formProposta.hidden = false;
   clearElement(propostaAtual);
+
   const proposta = chatMetadata?.propostaAtual;
   if (!proposta) {
+    resetFormularioProposta({ habilitado: true, textoBotao: "Enviar proposta" });
+
     if (chatMetadata?.valorReferencia) {
       propostaAtual.appendChild(createElement("strong", { text: `Valor publicado: ${formatCurrency(chatMetadata.valorReferencia)}` }));
       propostaAtual.appendChild(createElement("p", { text: "Este valor é apenas uma referência. Envie uma proposta para iniciar a negociação." }));
     } else {
       propostaAtual.appendChild(createElement("p", { text: "Nenhuma proposta enviada. Use o formulário para iniciar a negociação." }));
     }
+
+    await renderHistoricoPropostas(chatMetadata, currentUserId);
     return;
   }
 
   const autorNome = await getProfileName(proposta.autorId);
-  propostaAtual.appendChild(createElement("strong", { text: `${autorNome} propôs ${formatCurrency(proposta.valor)}` }));
+  const souAutor = proposta.autorId === currentUserId;
+  const estadoTexto = souAutor ? "Aguardando resposta da outra pessoa." : "Sua resposta é necessária.";
+
+  propostaAtual.appendChild(createElement("div", { className: "chat-offer-current-top" }));
+  const topoAtual = propostaAtual.lastElementChild;
+  topoAtual.appendChild(createElement("strong", {
+    text: souAutor ? `Você propôs ${formatCurrency(proposta.valor)}` : `${autorNome} propôs ${formatCurrency(proposta.valor)}`
+  }));
+  topoAtual.appendChild(createStatusElement(
+    souAutor ? "Aguardando resposta" : "Aguardando sua resposta",
+    proposta.status,
+    true
+  ));
+
   propostaAtual.appendChild(createElement("p", { text: proposta.prazo ? `Prazo: ${proposta.prazo}` : "Prazo não definido" }));
   if (proposta.observacao) propostaAtual.appendChild(createElement("p", { className: "chat-offer-note", text: proposta.observacao }));
+  propostaAtual.appendChild(createElement("p", { className: "chat-offer-waiting", text: estadoTexto }));
 
-  if (proposta.autorId !== currentUserId) {
-    const button = createElement("button", { className: "btn-primary chat-accept-offer", text: "Aceitar valor e prazo" });
-    button.addEventListener("click", async () => {
+  if (souAutor) {
+    resetFormularioProposta({ habilitado: false, textoBotao: "Aguardando resposta" });
+  } else {
+    resetFormularioProposta({ habilitado: true, textoBotao: "Fazer contraproposta" });
+
+    const actions = createElement("div", { className: "chat-offer-actions" });
+
+    const btnAceitar = createElement("button", { className: "btn-primary chat-accept-offer", text: "Aceitar proposta" });
+    btnAceitar.type = "button";
+    btnAceitar.addEventListener("click", async () => {
       try {
-        setButtonLoading(button, true, "Confirmando...");
-        await aceitarProposta({ chatId, propostaId: proposta.id, valor: proposta.valor, prazo: proposta.prazo, aceitoPor: currentUserId });
+        setButtonLoading(btnAceitar, true, "Confirmando...");
+        await aceitarProposta({ chatId, propostaId: proposta.id, aceitoPor: currentUserId });
         showToast("Acordo formalizado", "success");
       } catch (error) {
         console.error(error);
-        showToast("Não foi possível aceitar a proposta", "error");
-        setButtonLoading(button, false);
+        showToast(error.message || "Não foi possível aceitar a proposta", "error");
+        setButtonLoading(btnAceitar, false);
       }
     });
-    propostaAtual.appendChild(button);
+
+    const btnRecusar = createElement("button", { className: "chat-offer-secondary", text: "Recusar proposta" });
+    btnRecusar.type = "button";
+    btnRecusar.addEventListener("click", async () => {
+      try {
+        setButtonLoading(btnRecusar, true, "Recusando...");
+        await recusarProposta({ chatId, propostaId: proposta.id, recusadoPor: currentUserId });
+        showToast("Proposta recusada", "success");
+      } catch (error) {
+        console.error(error);
+        showToast(error.message || "Não foi possível recusar a proposta", "error");
+        setButtonLoading(btnRecusar, false);
+      }
+    });
+
+    actions.appendChild(btnAceitar);
+    actions.appendChild(btnRecusar);
+    propostaAtual.appendChild(actions);
   }
+
+  await renderHistoricoPropostas(chatMetadata, currentUserId);
 }
 
 async function getProfileName(userId) {
@@ -397,6 +746,8 @@ async function iniciarChat(user) {
           prazo: prazoProposta.value,
           observacao: observacaoProposta.value
         });
+        valorProposta.value = "";
+        prazoProposta.value = "";
         observacaoProposta.value = "";
         showToast("Proposta enviada", "success");
       } catch (error) {
@@ -412,16 +763,38 @@ async function iniciarChat(user) {
       const repositorioUrl = githubRepositorio.value.trim();
       const pullRequestUrl = githubPullRequest.value.trim();
       if (!repositorioUrl && !pullRequestUrl) {
-        showToast("Informe pelo menos um link do GitHub", "error");
+        showToast("Informe o link do repositório ou de um Pull Request", "error");
         return;
       }
 
       try {
+        if (repositorioUrl) analisarUrlRepositorioGithub(repositorioUrl);
+        setButtonLoading(btnSalvarGithub, true, "Salvando...");
         await salvarGithubProjeto({ chatId, repositorioUrl, pullRequestUrl, autorId: user.uid });
         showToast("Links do GitHub salvos", "success");
+        if (repositorioUrl) {
+          await carregarPainelGithub(repositorioUrl, { forcar: true });
+        } else {
+          limparPainelGithub("Link salvo. Informe também o repositório para acompanhar commits, pull requests e issues.");
+        }
       } catch (error) {
         console.error(error);
-        showToast("Não foi possível salvar os links", "error");
+        showToast(error.message || "Não foi possível salvar os links", "error");
+      } finally {
+        setButtonLoading(btnSalvarGithub, false);
+      }
+    });
+
+    btnAtualizarGithub?.addEventListener("click", async () => {
+      const repositorioUrl = githubRepositorio?.value.trim();
+      if (!repositorioUrl) {
+        showToast("Informe e salve a URL de um repositório público", "error");
+        return;
+      }
+      try {
+        await carregarPainelGithub(repositorioUrl, { forcar: true });
+      } catch (error) {
+        showToast(error.message || "URL de repositório inválida", "error");
       }
     });
 

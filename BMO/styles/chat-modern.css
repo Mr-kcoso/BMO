@@ -817,6 +817,155 @@ input[type="file"]::-webkit-file-upload-button:hover {
 .chat-github-link { display: inline-flex; align-items: center; gap: 7px; padding: 8px 10px; border-radius: 9px; background: rgba(39, 215, 255, .1); color: #8deaff; font-size: 12px; font-weight: 800; text-decoration: none; }
 .chat-github-link:hover { background: rgba(39, 215, 255, .18); }
 
+.chat-offer-current-top,
+.chat-offer-history-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chat-offer-current-top strong,
+.chat-offer-history-top strong {
+  min-width: 0;
+}
+
+.chat-offer-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .06);
+  color: var(--chat-text-muted);
+  border: 1px solid var(--chat-panel-border);
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.chat-offer-status.is-current {
+  background: rgba(39, 215, 255, .10);
+  color: #8deaff;
+  border-color: rgba(39, 215, 255, .22);
+}
+
+.chat-offer-status.status-aceita {
+  background: rgba(125, 223, 159, .10);
+  color: var(--chat-green);
+  border-color: rgba(125, 223, 159, .22);
+}
+
+.chat-offer-status.status-recusada {
+  background: rgba(255, 92, 92, .08);
+  color: #ff9a9a;
+  border-color: rgba(255, 92, 92, .18);
+}
+
+.chat-offer-status.status-substituida {
+  background: rgba(255, 255, 255, .05);
+  color: var(--chat-text-muted);
+}
+
+.chat-offer-waiting {
+  margin-top: 10px !important;
+  color: var(--chat-text-muted) !important;
+  font-size: 11px !important;
+}
+
+.chat-offer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chat-offer-secondary {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--chat-panel-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .04);
+  color: var(--chat-text);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.chat-offer-secondary:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 107, 0, .35);
+  background: rgba(255, 107, 0, .08);
+}
+
+.chat-offer-history-section {
+  margin-bottom: 18px;
+}
+
+.chat-offer-history-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+
+.chat-panel-help-inline {
+  margin: 0;
+  color: var(--chat-text-muted);
+  font-size: 11px;
+}
+
+.chat-offer-history {
+  display: grid;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 3px;
+}
+
+.chat-offer-history-item {
+  padding: 11px 12px;
+  border: 1px solid var(--chat-panel-border);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, .025);
+}
+
+.chat-offer-history-item.is-current {
+  border-color: rgba(39, 215, 255, .22);
+  background: rgba(39, 215, 255, .035);
+}
+
+.chat-offer-history-top {
+  margin-bottom: 4px;
+}
+
+.chat-offer-history-top strong {
+  color: var(--chat-text);
+  font-size: 12px;
+}
+
+.chat-offer-history-meta,
+.chat-offer-history-note {
+  margin: 0;
+  color: var(--chat-text-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.chat-offer-history-note {
+  margin-top: 6px;
+  color: var(--chat-text);
+}
+
+.chat-offer-form input:disabled,
+.chat-offer-form textarea:disabled,
+.chat-offer-form button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
 @media (max-width: 780px) {
   .chat-project-panels { grid-template-columns: 1fr; }
   .chat-project-panel { padding: 16px; }
@@ -826,3 +975,41 @@ input[type="file"]::-webkit-file-upload-button:hover {
   .chat-offer-form { grid-template-columns: 1fr; }
   .chat-field-wide, .chat-offer-form button { grid-column: auto; }
 }
+
+/* Painel de atividade pública do GitHub */
+.chat-github-panel { min-width: 0; }
+.chat-github-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.chat-github-buttons button { min-height: 38px; }
+.chat-github-status { margin: 12px 0; padding: 10px 12px; border: 1px solid var(--chat-panel-border); border-radius: 10px; color: var(--chat-text-muted); background: rgba(255,255,255,.025); font-size: 12px; line-height: 1.45; }
+.chat-github-status.is-loading { color: #8deaff; border-color: rgba(39,215,255,.24); }
+.chat-github-status.is-success { color: var(--chat-green); border-color: rgba(125,223,159,.24); }
+.chat-github-status.is-error { color: #ffabab; border-color: rgba(255,92,92,.24); }
+.chat-github-summary { padding: 14px; border: 1px solid var(--chat-panel-border); border-radius: 12px; background: rgba(255,255,255,.025); }
+.chat-github-summary:empty { display: none; }
+.chat-github-summary-top, .chat-github-activity-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; min-width: 0; }
+.chat-github-repo-name { min-width: 0; color: var(--chat-text); font-size: 14px; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
+.chat-github-repo-name:hover, .chat-github-item-link:hover { color: var(--chat-orange); }
+.chat-github-visibility, .chat-github-state { flex: 0 0 auto; padding: 3px 7px; border: 1px solid var(--chat-panel-border); border-radius: 999px; color: var(--chat-text-muted); font-size: 9px; font-weight: 800; }
+.chat-github-description { margin: 8px 0 12px; color: var(--chat-text-muted); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.chat-github-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.chat-github-metric { display: grid; gap: 4px; padding: 9px; border: 1px solid var(--chat-panel-border); border-radius: 9px; background: rgba(255,255,255,.025); min-width: 0; }
+.chat-github-metric span { color: var(--chat-text-muted); font-size: 10px; }
+.chat-github-metric strong { color: var(--chat-text); font-size: 12px; overflow-wrap: anywhere; }
+.chat-github-updated { margin: 10px 0 0; color: var(--chat-text-muted); font-size: 10px; }
+.chat-github-activity-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }
+.chat-github-activity-section { min-width: 0; padding: 12px; border: 1px solid var(--chat-panel-border); border-radius: 12px; background: rgba(255,255,255,.02); }
+.chat-github-activity-section h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; color: var(--chat-text); font-size: 12px; }
+.chat-github-activity-section h3 i { color: var(--chat-orange); }
+.chat-github-activity-list { display: grid; gap: 8px; }
+.chat-github-activity-item { min-width: 0; padding: 10px; border: 1px solid var(--chat-panel-border); border-radius: 9px; background: rgba(255,255,255,.025); }
+.chat-github-item-link { min-width: 0; color: var(--chat-text); font-size: 11px; font-weight: 800; line-height: 1.45; text-decoration: none; overflow-wrap: anywhere; }
+.chat-github-activity-meta { margin: 5px 0 0; color: var(--chat-text-muted); font-size: 10px; line-height: 1.45; }
+.chat-github-state.is-merged { color: var(--chat-green); border-color: rgba(125,223,159,.24); }
+.chat-github-empty { margin: 0; padding: 8px 2px; color: var(--chat-text-muted); font-size: 11px; }
+.chat-github-buttons button:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 520px) {
+  .chat-github-summary-top, .chat-github-activity-top { flex-direction: column; }
+  .chat-github-buttons { display: grid; grid-template-columns: 1fr; }
+  .chat-github-buttons button { width: 100%; }
+}
+
