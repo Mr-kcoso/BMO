@@ -9,6 +9,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
   startAfter,
@@ -114,46 +115,180 @@ export async function listarPropostas(chatId) {
 }
 
 export async function enviarProposta({ chatId, autorId, valor, prazo, observacao = "" }) {
-  const proposta = {
-    autorId,
-    valor: Number(valor),
-    prazo: prazo || "",
-    observacao: observacao.trim(),
-    status: "pendente",
-    criadoEm: serverTimestamp()
-  };
+  const chatRef = doc(db, "chats", chatId);
+  const propostaRef = doc(collection(db, "chats", chatId, "propostas"));
+  const valorNumerico = Number(valor);
+  const observacaoLimpa = observacao.trim();
+  const prazoLimpo = prazo || "";
 
-  const propostaRef = await addDoc(collection(db, "chats", chatId, "propostas"), proposta);
-  await updateDoc(doc(db, "chats", chatId), {
-    propostaAtual: { id: propostaRef.id, ...proposta, criadoEm: new Date() },
-    ultimaMensagem: `Nova proposta: R$ ${Number(valor).toFixed(2).replace(".", ",")}`,
-    ultimaMensagemAutorId: autorId,
-    ultimaMensagemEm: serverTimestamp()
+  if (!Number.isFinite(valorNumerico) || valorNumerico <= 0) {
+    throw new Error("Informe um valor válido.");
+  }
+
+  await runTransaction(db, async (transaction) => {
+    const chatSnap = await transaction.get(chatRef);
+
+    if (!chatSnap.exists()) {
+      throw new Error("Chat não encontrado.");
+    }
+
+    const chat = chatSnap.data();
+
+    if (chat.acordo?.status === "aceito") {
+      throw new Error("A negociação já foi encerrada.");
+    }
+
+    const propostaAtual = chat.propostaAtual || null;
+    let propostaAnteriorRef = null;
+    let propostaAnteriorSnap = null;
+
+    if (propostaAtual?.id && propostaAtual?.status === "pendente") {
+      if (propostaAtual.autorId === autorId) {
+        throw new Error("Aguarde a resposta da outra pessoa antes de enviar outra proposta.");
+      }
+
+      propostaAnteriorRef = doc(db, "chats", chatId, "propostas", propostaAtual.id);
+      propostaAnteriorSnap = await transaction.get(propostaAnteriorRef);
+
+      if (!propostaAnteriorSnap.exists() || propostaAnteriorSnap.data().status !== "pendente") {
+        throw new Error("A proposta atual não está mais disponível.");
+      }
+    }
+
+    const proposta = {
+      autorId,
+      valor: valorNumerico,
+      prazo: prazoLimpo,
+      observacao: observacaoLimpa,
+      status: "pendente",
+      criadoEm: serverTimestamp()
+    };
+
+    if (propostaAnteriorRef) {
+      transaction.update(propostaAnteriorRef, {
+        status: "substituida",
+        substituidaEm: serverTimestamp(),
+        substituidaPor: autorId
+      });
+    }
+
+    transaction.set(propostaRef, proposta);
+    transaction.update(chatRef, {
+      propostaAtual: {
+        id: propostaRef.id,
+        autorId,
+        valor: valorNumerico,
+        prazo: prazoLimpo,
+        observacao: observacaoLimpa,
+        status: "pendente",
+        criadoEm: serverTimestamp()
+      },
+      ultimaMensagem: `Nova proposta: R$ ${valorNumerico.toFixed(2).replace(".", ",")}`,
+      ultimaMensagemAutorId: autorId,
+      ultimaMensagemEm: serverTimestamp()
+    });
   });
 
-  return { id: propostaRef.id, ...proposta };
+  return {
+    id: propostaRef.id,
+    autorId,
+    valor: valorNumerico,
+    prazo: prazoLimpo,
+    observacao: observacaoLimpa,
+    status: "pendente"
+  };
 }
 
-export async function aceitarProposta({ chatId, propostaId, valor, prazo, aceitoPor }) {
-  await updateDoc(doc(db, "chats", chatId, "propostas", propostaId), {
-    status: "aceita",
-    aceitaEm: serverTimestamp(),
-    aceitaPor
-  });
+export async function aceitarProposta({ chatId, propostaId, aceitoPor }) {
+  const chatRef = doc(db, "chats", chatId);
+  const propostaRef = doc(db, "chats", chatId, "propostas", propostaId);
 
-  await updateDoc(doc(db, "chats", chatId), {
-    acordo: {
-      valorFinal: Number(valor),
-      prazoFinal: prazo || "",
-      status: "aceito",
-      aceitoPor,
-      aceitoEm: serverTimestamp()
-    },
-    propostaAtual: null,
-    statusProjeto: "em_execucao",
-    ultimaMensagem: "Proposta aceita. Acordo formalizado.",
-    ultimaMensagemAutorId: aceitoPor,
-    ultimaMensagemEm: serverTimestamp()
+  await runTransaction(db, async (transaction) => {
+    const chatSnap = await transaction.get(chatRef);
+    const propostaSnap = await transaction.get(propostaRef);
+
+    if (!chatSnap.exists() || !propostaSnap.exists()) {
+      throw new Error("Proposta ou chat não encontrado.");
+    }
+
+    const chat = chatSnap.data();
+    const proposta = propostaSnap.data();
+
+    if (chat.propostaAtual?.id !== propostaId) {
+      throw new Error("Esta proposta não está mais disponível.");
+    }
+
+    if (proposta.status !== "pendente") {
+      throw new Error("Esta proposta já foi respondida.");
+    }
+
+    if (proposta.autorId === aceitoPor) {
+      throw new Error("Você não pode aceitar sua própria proposta.");
+    }
+
+    transaction.update(propostaRef, {
+      status: "aceita",
+      aceitaEm: serverTimestamp(),
+      aceitaPor: aceitoPor
+    });
+
+    transaction.update(chatRef, {
+      acordo: {
+        propostaId,
+        valorFinal: Number(proposta.valor),
+        prazoFinal: proposta.prazo || "",
+        status: "aceito",
+        aceitoPor,
+        aceitoEm: serverTimestamp()
+      },
+      propostaAtual: null,
+      statusProjeto: "em_execucao",
+      ultimaMensagem: "Proposta aceita. Acordo formalizado.",
+      ultimaMensagemAutorId: aceitoPor,
+      ultimaMensagemEm: serverTimestamp()
+    });
+  });
+}
+
+export async function recusarProposta({ chatId, propostaId, recusadoPor }) {
+  const chatRef = doc(db, "chats", chatId);
+  const propostaRef = doc(db, "chats", chatId, "propostas", propostaId);
+
+  await runTransaction(db, async (transaction) => {
+    const chatSnap = await transaction.get(chatRef);
+    const propostaSnap = await transaction.get(propostaRef);
+
+    if (!chatSnap.exists() || !propostaSnap.exists()) {
+      throw new Error("Proposta ou chat não encontrado.");
+    }
+
+    const chat = chatSnap.data();
+    const proposta = propostaSnap.data();
+
+    if (chat.propostaAtual?.id !== propostaId) {
+      throw new Error("Esta proposta não está mais disponível.");
+    }
+
+    if (proposta.status !== "pendente") {
+      throw new Error("Esta proposta já foi respondida.");
+    }
+
+    if (proposta.autorId === recusadoPor) {
+      throw new Error("Você não pode recusar sua própria proposta.");
+    }
+
+    transaction.update(propostaRef, {
+      status: "recusada",
+      recusadaEm: serverTimestamp(),
+      recusadaPor: recusadoPor
+    });
+
+    transaction.update(chatRef, {
+      propostaAtual: null,
+      ultimaMensagem: "A proposta foi recusada. A negociação continua aberta.",
+      ultimaMensagemAutorId: recusadoPor,
+      ultimaMensagemEm: serverTimestamp()
+    });
   });
 }
 

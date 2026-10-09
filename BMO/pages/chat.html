@@ -40,6 +40,13 @@
           <span id="statusAcordo" class="chat-status-pill">Em negociação</span>
         </div>
         <div id="propostaAtual" class="chat-offer-current"></div>
+        <div class="chat-offer-history-section">
+          <div class="chat-offer-history-heading">
+            <p class="chat-panel-kicker">Histórico</p>
+            <span class="chat-panel-help-inline">Propostas anteriores da negociação</span>
+          </div>
+          <div id="historicoPropostas" class="chat-offer-history"></div>
+        </div>
         <form id="formProposta" class="chat-offer-form">
           <label>Valor da proposta (R$)<input id="valorProposta" type="number" min="0.01" step="0.01" required placeholder="Ex.: 520,00"></label>
           <label>Prazo estimado<input id="prazoProposta" type="date"></label>
@@ -48,15 +55,37 @@
         </form>
       </section>
 
-      <section class="chat-project-panel">
-        <div class="chat-project-panel-heading"><div><p class="chat-panel-kicker">Entrega do projeto</p><h2>GitHub</h2></div><i class="fa-brands fa-github" aria-hidden="true"></i></div>
-        <p class="chat-panel-help">Os arquivos ficam no GitHub. Salve aqui os links de trabalho para as duas pessoas encontrarem o projeto.</p>
+      <section class="chat-project-panel chat-github-panel">
+        <div class="chat-project-panel-heading">
+          <div><p class="chat-panel-kicker">Desenvolvimento do projeto</p><h2>GitHub</h2></div>
+          <i class="fa-brands fa-github" aria-hidden="true"></i>
+        </div>
+        <p class="chat-panel-help">Conecte um repositório público para acompanhar commits, pull requests e issues diretamente nesta conversa.</p>
         <form id="formGithub" class="chat-github-form">
-          <label>Repositório<input id="githubRepositorio" type="url" placeholder="https://github.com/empresa/projeto"></label>
-          <label>Pull Request<input id="githubPullRequest" type="url" placeholder="https://github.com/.../pull/1"></label>
-          <button class="chat-nav-btn" type="submit">Salvar links</button>
+          <label>Repositório público<input id="githubRepositorio" type="url" placeholder="https://github.com/empresa/projeto"></label>
+          <label>Pull Request de referência (opcional)<input id="githubPullRequest" type="url" placeholder="https://github.com/empresa/projeto/pull/1"></label>
+          <div class="chat-github-buttons">
+            <button class="btn-primary" id="btnSalvarGithub" type="submit">Salvar e conectar</button>
+            <button class="chat-nav-btn" id="btnAtualizarGithub" type="button">Atualizar atividade</button>
+          </div>
         </form>
         <div id="githubLinks" class="chat-github-links"></div>
+        <p id="githubStatus" class="chat-github-status" role="status" aria-live="polite">Conecte um repositório público para carregar a atividade.</p>
+        <div id="githubResumo" class="chat-github-summary"></div>
+        <div class="chat-github-activity-grid">
+          <section class="chat-github-activity-section">
+            <h3><i class="fa-solid fa-code-commit" aria-hidden="true"></i> Commits recentes</h3>
+            <div id="githubCommits" class="chat-github-activity-list"><p class="chat-github-empty">Nenhum repositório conectado.</p></div>
+          </section>
+          <section class="chat-github-activity-section">
+            <h3><i class="fa-solid fa-code-pull-request" aria-hidden="true"></i> Pull requests</h3>
+            <div id="githubPullRequests" class="chat-github-activity-list"><p class="chat-github-empty">Nenhum repositório conectado.</p></div>
+          </section>
+          <section class="chat-github-activity-section">
+            <h3><i class="fa-regular fa-circle-dot" aria-hidden="true"></i> Issues abertas</h3>
+            <div id="githubIssues" class="chat-github-activity-list"><p class="chat-github-empty">Nenhum repositório conectado.</p></div>
+          </section>
+        </div>
       </section>
     </section>
   </main>

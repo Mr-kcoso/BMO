@@ -227,21 +227,58 @@ service cloud.firestore {
         allow read: if isSignedIn()
           && (get(/databases/$(database)/documents/chats/$(chatId)).data.empresaId == request.auth.uid
             || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid);
+
         allow create: if isSignedIn()
+          && request.resource.data.keys().hasOnly(["autorId", "valor", "prazo", "observacao", "status", "criadoEm"])
           && request.resource.data.autorId == request.auth.uid
           && request.resource.data.valor is number
           && request.resource.data.valor > 0
+          && request.resource.data.prazo is string
+          && request.resource.data.observacao is string
           && request.resource.data.status == "pendente"
+          && request.resource.data.criadoEm == request.time
           && get(/databases/$(database)/documents/chats/$(chatId)).data.acordo == null
           && (get(/databases/$(database)/documents/chats/$(chatId)).data.empresaId == request.auth.uid
-            || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid);
+            || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid)
+          && (
+            !("propostaAtual" in get(/databases/$(database)/documents/chats/$(chatId)).data)
+            || get(/databases/$(database)/documents/chats/$(chatId)).data.propostaAtual == null
+            || get(/databases/$(database)/documents/chats/$(chatId)).data.propostaAtual.status != "pendente"
+            || get(/databases/$(database)/documents/chats/$(chatId)).data.propostaAtual.autorId != request.auth.uid
+          );
+
         allow update: if isSignedIn()
           && (get(/databases/$(database)/documents/chats/$(chatId)).data.empresaId == request.auth.uid
             || get(/databases/$(database)/documents/chats/$(chatId)).data.freelancerId == request.auth.uid)
           && request.auth.uid != resource.data.autorId
           && resource.data.status == "pendente"
-          && request.resource.data.status == "aceita"
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "aceitaEm", "aceitaPor"]);
+          && get(/databases/$(database)/documents/chats/$(chatId)).data.propostaAtual.id == propostaId
+          && request.resource.data.autorId == resource.data.autorId
+          && request.resource.data.valor == resource.data.valor
+          && request.resource.data.prazo == resource.data.prazo
+          && request.resource.data.observacao == resource.data.observacao
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            "status",
+            "aceitaEm",
+            "aceitaPor",
+            "recusadaEm",
+            "recusadaPor",
+            "substituidaEm",
+            "substituidaPor"
+          ])
+          && (
+            (request.resource.data.status == "aceita"
+              && request.resource.data.aceitaPor == request.auth.uid
+              && "aceitaEm" in request.resource.data)
+            ||
+            (request.resource.data.status == "recusada"
+              && request.resource.data.recusadaPor == request.auth.uid
+              && "recusadaEm" in request.resource.data)
+            ||
+            (request.resource.data.status == "substituida"
+              && request.resource.data.substituidaPor == request.auth.uid
+              && "substituidaEm" in request.resource.data)
+          );
       }
     }
 
