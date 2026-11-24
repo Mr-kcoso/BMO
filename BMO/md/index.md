@@ -24,6 +24,8 @@ A documentação técnica está organizada em módulos específicos que cobrem c
    - Lista todas as telas do aplicativo (dashboards, fluxos públicos e configurações) e explica seu propósito no roteamento da aplicação.
 7. **[Controladores Funcionais (Features Logic)](file:///c:/Users/Windows/Downloads/BMO/Bmo-feat/md/features.md)**
    - Detalha a lógica por trás de cada tela (validações de formulário, lógica de listagem de amigos, convites de equipe e listeners de chat).
+8. **[Versão definitiva e pendências](Md%20marcos.md)**
+   - Resume as pendências jurídicas e técnicas antes da publicação definitiva da plataforma.
 
 ---
 
